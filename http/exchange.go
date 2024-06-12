@@ -32,6 +32,8 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 	switch p.Resource {
 	case module.Assignment:
 		return assignmentExchange[core.Log](r, p)
+	case module.Inference:
+		return inferenceExchange[core.Log](r, p)
 	case core.VersionPath:
 		return httpx.NewVersionResponse(module.Version), core.StatusOK()
 	case core.AuthorityPath:

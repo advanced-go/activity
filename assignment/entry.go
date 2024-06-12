@@ -16,5 +16,5 @@ type Entry struct {
 
 var storage = []Entry{
 	{Region: "us-west", Zone: "oregon", SubZone: "dc1", Host: "www.host1.com", Status: "open", Agent: "test-agent", Action: "processed", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-	{Region: "us-west", Zone: "oregon", SubZone: "dc21", Host: "www.host2.com", Status: "open", Agent: "test-agent", Action: "processed", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+	{Region: "us-west", Zone: "oregon", SubZone: "dc2", Host: "www.host2.com", Status: "open", Agent: "test-agent", Action: "processed", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 }

@@ -15,7 +15,7 @@ const (
 
 // Get - resource GET
 func Get(ctx context.Context, h http.Header, values url.Values) (entries []Entry, h2 http.Header, status *core.Status) {
-	return nil, nil, nil //get[core.Log, Entry](ctx, core.AddRequestId(h), values, nil)
+	return get[core.Log](ctx, h, values)
 }
 
 // Put - resource PUT, with optional content override
@@ -32,5 +32,5 @@ func Put(r *http.Request, body []Entry) (http.Header, *core.Status) {
 		}
 		body = content
 	}
-	return nil, core.StatusOK() //put[core.Log](r.Context(), core.AddRequestId(r.Header), body, nil)
+	return put[core.Log](r.Context(), core.AddRequestId(r.Header), body)
 }

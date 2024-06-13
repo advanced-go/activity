@@ -56,7 +56,7 @@ type EntryReassignment struct {
 	CreatedTS      time.Time `json:"created-ts"`
 	AssigneeClass  string    `json:"assignee-class"`
 
-	// Reassignment data
+	// Reassignment data. Processed agent id needed ??
 	NewAssigneeClass string    `json:"new-assignee-class"`
 	ProcessedTS      time.Time `json:"processed-ts"`
 }

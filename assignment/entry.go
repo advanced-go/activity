@@ -9,6 +9,10 @@ const (
 	ReassignmentStatus = "reassignment"
 )
 
+// Case office looks for open assignments, and then does an assignment to a Service Agent and updating
+// the assignment assignee id
+// On reassignment - the assignee class and id are reset
+
 // Entry - host
 type Entry struct {
 	EntryId   string    `json:"entry-id"`
@@ -22,7 +26,7 @@ type Entry struct {
 	Host      string `json:"host"`
 	RouteName string `json:"status"`
 
-	// Assignee class and id
+	// Assignee class - these get reset, id = "", and class to new class
 	AssigneeClass string `json:"assignee-class"`
 	AssigneeId    string `json:"assignee-id"`
 }
@@ -45,9 +49,21 @@ type EntryStatus struct {
 	Status    string    `json:"status"`
 }
 
+type EntryReassignment struct {
+	EntryId        string    `json:"entry-id"`
+	ReassignmentId string    `json:"reassignment-id"`
+	AgentId        string    `json:"agent-id"`
+	CreatedTS      time.Time `json:"created-ts"`
+	AssigneeClass  string    `json:"assignee-class"`
+
+	// Reassignment data
+	NewAssigneeClass string    `json:"new-assignee-class"`
+	ProcessedTS      time.Time `json:"processed-ts"`
+}
+
 var entryData = []Entry{
-	{EntryId: "1", AgentId: "test-agent", Region: "us-west", Zone: "oregon", Host: "www.host1.com", RouteName: "search", AssigneeClass: "case-officer:007", AssigneeId: "case-officer:007.1", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-	{EntryId: "2", AgentId: "test-agent", Region: "us-west", Zone: "oregon", Host: "www.host2.com", RouteName: "host", AssigneeClass: "case-officer:007", AssigneeId: "case-officer:007.1", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+	{EntryId: "1", AgentId: "test-agent", Region: "us-west", Zone: "oregon", Host: "www.host1.com", RouteName: "search", AssigneeClass: "case-officer:007", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+	{EntryId: "2", AgentId: "test-agent", Region: "us-west", Zone: "oregon", Host: "www.host2.com", RouteName: "host", AssigneeClass: "case-officer:007", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 }
 
 var entryDetailData = []EntryDetail{

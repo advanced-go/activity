@@ -13,10 +13,11 @@ func originFilter(values url.Values) []Entry {
 	}
 	var result []Entry
 
+	status := values.Get("status")
 	filter := core.NewOrigin(values)
 	for _, e := range storage {
 		target := core.Origin{Region: e.Region, Zone: e.Zone, SubZone: e.SubZone, Host: e.Host}
-		if core.OriginMatch(target, filter) {
+		if core.OriginMatch(target, filter) && status != "" && e.Status == status {
 			result = append(result, e)
 		}
 	}

@@ -39,7 +39,7 @@ func put[E core.ErrorHandler](ctx context.Context, h http.Header, body []Entry) 
 			return nil, status
 
 	*/
-	storage = append(storage, body...)
+	//storage = append(storage, body...)
 	return nil, core.StatusOK()
 }
 

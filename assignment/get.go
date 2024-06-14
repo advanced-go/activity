@@ -10,6 +10,14 @@ import (
 	"net/url"
 )
 
+var index = make(map[string]string)
+
+func init() {
+	for _, e := range entryData {
+		index[createKey(core.Origin{Region: e.Region, Zone: e.Zone, SubZone: e.SubZone, Host: e.Host})] = ""
+	}
+}
+
 func get[E core.ErrorHandler, T pgxsql.Scanner[T]](ctx context.Context, h http.Header, values url.Values, resource, template string, query pgxsql.QueryFuncT[T]) (entries []T, h2 http.Header, status *core.Status) {
 	var e E
 
@@ -61,10 +69,10 @@ func validDetail(values url.Values, e EntryDetail) bool {
 	if values == nil {
 		return false
 	}
-	_, status := selectEntries(values)
-	if !status.OK() {
+	if !entryExists(values) {
 		return false
 	}
+	// Additional filtering
 	return true
 }
 
@@ -72,10 +80,10 @@ func validStatus(values url.Values, e EntryStatus) bool {
 	if values == nil {
 		return false
 	}
-	_, status := selectEntries(values)
-	if !status.OK() {
+	if !entryExists(values) {
 		return false
 	}
+	// Additional filtering
 	return true
 }
 
@@ -83,10 +91,10 @@ func validStatusUpdate(values url.Values, e EntryStatusUpdate) bool {
 	if values == nil {
 		return false
 	}
-	_, status := selectEntries(values)
-	if !status.OK() {
+	if !entryExists(values) {
 		return false
 	}
+	// Additional filtering
 	return true
 }
 
@@ -102,4 +110,16 @@ func selectEntries(values url.Values) ([]Entry, *core.Status) {
 		return nil, core.StatusNotFound()
 	}
 	return entries, core.StatusOK()
+}
+
+func createKey(o core.Origin) string {
+	key := o.Region + ":"
+	key += o.Zone + ":"
+	key += o.Host
+	return key
+}
+
+func entryExists(values url.Values) bool {
+	_, ok := index[createKey(core.NewOrigin(values))]
+	return ok
 }

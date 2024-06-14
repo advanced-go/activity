@@ -15,14 +15,39 @@ const (
 	assignmentDetail       = "assignment-detail"
 	assignmentStatus       = "assignment-status"
 	assignmentStatusUpdate = "assignment-status-update"
+
+	entryPath             = "assignment/entry"
+	entryDetailPath       = "assignment/detail"
+	entryStatusPath       = "assignment/status"
+	entryStatusUpdatePath = "assignment/status-update"
 )
+
+// Get - resource GET
+/*
+func Get(ctx context.Context, path string, h http.Header, values url.Values) (entries []any, h2 http.Header, status *core.Status) {
+	switch path {
+	case entryPath:
+		return GetT[Entry](ctx, h, values)
+	case *[]EntryDetail:
+		*p, h2, status = get[core.Log, EntryDetail](ctx, h, values, assignmentDetail, "", nil)
+	case *[]EntryStatus:
+		*p, h2, status = get[core.Log, EntryStatus](ctx, h, values, assignmentStatus, "", nil)
+	case *[]EntryStatusUpdate:
+		*p, h2, status = get[core.Log, EntryStatusUpdate](ctx, h, values, assignmentStatusUpdate, "", nil)
+	default:
+		status = core.NewStatusError(http.StatusBadRequest, core.NewInvalidBodyTypeError(entries))
+	}
+	return
+}
+
+*/
 
 type Constraints interface {
 	Entry | EntryDetail | EntryStatus | EntryStatusUpdate
 }
 
-// Get - resource GET
-func Get[T Constraints](ctx context.Context, h http.Header, values url.Values) (entries []T, h2 http.Header, status *core.Status) {
+// GetT - resource GET
+func GetT[T Constraints](ctx context.Context, h http.Header, values url.Values) (entries []T, h2 http.Header, status *core.Status) {
 	switch p := any(&entries).(type) {
 	case *[]Entry:
 		*p, h2, status = get[core.Log, Entry](ctx, h, values, assignment, "", nil)

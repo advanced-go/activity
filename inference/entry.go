@@ -9,15 +9,15 @@ type Entry struct {
 	CreatedTS time.Time `json:"created-ts"`
 
 	// Origin + route name
-	Region    string `json:"region"`
-	Zone      string `json:"zone"`
-	SubZone   string `json:"sub-zone"`
-	Host      string `json:"host"`
-	RouteName string `json:"route"`
+	Region  string `json:"region"`
+	Zone    string `json:"zone"`
+	SubZone string `json:"sub-zone"`
+	Host    string `json:"host"`
 
 	// Details + action
-	Details string `json:"details"`
-	Action  string `json:"action"`
+	RouteName string `json:"route"`
+	Details   string `json:"details"`
+	Action    string `json:"action"`
 }
 
 var storage = []Entry{

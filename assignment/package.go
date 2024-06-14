@@ -10,12 +10,32 @@ import (
 )
 
 const (
-	PkgPath = "github/advanced-go/activity/assignment"
+	PkgPath                = "github/advanced-go/activity/assignment"
+	assignment             = "assignment"
+	assignmentDetail       = "assignment-detail"
+	assignmentStatus       = "assignment-status"
+	assignmentStatusUpdate = "assignment-status-update"
 )
 
+type Constraints interface {
+	Entry | EntryDetail | EntryStatus | EntryStatusUpdate
+}
+
 // Get - resource GET
-func Get(ctx context.Context, h http.Header, values url.Values) (entries []Entry, h2 http.Header, status *core.Status) {
-	return get[core.Log](ctx, h, values)
+func Get[T Constraints](ctx context.Context, h http.Header, values url.Values) (entries []T, h2 http.Header, status *core.Status) {
+	switch p := any(&entries).(type) {
+	case *[]Entry:
+		*p, h2, status = get[core.Log, Entry](ctx, h, values, assignment, "", nil)
+	case *[]EntryDetail:
+		*p, h2, status = get[core.Log, EntryDetail](ctx, h, values, assignmentDetail, "", nil)
+	case *[]EntryStatus:
+		*p, h2, status = get[core.Log, EntryStatus](ctx, h, values, assignmentStatus, "", nil)
+	case *[]EntryStatusUpdate:
+		*p, h2, status = get[core.Log, EntryStatusUpdate](ctx, h, values, assignmentStatusUpdate, "", nil)
+	default:
+		status = core.NewStatusError(http.StatusBadRequest, core.NewInvalidBodyTypeError(entries))
+	}
+	return
 }
 
 // Put - resource PUT, with optional content override

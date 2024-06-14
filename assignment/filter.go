@@ -7,29 +7,28 @@ import (
 	"strconv"
 )
 
-func originFilter(values url.Values) []Entry {
+func FilterT[T any](values url.Values, entries []T, valid func(url.Values, T) bool) ([]T, *core.Status) {
 	if values == nil {
-		return storage
+		return entries, core.StatusBadRequest()
 	}
-	var result []Entry
+	if len(entries) == 0 {
+		return entries, core.StatusNotFound()
+	}
+	var result []T
 
-	status := values.Get("status")
-	filter := core.NewOrigin(values)
-	for _, e := range storage {
-		target := core.Origin{Region: e.Region, Zone: e.Zone, SubZone: e.SubZone, Host: e.Host}
-		if core.OriginMatch(target, filter) && status != "" && e.Status == status {
+	for _, e := range entries {
+		if valid(values, e) {
 			result = append(result, e)
 		}
 	}
 	if len(result) == 0 {
-		return result
+		return result, core.StatusNotFound()
 	}
-	result = order(values, result)
-	result = top(values, result)
-	return distinct(values, result)
+	result = Order(values, result)
+	return Top(values, result), core.StatusOK()
 }
 
-func order(values url.Values, entries []Entry) []Entry {
+func Order[T any](values url.Values, entries []T) []T {
 	if entries == nil || values == nil {
 		return entries
 	}
@@ -37,7 +36,7 @@ func order(values url.Values, entries []Entry) []Entry {
 	if s != "desc" {
 		return entries
 	}
-	var result []Entry
+	var result []T
 
 	for index := len(entries) - 1; index >= 0; index-- {
 		result = append(result, entries[index])
@@ -45,7 +44,7 @@ func order(values url.Values, entries []Entry) []Entry {
 	return result
 }
 
-func top(values url.Values, entries []Entry) []Entry {
+func Top[T any](values url.Values, entries []T) []T {
 	if entries == nil || values == nil {
 		return entries
 	}
@@ -57,38 +56,13 @@ func top(values url.Values, entries []Entry) []Entry {
 	if err != nil {
 		fmt.Printf("top value is not valid: %v", s)
 	}
-	var result []Entry
+	var result []T
 	for i, e := range entries {
 		if i < cnt {
 			result = append(result, e)
 		} else {
 			break
 		}
-	}
-	return result
-}
-
-func distinct(values url.Values, entries []Entry) []Entry {
-	if entries == nil || values == nil {
-		return entries
-	}
-	s := values.Get("distinct")
-	if s == "" {
-		return entries
-	}
-	if s != "host" {
-		return entries
-	}
-	m := make(map[string]string)
-	var result []Entry
-
-	for _, e := range entries {
-		_, ok := m[e.Host]
-		if ok {
-			continue
-		}
-		result = append(result, e)
-		m[e.Host] = e.Host
 	}
 	return result
 }

@@ -6,13 +6,13 @@ import (
 	"github.com/advanced-go/stdlib/uri"
 )
 
-func ExampleGet() {
+func ExampleGet_Entry() {
 	q := "region=*"
-	entries, _, status := get[core.Output](nil, nil, uri.BuildValues(q))
+	entries, _, status := get[core.Output](nil, nil, uri.BuildValues(q), "", "", nil)
 	fmt.Printf("test: Get(\"%v\") -> [status:%v] [entries:%v]\n", q, status, len(entries))
 
 	q = "region=*&order=desc"
-	entries, _, status = get[core.Output](nil, nil, uri.BuildValues(q))
+	entries, _, status = get[core.Output](nil, nil, uri.BuildValues(q), "", "", nil)
 	fmt.Printf("test: Get(\"%v\") -> [status:%v] [entries:%v]\n", q, status, entries)
 
 	//Output:

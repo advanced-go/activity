@@ -10,14 +10,6 @@ import (
 	"net/url"
 )
 
-var index = make(map[string]string)
-
-func init() {
-	for _, e := range entryData {
-		index[createKey(core.Origin{Region: e.Region, Zone: e.Zone, SubZone: e.SubZone, Host: e.Host})] = ""
-	}
-}
-
 func get[E core.ErrorHandler, T pgxsql.Scanner[T]](ctx context.Context, h http.Header, values url.Values, resource, template string, query pgxsql.QueryFuncT[T]) (entries []T, h2 http.Header, status *core.Status) {
 	var e E
 
@@ -50,76 +42,4 @@ func testQuery[T pgxsql.Scanner[T]](_ context.Context, _ http.Header, _, _ strin
 		status = core.NewStatusError(http.StatusBadRequest, core.NewInvalidBodyTypeError(entries))
 	}
 	return
-}
-
-func validEntry(values url.Values, e Entry) bool {
-	if values == nil {
-		return false
-	}
-	filter := core.NewOrigin(values)
-	target := core.Origin{Region: e.Region, Zone: e.Zone, SubZone: e.SubZone, Host: e.Host}
-	if !core.OriginMatch(target, filter) {
-		return false
-	}
-	// Additional filtering
-	return true
-}
-
-func validDetail(values url.Values, e EntryDetail) bool {
-	if values == nil {
-		return false
-	}
-	if !entryExists(values) {
-		return false
-	}
-	// Additional filtering
-	return true
-}
-
-func validStatus(values url.Values, e EntryStatus) bool {
-	if values == nil {
-		return false
-	}
-	if !entryExists(values) {
-		return false
-	}
-	// Additional filtering
-	return true
-}
-
-func validStatusUpdate(values url.Values, e EntryStatusUpdate) bool {
-	if values == nil {
-		return false
-	}
-	if !entryExists(values) {
-		return false
-	}
-	// Additional filtering
-	return true
-}
-
-func selectEntries(values url.Values) ([]Entry, *core.Status) {
-	var entries []Entry
-
-	for _, entry := range entryData {
-		if validEntry(values, entry) {
-			entries = append(entries, entry)
-		}
-	}
-	if len(entries) == 0 {
-		return nil, core.StatusNotFound()
-	}
-	return entries, core.StatusOK()
-}
-
-func createKey(o core.Origin) string {
-	key := o.Region + ":"
-	key += o.Zone + ":"
-	key += o.Host
-	return key
-}
-
-func entryExists(values url.Values) bool {
-	_, ok := index[createKey(core.NewOrigin(values))]
-	return ok
 }

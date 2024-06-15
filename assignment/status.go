@@ -3,6 +3,7 @@ package assignment
 import (
 	"errors"
 	"fmt"
+	"net/url"
 	"time"
 )
 
@@ -31,6 +32,8 @@ const (
 var entryStatusData = []EntryStatus{
 	{EntryId: "1", StatusId: "1", AgentId: "agent-name:agent-class:instance-id", Status: "open", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 	{EntryId: "1", StatusId: "2", AgentId: "agent-name:agent-class:instance-id", Status: "closed", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+	{EntryId: "3", StatusId: "3", AgentId: "agent-name:agent-class:instance-id", Status: "closed", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+	{EntryId: "4", StatusId: "4", AgentId: "agent-name:agent-class:instance-id", Status: "closed", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 }
 
 var entryStatusUpdateData = []EntryStatusUpdate{
@@ -159,4 +162,26 @@ func (EntryStatusUpdate) CreateInsertValues(entries []EntryStatusUpdate) [][]any
 		values = append(values, e.Values())
 	}
 	return values
+}
+
+func validStatus(values url.Values, e EntryStatus) bool {
+	if values == nil {
+		return false
+	}
+	if values.Get("entry-id") != e.EntryId {
+		return false
+	}
+	// Additional filtering
+	return true
+}
+
+func validStatusUpdate(values url.Values, e EntryStatusUpdate) bool {
+	if values == nil {
+		return false
+	}
+	if values.Get("entry-id") != e.EntryId {
+		return false
+	}
+	// Additional filtering
+	return true
 }

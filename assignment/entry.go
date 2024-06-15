@@ -3,6 +3,8 @@ package assignment
 import (
 	"errors"
 	"fmt"
+	"github.com/advanced-go/stdlib/core"
+	"net/url"
 	"time"
 )
 
@@ -20,12 +22,13 @@ const (
 		"customer_id,start_time,duration_ms,duration_str,traffic," +
 		"region,zone,sub_zone,service,instance_id,route_name," +
 		"request_id,url,protocol,method,host,path,status_code,bytes_sent,status_flags," +
-		"timeout,rate_limit,rate_burst,retry,retry_rate_limit,retry_rate_burst,failover) VALUES"
+		"timeout,rate_limit,rate_burst) VALUES"
 	deleteSql = "DELETE FROM access_log"
 
 	EntryIdName       = "entry_id"
 	AgentIdName       = "agent_id"
 	CreatedTSName     = "created_ts"
+	UpdatedTSName     = "updated_ts"
 	RegionName        = "region"
 	ZoneName          = "zone"
 	SubZoneName       = "sub_zone"
@@ -59,8 +62,9 @@ type Entry struct {
 	Host    string `json:"host"`
 
 	// Assignee class - these get reset, id = "", and class to new class
-	AssigneeClass string `json:"assignee-class"`
-	AssigneeId    string `json:"assignee-id"`
+	AssigneeClass string    `json:"assignee-class"`
+	AssigneeId    string    `json:"assignee-id"`
+	UpdatedTS     time.Time `json:"updated-ts"`
 }
 
 func (Entry) Scan(columnNames []string, values []any) (e Entry, err error) {
@@ -86,7 +90,8 @@ func (Entry) Scan(columnNames []string, values []any) (e Entry, err error) {
 			e.AssigneeClass = values[i].(string)
 		case AssigneeIdName:
 			e.AssigneeId = values[i].(string)
-
+		case UpdatedTSName:
+			e.UpdatedTS = values[i].(time.Time)
 		default:
 			err = errors.New(fmt.Sprintf("invalid field name: %v", name))
 			return
@@ -108,6 +113,7 @@ func (e Entry) Values() []any {
 
 		e.AssigneeClass,
 		e.AssigneeId,
+		e.UpdatedTS,
 	}
 }
 
@@ -118,4 +124,17 @@ func (Entry) CreateInsertValues(entries []Entry) [][]any {
 		values = append(values, e.Values())
 	}
 	return values
+}
+
+func validEntry(values url.Values, e Entry) bool {
+	if values == nil {
+		return false
+	}
+	filter := core.NewOrigin(values)
+	target := core.Origin{Region: e.Region, Zone: e.Zone, SubZone: e.SubZone, Host: e.Host}
+	if !core.OriginMatch(target, filter) {
+		return false
+	}
+	// Additional filtering
+	return true
 }

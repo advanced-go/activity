@@ -3,6 +3,7 @@ package assignment
 import (
 	"errors"
 	"fmt"
+	"net/url"
 	"time"
 )
 
@@ -24,6 +25,7 @@ const (
 var entryDetailData = []EntryDetail{
 	{EntryId: "1", DetailId: "1", AgentId: "agent-name:agent-class:instance-id", RouteName: "search", Details: "various information", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 	{EntryId: "1", DetailId: "2", AgentId: "agent-name:agent-class:instance-id", RouteName: "host", Details: "other information", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+	{EntryId: "2", DetailId: "3", AgentId: "agent-name:agent-class:instance-id", RouteName: "egress-1", Details: "other information", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 }
 
 // EntryDetail - entry details
@@ -79,4 +81,16 @@ func (EntryDetail) CreateInsertValues(entries []EntryDetail) [][]any {
 		values = append(values, e.Values())
 	}
 	return values
+}
+
+func validDetail(values url.Values, e EntryDetail) bool {
+	if values == nil {
+		return false
+	}
+	if values.Get("entry-id") != e.EntryId {
+		return false
+	}
+
+	// Additional filtering
+	return true
 }

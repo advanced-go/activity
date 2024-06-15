@@ -117,7 +117,7 @@ func (e Entry) Values() []any {
 	}
 }
 
-func (Entry) CreateInsertValues(entries []Entry) [][]any {
+func (Entry) Rows(entries []Entry) [][]any {
 	var values [][]any
 
 	for _, e := range entries {

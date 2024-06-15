@@ -17,7 +17,7 @@ func get[E core.ErrorHandler, T pgxsql.Scanner[T]](ctx context.Context, h http.H
 		return nil, h2, core.StatusNotFound()
 	}
 	if query == nil {
-		query = testQuery[T] //pgxsql.QueryT[T]
+		query = pgxsql.QueryT[T] //testQuery[T] //pgxsql.QueryT[T]
 	}
 	h2 = httpx.Forward(h2, h)
 	h2.Set(core.XFrom, module.Authority)

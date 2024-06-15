@@ -74,7 +74,7 @@ func (e EntryDetail) Values() []any {
 	}
 }
 
-func (EntryDetail) CreateInsertValues(entries []EntryDetail) [][]any {
+func (EntryDetail) Rows(entries []EntryDetail) [][]any {
 	var values [][]any
 
 	for _, e := range entries {

@@ -87,7 +87,7 @@ func (a EntryStatus) Values() []any {
 	}
 }
 
-func (EntryStatus) CreateInsertValues(entries []EntryStatus) [][]any {
+func (EntryStatus) Rows(entries []EntryStatus) [][]any {
 	var values [][]any
 
 	for _, e := range entries {
@@ -155,7 +155,7 @@ func (a EntryStatusUpdate) Values() []any {
 	}
 }
 
-func (EntryStatusUpdate) CreateInsertValues(entries []EntryStatusUpdate) [][]any {
+func (EntryStatusUpdate) Rows(entries []EntryStatusUpdate) [][]any {
 	var values [][]any
 
 	for _, e := range entries {

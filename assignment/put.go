@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-func put[E core.ErrorHandler, T pgxsql.Scanner[T]](ctx context.Context, h http.Header, resource, template string, body []T, insert pgxsql.InsertFunc) (h2 http.Header, status *core.Status) {
+func put[E core.ErrorHandler, T pgxsql.Scanner[T]](ctx context.Context, h http.Header, resource, template string, body []T, insert pgxsql.InsertFuncT[T]) (h2 http.Header, status *core.Status) {
 	var e E
 
 	if len(body) == 0 {
@@ -18,11 +18,11 @@ func put[E core.ErrorHandler, T pgxsql.Scanner[T]](ctx context.Context, h http.H
 		return nil, status
 	}
 	if insert == nil {
-		insert = testInsert //pgxsql.Insert
+		insert = testInsert[T] //pgxsql.InsertT[T]
 	}
 	h2 = httpx.Forward(h2, h)
 	h2.Set(core.XFrom, module.Authority)
-	_, status = insert(ctx, h, resource, template, body[0].CreateInsertValues(body))
+	_, status = insert(ctx, h, resource, template, body)
 	if !status.OK() {
 		e.Handle(status, core.RequestId(h))
 	}
@@ -30,6 +30,6 @@ func put[E core.ErrorHandler, T pgxsql.Scanner[T]](ctx context.Context, h http.H
 
 }
 
-func testInsert(ctx context.Context, h http.Header, resource, template string, values [][]any, args ...any) (pgxsql.CommandTag, *core.Status) {
+func testInsert[T pgxsql.Scanner[T]](_ context.Context, _ http.Header, resource, template string, entries []T, args ...any) (pgxsql.CommandTag, *core.Status) {
 	return pgxsql.CommandTag{}, core.NewStatus(http.StatusTeapot)
 }

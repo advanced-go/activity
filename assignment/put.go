@@ -1,55 +1,35 @@
 package assignment
 
 import (
-	"bytes"
 	"context"
+	"errors"
+	"github.com/advanced-go/activity/module"
+	"github.com/advanced-go/postgresql/pgxsql"
 	"github.com/advanced-go/stdlib/core"
-	json2 "github.com/advanced-go/stdlib/json"
-	"io"
+	"github.com/advanced-go/stdlib/httpx"
 	"net/http"
 )
 
-func put[E core.ErrorHandler](ctx context.Context, h http.Header, body []Entry) (http.Header, *core.Status) {
-	//var e E
+func put[E core.ErrorHandler, T pgxsql.Scanner[T]](ctx context.Context, h http.Header, resource, template string, body []T, insert pgxsql.InsertFunc) (h2 http.Header, status *core.Status) {
+	var e E
 
 	if len(body) == 0 {
-		return nil, core.StatusOK()
+		status = core.NewStatusError(core.StatusInvalidContent, errors.New("error: no entries found"))
+		return nil, status
 	}
-	if ctx == nil {
-		ctx = context.Background()
+	if insert == nil {
+		insert = testInsert //pgxsql.Insert
 	}
-	/*
-		rc, _, status := createReadCloser(body)
-		if !status.OK() {
-			e.Handle(status, core.RequestId(h))
-			return nil, status
-		}
+	h2 = httpx.Forward(h2, h)
+	h2.Set(core.XFrom, module.Authority)
+	_, status = insert(ctx, h, resource, template, body[0].CreateInsertValues(body))
+	if !status.OK() {
+		e.Handle(status, core.RequestId(h))
+	}
+	return
 
-			url := resolver.Url(hostKey, module.DocumentsAuthority, module.DocumentsResourceV1, nil, h)
-			req, err := http.NewRequestWithContext(ctx, http.MethodPut, url, rc)
-			if err != nil {
-				return nil, core.NewStatusError(core.StatusInvalidArgument, err)
-			}
-			req.Header.Set(core.XFrom, module.Authority)
-			httpx.Forward(req.Header, h)
-			_, status = httpx.Exchange(req)
-			if !status.OK() {
-				e.Handle(status, core.RequestId(h))
-			}
-			return nil, status
-
-	*/
-	//storage = append(storage, body...)
-	return nil, core.StatusOK()
 }
 
-func createReadCloser(body any) (io.ReadCloser, int64, *core.Status) {
-	switch ptr := body.(type) {
-	case []Entry:
-		return json2.NewReadCloser(body)
-	case []byte:
-		return io.NopCloser(bytes.NewReader(ptr)), int64(len(ptr)), core.StatusOK()
-	default:
-		return nil, 0, core.NewStatusError(core.StatusInvalidArgument, core.NewInvalidBodyTypeError(body))
-	}
+func testInsert(ctx context.Context, h http.Header, resource, template string, values [][]any, args ...any) (pgxsql.CommandTag, *core.Status) {
+	return pgxsql.CommandTag{}, core.NewStatus(http.StatusTeapot)
 }

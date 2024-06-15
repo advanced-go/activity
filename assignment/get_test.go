@@ -97,5 +97,5 @@ func ExampleGet_Update() {
 	//test: Get("region=us-west-1&zone=usw1-az2&host=www.host2.com") -> [status:Not Found] [entries:0]
 	//test: Get("region=us-west-2&zone=usw2-az3&host=www.host1.com") -> [status:Not Found] [entries:0]
 	//test: Get("region=us-west-2&zone=usw2-az4&host=www.host2.com") -> [status:Not Found] [entries:0]
-	
+
 }

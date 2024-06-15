@@ -165,23 +165,19 @@ func (EntryStatusUpdate) CreateInsertValues(entries []EntryStatusUpdate) [][]any
 }
 
 func validStatus(values url.Values, e EntryStatus) bool {
-	if values == nil {
+	if values == nil || values.Get("entry-id") != e.EntryId {
 		return false
 	}
-	if values.Get("entry-id") != e.EntryId {
-		return false
-	}
+
 	// Additional filtering
 	return true
 }
 
 func validStatusUpdate(values url.Values, e EntryStatusUpdate) bool {
-	if values == nil {
+	if values == nil || values.Get("entry-id") != e.EntryId {
 		return false
 	}
-	if values.Get("entry-id") != e.EntryId {
-		return false
-	}
+
 	// Additional filtering
 	return true
 }

@@ -84,10 +84,7 @@ func (EntryDetail) CreateInsertValues(entries []EntryDetail) [][]any {
 }
 
 func validDetail(values url.Values, e EntryDetail) bool {
-	if values == nil {
-		return false
-	}
-	if values.Get("entry-id") != e.EntryId {
+	if values == nil || values.Get("entry-id") != e.EntryId {
 		return false
 	}
 

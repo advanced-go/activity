@@ -24,10 +24,9 @@ func assignmentExchange[E core.ErrorHandler](r *http.Request, p *uri.Parsed) (*h
 		}
 		p = p1
 	}
-
 	switch r.Method {
 	case http.MethodGet:
-		return assignmentGet[E](r.Context(), r.Header, r.URL, p.Version)
+		return assignmentGet[E](r.Context(), r.Header, r.URL, p)
 	case http.MethodPut:
 		return assignmentPut[E](r, p.Version)
 	default:
@@ -36,13 +35,13 @@ func assignmentExchange[E core.ErrorHandler](r *http.Request, p *uri.Parsed) (*h
 	}
 }
 
-func assignmentGet[E core.ErrorHandler](ctx context.Context, h http.Header, url *url.URL, version string) (resp *http.Response, status *core.Status) {
+func assignmentGet[E core.ErrorHandler](ctx context.Context, h http.Header, url *url.URL, p *uri.Parsed) (resp *http.Response, status *core.Status) {
 	var entries any
 	var h2 http.Header
 
-	switch version {
+	switch p.Version {
 	case module.Ver1, "":
-		entries, h2, status = assignment.Get(ctx, h, url.Query())
+		entries, h2, status = assignment.Get(ctx, p.Path, h, url.Query())
 	default:
 		status = core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", h.Get(core.XVersion))))
 	}

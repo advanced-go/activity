@@ -95,19 +95,19 @@ func (Entry) Scan(columnNames []string, values []any) (e Entry, err error) {
 	return
 }
 
-func (a Entry) Values() []any {
+func (e Entry) Values() []any {
 	return []any{
-		a.EntryId,
-		a.AgentId,
-		a.CreatedTS,
+		e.EntryId,
+		e.AgentId,
+		e.CreatedTS,
 
-		a.Region,
-		a.Zone,
-		a.SubZone,
-		a.Host,
+		e.Region,
+		e.Zone,
+		e.SubZone,
+		e.Host,
 
-		a.AssigneeClass,
-		a.AssigneeId,
+		e.AssigneeClass,
+		e.AssigneeId,
 	}
 }
 

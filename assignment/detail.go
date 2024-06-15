@@ -61,14 +61,14 @@ func (EntryDetail) Scan(columnNames []string, values []any) (e EntryDetail, err 
 	return
 }
 
-func (a EntryDetail) Values() []any {
+func (e EntryDetail) Values() []any {
 	return []any{
-		a.EntryId,
-		a.DetailId,
-		a.AgentId,
-		a.CreatedTS,
-		a.RouteName,
-		a.Details,
+		e.EntryId,
+		e.DetailId,
+		e.AgentId,
+		e.CreatedTS,
+		e.RouteName,
+		e.Details,
 	}
 }
 

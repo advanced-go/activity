@@ -43,3 +43,29 @@ func testQuery[T pgxsql.Scanner[T]](_ context.Context, _ http.Header, _, _ strin
 	}
 	return
 }
+
+func getEntryByStatus(cx context.Context, h http.Header, o core.Origin, status string) ([]Entry, *core.Status) {
+	e, ok := lookupEntry(o)
+	if !ok {
+		return nil, core.StatusNotFound()
+	}
+	for i := len(statusData) - 1; i >= 0; i-- {
+		if statusData[i].EntryId == e.EntryId && statusData[i].Status == status {
+			return []Entry{e}, core.StatusOK()
+		}
+	}
+	return nil, core.StatusNotFound()
+}
+
+func getStatusChange[E core.ErrorHandler](ctx context.Context, h http.Header, o core.Origin, assigneeClass string) ([]EntryStatusChange, *core.Status) {
+	e, ok := lookupEntry(o)
+	if !ok {
+		return nil, core.StatusNotFound()
+	}
+	for _, change := range changeData {
+		if change.EntryId == e.EntryId && change.AssigneeClass == assigneeClass {
+			return []EntryStatusChange{change}, core.StatusOK()
+		}
+	}
+	return nil, core.StatusNotFound()
+}

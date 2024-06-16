@@ -45,11 +45,8 @@ func insertEntry[E core.ErrorHandler](ctx context.Context, h http.Header, e Entr
 		AssigneeId: assigneeId,
 	}
 	e.CreatedTS = time.Now().UTC()
-	_, status := put[E, Entry](ctx, h, "", "", []Entry{e}, nil)
-	if status.OK() {
-		status = insertStatus[E](ctx, h, e.Origin(), es)
-	}
-	return status
+	e.EntryId = entryData[len(entryData)-1].EntryId + 1
+	return insertStatus[E](ctx, h, e.Origin(), es)
 }
 
 func insertDetail[E core.ErrorHandler](ctx context.Context, h http.Header, o core.Origin, detail EntryDetail) *core.Status {
@@ -60,8 +57,8 @@ func insertDetail[E core.ErrorHandler](ctx context.Context, h http.Header, o cor
 	detail.EntryId = e.EntryId
 	detail.DetailId = detailData[len(detailData)-1].DetailId + 1
 	detail.CreatedTS = time.Now().UTC()
-	_, status := put[E, EntryDetail](ctx, h, "", "", []EntryDetail{detail}, nil)
-	return status
+	detailData = append(detailData, detail)
+	return core.StatusOK()
 }
 
 func insertStatus[E core.ErrorHandler](ctx context.Context, h http.Header, o core.Origin, es EntryStatus) *core.Status {
@@ -72,8 +69,8 @@ func insertStatus[E core.ErrorHandler](ctx context.Context, h http.Header, o cor
 	es.EntryId = e.EntryId
 	es.StatusId = statusData[len(statusData)-1].StatusId + 1
 	es.CreatedTS = time.Now().UTC()
-	_, status := put[E, EntryStatus](ctx, h, "", "", []EntryStatus{es}, nil)
-	return status
+	statusData = append(statusData, es)
+	return core.StatusOK()
 }
 
 func insertStatusChange[E core.ErrorHandler](ctx context.Context, h http.Header, o core.Origin, change EntryStatusChange) *core.Status {
@@ -84,6 +81,6 @@ func insertStatusChange[E core.ErrorHandler](ctx context.Context, h http.Header,
 	change.EntryId = e.EntryId
 	change.ChangeId = changeData[len(changeData)-1].ChangeId + 1
 	change.CreatedTS = time.Now().UTC()
-	_, status := put[E, EntryStatusChange](ctx, h, "", "", []EntryStatusChange{change}, nil)
-	return status
+	changeData = append(changeData, change)
+	return core.StatusOK()
 }

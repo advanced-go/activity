@@ -49,6 +49,5 @@ func updateStatusChange[E core.ErrorHandler](ctx context.Context, h http.Header,
 			return core.StatusOK()
 		}
 	}
-	//	_, status := post[E, EntryStatusChange](ctx, h, "", "", []EntryStatusChange{update}, nil)
 	return core.StatusNotFound()
 }

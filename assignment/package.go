@@ -107,3 +107,43 @@ func PutT[T Constraints](r *http.Request, body []T) (h2 http.Header, status *cor
 	}
 	return
 }
+
+// GetStatusChange - get change
+func GetStatusChange(ctx context.Context, h http.Header, o core.Origin, assigneeClass string) ([]EntryStatusChange, *core.Status) {
+	return getStatusChange[core.Log](ctx, h, o, assigneeClass)
+}
+
+// GetEntryByStatus - by status
+func GetEntryByStatus(ctx context.Context, h http.Header, o core.Origin, status string) ([]Entry, *core.Status) {
+	return getEntryByStatus(ctx, h, o, status)
+}
+
+// InsertEntry - add entry
+func InsertEntry(ctx context.Context, h http.Header, e Entry, assigneeId string) *core.Status {
+	return insertEntry[core.Log](ctx, h, e, assigneeId)
+}
+
+// InsertDetail - add detail
+func InsertDetail(ctx context.Context, h http.Header, o core.Origin, detail EntryDetail) *core.Status {
+	return insertDetail[core.Log](ctx, h, o, detail)
+}
+
+// InsertStatus - add status
+func InsertStatus(ctx context.Context, h http.Header, o core.Origin, es EntryStatus) *core.Status {
+	return insertStatus[core.Log](ctx, h, o, es)
+}
+
+// InsertStatusChange - add status change
+func InsertStatusChange(ctx context.Context, h http.Header, o core.Origin, change EntryStatusChange) *core.Status {
+	return insertStatusChange[core.Log](ctx, h, o, change)
+}
+
+// ReassignEntry - reassign
+func ReassignEntry(ctx context.Context, h http.Header, o core.Origin, assigneeClass string) *core.Status {
+	return reassignEntry[core.Log](ctx, h, o, assigneeClass)
+}
+
+// AssignEntry - assign an entry
+func AssignEntry(ctx context.Context, h http.Header, o core.Origin, assigneeId string) *core.Status {
+	return assignEntry[core.Log](ctx, h, o, assigneeId)
+}

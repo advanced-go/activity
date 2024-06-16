@@ -52,10 +52,10 @@ func ExampleFilterT_Entry() {
 }
 
 func ExampleFilterT_Detail() {
-	entries, status := FilterT[EntryDetail](uri.BuildValues(q1), entryDetailData, validDetail)
+	entries, status := FilterT[EntryDetail](uri.BuildValues(q1), detailData, validDetail)
 	fmt.Printf("test: FilterT[EntryDetail](\"%v\") -> [status:%v] [entries:%v]\n", q1, status, entries)
 
-	entries, status = FilterT[EntryDetail](uri.BuildValues(q2), entryDetailData, validDetail)
+	entries, status = FilterT[EntryDetail](uri.BuildValues(q2), detailData, validDetail)
 	fmt.Printf("test: FilterT[EntryDetail](\"%v\") -> [status:%v] [entries:%v]\n", q2, status, entries)
 
 	//Output:
@@ -65,13 +65,13 @@ func ExampleFilterT_Detail() {
 }
 
 func ExampleFilterT_Status() {
-	entries, status := FilterT[EntryStatus](uri.BuildValues(q1), entryStatusData, validStatus)
+	entries, status := FilterT[EntryStatus](uri.BuildValues(q1), statusData, validStatus)
 	fmt.Printf("test: FilterT[EntryStatus](\"%v\") -> [status:%v] [entries:%v]\n", q1, status, entries)
 
-	entries, status = FilterT[EntryStatus](uri.BuildValues(q2), entryStatusData, validStatus)
+	entries, status = FilterT[EntryStatus](uri.BuildValues(q2), statusData, validStatus)
 	fmt.Printf("test: FilterT[EntryStatus](\"%v\") -> [status:%v] [entries:%v]\n", q2, status, entries)
 
-	entries, status = FilterT[EntryStatus](uri.BuildValues(q4), entryStatusData, validStatus)
+	entries, status = FilterT[EntryStatus](uri.BuildValues(q4), statusData, validStatus)
 	fmt.Printf("test: FilterT[EntryStatus](\"%v\") -> [status:%v] [entries:%v]\n", q4, status, entries)
 
 	//Output:
@@ -82,18 +82,18 @@ func ExampleFilterT_Status() {
 }
 
 func ExampleFilterT_Update() {
-	entries, status := FilterT[EntryStatusUpdate](uri.BuildValues(q1), entryStatusUpdateData, validStatusUpdate)
+	entries, status := FilterT[EntryStatusUpdate](uri.BuildValues(q1), updateData, validStatusUpdate)
 	fmt.Printf("test: FilterT[EntryStatusUpdate](\"%v\") -> [status:%v] [entries:%v]\n", q1, status, entries)
 
-	entries, status = FilterT[EntryStatusUpdate](uri.BuildValues(q2), entryStatusUpdateData, validStatusUpdate)
+	entries, status = FilterT[EntryStatusUpdate](uri.BuildValues(q2), updateData, validStatusUpdate)
 	fmt.Printf("test: FilterT[EntryStatusUpdate](\"%v\") -> [status:%v] [entries:%v]\n", q2, status, entries)
 
-	entries, status = FilterT[EntryStatusUpdate](uri.BuildValues(q4), entryStatusUpdateData, validStatusUpdate)
+	entries, status = FilterT[EntryStatusUpdate](uri.BuildValues(q4), updateData, validStatusUpdate)
 	fmt.Printf("test: FilterT[EntryStatusUpdate](\"%v\") -> [status:%v] [entries:%v]\n", q4, status, entries)
 
 	//Output:
 	//test: FilterT[EntryStatusUpdate]("region=us-west-1&zone=usw1-az1&host=www.host1.com") -> [status:OK] [entries:[{1 1 agent-name:agent-class:instance-id 2024-06-10 09:00:35 +0000 UTC class closed new test error 0001-01-01 00:00:00 +0000 UTC} {1 2 agent-name:agent-class:instance-id 2024-06-10 09:00:35 +0000 UTC class2 closed new test2 error 0001-01-01 00:00:00 +0000 UTC}]]
 	//test: FilterT[EntryStatusUpdate]("region=us-west-1&zone=usw1-az2&host=www.host2.com") -> [status:Not Found] [entries:[]]
 	//test: FilterT[EntryStatusUpdate]("region=us-west-2&zone=usw2-az4&host=www.host2.com") -> [status:Not Found] [entries:[]]
-	
+
 }

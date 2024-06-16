@@ -39,10 +39,10 @@ const (
 
 // When doing an assignment, the Agent id needs to be somewhere??
 var entryData = []Entry{
-	{EntryId: "1", AgentId: "director-1", Region: "us-west-1", Zone: "usw1-az1", Host: "www.host1.com", AssigneeClass: "case-officer:006", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-	{EntryId: "2", AgentId: "director-1", Region: "us-west-1", Zone: "usw1-az2", Host: "www.host2.com", AssigneeClass: "case-officer:006", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-	{EntryId: "3", AgentId: "director-2", Region: "us-west-2", Zone: "usw2-az3", Host: "www.host1.com", AssigneeClass: "case-officer:007", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-	{EntryId: "4", AgentId: "director-2", Region: "us-west-2", Zone: "usw2-az4", Host: "www.host2.com", AssigneeClass: "case-officer:007", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+	{EntryId: 1, AgentId: "director-1", Region: "us-west-1", Zone: "usw1-az1", Host: "www.host1.com", AssigneeClass: "case-officer:006", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+	{EntryId: 2, AgentId: "director-1", Region: "us-west-1", Zone: "usw1-az2", Host: "www.host2.com", AssigneeClass: "case-officer:006", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+	{EntryId: 3, AgentId: "director-2", Region: "us-west-2", Zone: "usw2-az3", Host: "www.host1.com", AssigneeClass: "case-officer:007", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+	{EntryId: 4, AgentId: "director-2", Region: "us-west-2", Zone: "usw2-az4", Host: "www.host2.com", AssigneeClass: "case-officer:007", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 }
 
 // Case office looks for open assignments, and then does an assignment to a Service Agent and updating
@@ -51,7 +51,7 @@ var entryData = []Entry{
 
 // Entry - host
 type Entry struct {
-	EntryId   string    `json:"entry-id"`
+	EntryId   int       `json:"entry-id"`
 	AgentId   string    `json:"agent-id"`
 	CreatedTS time.Time `json:"created-ts"`
 
@@ -67,11 +67,15 @@ type Entry struct {
 	UpdatedTS     time.Time `json:"updated-ts"`
 }
 
+func (e Entry) Origin() core.Origin {
+	return core.Origin{Region: e.Region, Zone: e.Zone, SubZone: e.SubZone, Host: e.Host}
+}
+
 func (Entry) Scan(columnNames []string, values []any) (e Entry, err error) {
 	for i, name := range columnNames {
 		switch name {
 		case EntryIdName:
-			e.EntryId = values[i].(string)
+			e.EntryId = values[i].(int)
 		case AgentIdName:
 			e.AgentId = values[i].(string)
 		case CreatedTSName:

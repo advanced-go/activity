@@ -45,7 +45,7 @@ type Constraints interface {
 	Entry | EntryDetail | EntryStatus | EntryStatusUpdate
 }
 
-// GetT - resource typed GET
+// GetT - typed resource GET
 func GetT[T Constraints](ctx context.Context, h http.Header, values url.Values) (entries []T, h2 http.Header, status *core.Status) {
 	switch p := any(&entries).(type) {
 	case *[]Entry:

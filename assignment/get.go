@@ -33,11 +33,11 @@ func testQuery[T pgxsql.Scanner[T]](_ context.Context, _ http.Header, _, _ strin
 	case *[]Entry:
 		*p, status = FilterT[Entry](values, entryData, validEntry)
 	case *[]EntryDetail:
-		*p, status = FilterT[EntryDetail](values, entryDetailData, validDetail)
+		*p, status = FilterT[EntryDetail](values, detailData, validDetail)
 	case *[]EntryStatus:
-		*p, status = FilterT[EntryStatus](values, entryStatusData, validStatus)
+		*p, status = FilterT[EntryStatus](values, statusData, validStatus)
 	case *[]EntryStatusUpdate:
-		*p, status = FilterT[EntryStatusUpdate](values, entryStatusUpdateData, validStatusUpdate)
+		*p, status = FilterT[EntryStatusUpdate](values, updateData, validStatusUpdate)
 	default:
 		status = core.NewStatusError(http.StatusBadRequest, core.NewInvalidBodyTypeError(entries))
 	}

@@ -5,15 +5,22 @@ import (
 	"net/url"
 )
 
-var index = make(map[string]string)
+var index = make(map[string]Entry)
 
 func init() {
 	for _, e := range entryData {
-		index[core.Origin{Region: e.Region, Zone: e.Zone, SubZone: e.SubZone, Host: e.Host}.Tag()] = e.EntryId
+		index[core.Origin{Region: e.Region, Zone: e.Zone, SubZone: e.SubZone, Host: e.Host}.Tag()] = e
 	}
 }
 
-func lookupEntry(values url.Values) (string, bool) {
-	id, ok := index[core.NewOrigin(values).Tag()]
-	return id, ok
+func lookupEntry(t any) (Entry, bool) {
+	var e Entry
+	ok := false
+	if values, ok1 := t.(url.Values); ok1 {
+		e, ok = index[core.NewOrigin(values).Tag()]
+	}
+	if origin, ok1 := t.(core.Origin); ok1 {
+		e, ok = index[origin.Tag()]
+	}
+	return e, ok
 }

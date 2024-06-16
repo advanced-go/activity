@@ -22,16 +22,16 @@ const (
 	DetailsName   = "details"
 )
 
-var entryDetailData = []EntryDetail{
-	{EntryId: "1", DetailId: "1", AgentId: "agent-name:agent-class:instance-id", RouteName: "search", Details: "various information", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-	{EntryId: "1", DetailId: "2", AgentId: "agent-name:agent-class:instance-id", RouteName: "host", Details: "other information", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-	{EntryId: "2", DetailId: "3", AgentId: "agent-name:agent-class:instance-id", RouteName: "egress-1", Details: "other information", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+var detailData = []EntryDetail{
+	{EntryId: 1, DetailId: 1, AgentId: "agent-name:agent-class:instance-id", RouteName: "search", Details: "various information", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+	{EntryId: 1, DetailId: 2, AgentId: "agent-name:agent-class:instance-id", RouteName: "host", Details: "other information", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+	{EntryId: 2, DetailId: 3, AgentId: "agent-name:agent-class:instance-id", RouteName: "egress-1", Details: "other information", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 }
 
 // EntryDetail - entry details
 type EntryDetail struct {
-	EntryId   string    `json:"entry-id"`
-	DetailId  string    `json:"detail-id"`
+	EntryId   int       `json:"entry-id"`
+	DetailId  int       `json:"detail-id"`
 	AgentId   string    `json:"agent-id"`
 	CreatedTS time.Time `json:"created-ts"`
 
@@ -44,9 +44,9 @@ func (EntryDetail) Scan(columnNames []string, values []any) (e EntryDetail, err 
 	for i, name := range columnNames {
 		switch name {
 		case EntryIdName:
-			e.EntryId = values[i].(string)
+			e.EntryId = values[i].(int)
 		case DetailIdName:
-			e.DetailId = values[i].(string)
+			e.DetailId = values[i].(int)
 		case AgentIdName:
 			e.AgentId = values[i].(string)
 		case CreatedTSName:
@@ -84,7 +84,7 @@ func (EntryDetail) Rows(entries []EntryDetail) [][]any {
 }
 
 func validDetail(values url.Values, e EntryDetail) bool {
-	if values == nil || values.Get("entry-id") != e.EntryId {
+	if values == nil || values.Get("entry-id") != string(e.EntryId) {
 		return false
 	}
 

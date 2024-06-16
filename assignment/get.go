@@ -44,7 +44,7 @@ func testQuery[T pgxsql.Scanner[T]](_ context.Context, _ http.Header, _, _ strin
 	return
 }
 
-func getEntryByStatus(cx context.Context, h http.Header, o core.Origin, status string) ([]Entry, *core.Status) {
+func getEntryByStatus(ctx context.Context, h http.Header, o core.Origin, status string) ([]Entry, *core.Status) {
 	e, ok := lookupEntry(o)
 	if !ok {
 		return nil, core.StatusNotFound()

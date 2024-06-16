@@ -61,10 +61,16 @@ type Entry struct {
 	SubZone string `json:"sub-zone"`
 	Host    string `json:"host"`
 
+	// Assignee Origin
+	AssigneeRegion  string `json:"assignee-region"`
+	AssigneeZone    string `json:"assignee-zone"`
+	AssigneeSubZone string `json:"assignee-sub-zone"`
+
 	// Assignee class - these get reset, id = "", and class to new class
-	AssigneeClass string    `json:"assignee-class"` // Only allow a certain agent class to own this
-	AssigneeId    string    `json:"assignee-id"`    // Set when an agent pulls this entry
-	UpdatedTS     time.Time `json:"updated-ts"`
+	AssigneeClass string `json:"assignee-class"` // Only allow a certain agent class to own this
+	AssigneeId    string `json:"assignee-id"`    // Set when an agent pulls this entry
+
+	UpdatedTS time.Time `json:"updated-ts"`
 }
 
 func (e Entry) Origin() core.Origin {

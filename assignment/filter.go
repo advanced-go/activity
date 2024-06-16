@@ -23,7 +23,7 @@ func FilterT[T any](values url.Values, entries []T, valid func(url.Values, T) bo
 			return nil, core.StatusNotFound()
 		}
 	}
-	values.Add("entry-id", e.EntryId)
+	values.Add("entry-id", fmt.Sprintf("%v", e.EntryId))
 	for _, e := range entries {
 		if valid(values, e) {
 			result = append(result, e)

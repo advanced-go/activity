@@ -84,7 +84,7 @@ func (EntryDetail) Rows(entries []EntryDetail) [][]any {
 }
 
 func validDetail(values url.Values, e EntryDetail) bool {
-	if values == nil || values.Get("entry-id") != string(e.EntryId) {
+	if values == nil || values.Get("entry-id") != fmt.Sprintf("%v", e.EntryId) {
 		return false
 	}
 

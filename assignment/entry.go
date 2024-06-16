@@ -62,8 +62,8 @@ type Entry struct {
 	Host    string `json:"host"`
 
 	// Assignee class - these get reset, id = "", and class to new class
-	AssigneeClass string    `json:"assignee-class"`
-	AssigneeId    string    `json:"assignee-id"`
+	AssigneeClass string    `json:"assignee-class"` // Only allow a certain agent class to own this
+	AssigneeId    string    `json:"assignee-id"`    // Set when an agent pulls this entry
 	UpdatedTS     time.Time `json:"updated-ts"`
 }
 

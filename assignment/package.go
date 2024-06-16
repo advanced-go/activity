@@ -33,7 +33,7 @@ func Get(ctx context.Context, path string, h http.Header, values url.Values) (en
 	case entryStatusPath:
 		return GetT[EntryStatus](ctx, h, values)
 	case entryStatusUpdatePath:
-		return GetT[EntryStatusUpdate](ctx, h, values)
+		return GetT[EntryStatusChange](ctx, h, values)
 	default:
 		status = core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid path %v", path)))
 	}
@@ -42,7 +42,7 @@ func Get(ctx context.Context, path string, h http.Header, values url.Values) (en
 
 // Constraints - get/put type constraints
 type Constraints interface {
-	Entry | EntryDetail | EntryStatus | EntryStatusUpdate
+	Entry | EntryDetail | EntryStatus | EntryStatusChange
 }
 
 // GetT - typed resource GET
@@ -54,8 +54,8 @@ func GetT[T Constraints](ctx context.Context, h http.Header, values url.Values) 
 		*p, h2, status = get[core.Log, EntryDetail](ctx, h, values, assignmentDetail, "", nil)
 	case *[]EntryStatus:
 		*p, h2, status = get[core.Log, EntryStatus](ctx, h, values, assignmentStatus, "", nil)
-	case *[]EntryStatusUpdate:
-		*p, h2, status = get[core.Log, EntryStatusUpdate](ctx, h, values, assignmentStatusUpdate, "", nil)
+	case *[]EntryStatusChange:
+		*p, h2, status = get[core.Log, EntryStatusChange](ctx, h, values, assignmentStatusUpdate, "", nil)
 	default:
 		status = core.NewStatusError(http.StatusBadRequest, core.NewInvalidBodyTypeError(entries))
 	}
@@ -72,7 +72,7 @@ func Put(r *http.Request, path string) (h2 http.Header, status *core.Status) {
 	case entryStatusPath:
 		return PutT[EntryStatus](r, nil)
 	case entryStatusUpdatePath:
-		return PutT[EntryStatusUpdate](r, nil)
+		return PutT[EntryStatusChange](r, nil)
 	default:
 		status = core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid path %v", path)))
 	}
@@ -100,8 +100,8 @@ func PutT[T Constraints](r *http.Request, body []T) (h2 http.Header, status *cor
 		h2, status = put[core.Log, EntryDetail](r.Context(), core.AddRequestId(r.Header), assignmentDetail, "", *p, nil)
 	case *[]EntryStatus:
 		h2, status = put[core.Log, EntryStatus](r.Context(), core.AddRequestId(r.Header), assignmentStatus, "", *p, nil)
-	case *[]EntryStatusUpdate:
-		h2, status = put[core.Log, EntryStatusUpdate](r.Context(), core.AddRequestId(r.Header), assignmentStatusUpdate, "", *p, nil)
+	case *[]EntryStatusChange:
+		h2, status = put[core.Log, EntryStatusChange](r.Context(), core.AddRequestId(r.Header), assignmentStatusUpdate, "", *p, nil)
 	default:
 		status = core.NewStatusError(http.StatusBadRequest, core.NewInvalidBodyTypeError(body))
 	}

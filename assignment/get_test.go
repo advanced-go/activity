@@ -80,16 +80,16 @@ func ExampleGet_Status() {
 }
 
 func ExampleGet_Update() {
-	entries, _, status := get[core.Output, EntryStatusUpdate](nil, nil, uri.BuildValues(q1), "", "", nil)
+	entries, _, status := get[core.Output, EntryStatusChange](nil, nil, uri.BuildValues(q1), "", "", nil)
 	fmt.Printf("test: Get(\"%v\") -> [status:%v] [entries:%v]\n", q1, status, len(entries))
 
-	entries, _, status = get[core.Output, EntryStatusUpdate](nil, nil, uri.BuildValues(q2), "", "", nil)
+	entries, _, status = get[core.Output, EntryStatusChange](nil, nil, uri.BuildValues(q2), "", "", nil)
 	fmt.Printf("test: Get(\"%v\") -> [status:%v] [entries:%v]\n", q2, status, len(entries))
 
-	entries, _, status = get[core.Output, EntryStatusUpdate](nil, nil, uri.BuildValues(q3), "", "", nil)
+	entries, _, status = get[core.Output, EntryStatusChange](nil, nil, uri.BuildValues(q3), "", "", nil)
 	fmt.Printf("test: Get(\"%v\") -> [status:%v] [entries:%v]\n", q3, status, len(entries))
 
-	entries, _, status = get[core.Output, EntryStatusUpdate](nil, nil, uri.BuildValues(q4), "", "", nil)
+	entries, _, status = get[core.Output, EntryStatusChange](nil, nil, uri.BuildValues(q4), "", "", nil)
 	fmt.Printf("test: Get(\"%v\") -> [status:%v] [entries:%v]\n", q4, status, len(entries))
 
 	//Output:

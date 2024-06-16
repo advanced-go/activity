@@ -21,7 +21,7 @@ const (
 	//deleteSql = "DELETE FROM access_log"
 
 	StatusIdName         = "status_id"
-	UpdateIdName         = "update_id"
+	ChangeIdName         = "change_id"
 	StatusName           = "status"
 	NewStatusName        = "new_status"
 	NewAssigneeClassName = "new_assignee_class"
@@ -40,12 +40,12 @@ var statusData = []EntryStatus{
 type EntryStatus struct {
 	EntryId   int       `json:"entry-id"`
 	StatusId  int       `json:"status-id"`
-	AgentId   string    `json:"agent-id"`
+	AgentId   string    `json:"agent-id"` // Creation agent id
 	CreatedTS time.Time `json:"created-ts"`
 
 	// New status and optional assignee id
 	Status     string `json:"status"`
-	AssigneeId string `json:"assignee-id"`
+	AssigneeId string `json:"assignee-id"` // Used to set assigned agent id when status is assigned
 }
 
 func (EntryStatus) Scan(columnNames []string, values []any) (e EntryStatus, err error) {
@@ -91,23 +91,23 @@ func (EntryStatus) Rows(entries []EntryStatus) [][]any {
 	return values
 }
 
-var updateData = []EntryStatusChange{
-	{EntryId: 1, UpdateId: 1, AgentId: "agent-name:agent-class:instance-id", AssigneeClass: "class", NewStatus: "closed", NewAssigneeClass: "new", Error: "test error", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-	{EntryId: 1, UpdateId: 2, AgentId: "agent-name:agent-class:instance-id", AssigneeClass: "class2", NewStatus: "closed", NewAssigneeClass: "new", Error: "test2 error", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+var changeData = []EntryStatusChange{
+	{EntryId: 1, ChangeId: 1, AgentId: "agent-name:agent-class:instance-id", AssigneeClass: "class", NewStatus: "closed", NewAssigneeClass: "new", Error: "test error", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+	{EntryId: 1, ChangeId: 2, AgentId: "agent-name:agent-class:instance-id", AssigneeClass: "class2", NewStatus: "closed", NewAssigneeClass: "new", Error: "test2 error", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 }
 
 // EntryStatusChange - updates for reassignment and close
 type EntryStatusChange struct {
 	EntryId       int       `json:"entry-id"`
-	UpdateId      int       `json:"update-id"`
-	AgentId       string    `json:"agent-id"`
+	ChangeId      int       `json:"change-id"`
+	AgentId       string    `json:"agent-id"` // Creation agent id
 	CreatedTS     time.Time `json:"created-ts"`
-	AssigneeClass string    `json:"assignee-class"`
+	AssigneeClass string    `json:"assignee-class"` // Used to determine which class of agents will receive this change
 
 	// Update data. Processed agent id needed ??
 	// Error needed if updates are in an invalid order, such as a reassignment after a close
-	NewStatus        string    `json:"new-status"`
-	NewAssigneeClass string    `json:"new-assignee-class"`
+	NewStatus        string    `json:"new-status"`         // Status can be 'closed' or 'reassignment'
+	NewAssigneeClass string    `json:"new-assignee-class"` // On reassignment, set new owner
 	Error            string    `json:"error"`
 	UpdatedTS        time.Time `json:"updated-ts"`
 }
@@ -117,8 +117,8 @@ func (EntryStatusChange) Scan(columnNames []string, values []any) (e EntryStatus
 		switch name {
 		case EntryIdName:
 			e.EntryId = values[i].(int)
-		case UpdateIdName:
-			e.UpdateId = values[i].(int)
+		case ChangeIdName:
+			e.ChangeId = values[i].(int)
 		case AgentIdName:
 			e.AgentId = values[i].(string)
 		case CreatedTSName:
@@ -144,7 +144,7 @@ func (EntryStatusChange) Scan(columnNames []string, values []any) (e EntryStatus
 func (a EntryStatusChange) Values() []any {
 	return []any{
 		a.EntryId,
-		a.UpdateId,
+		a.ChangeId,
 		a.AgentId,
 		a.CreatedTS,
 		a.AssigneeClass,
@@ -165,7 +165,7 @@ func (EntryStatusChange) Rows(entries []EntryStatusChange) [][]any {
 }
 
 func validStatus(values url.Values, e EntryStatus) bool {
-	if values == nil || values.Get("entry-id") != string(e.EntryId) {
+	if values == nil || values.Get("entry-id") != fmt.Sprintf("%v", e.EntryId) {
 		return false
 	}
 
@@ -174,7 +174,7 @@ func validStatus(values url.Values, e EntryStatus) bool {
 }
 
 func validStatusUpdate(values url.Values, e EntryStatusChange) bool {
-	if values == nil || values.Get("entry-id") != string(e.EntryId) {
+	if values == nil || values.Get("entry-id") != fmt.Sprintf("%v", e.EntryId) {
 		return false
 	}
 

@@ -3,6 +3,7 @@ package action
 import (
 	"errors"
 	"fmt"
+	"github.com/advanced-go/activity/common"
 	"github.com/advanced-go/stdlib/core"
 	"net/url"
 	"time"
@@ -30,7 +31,7 @@ const (
 	ZoneName      = "zone"
 	SubZoneName   = "sub_zone"
 	HostName      = "host"
-	ActionName    = "action"
+	Action2Name   = "action"
 	TimeoutName   = "timeout"
 	RateLimitName = "rate_limit"
 	RateBurstName = "rate_burst"
@@ -40,8 +41,8 @@ const (
 )
 
 var (
-	entryList = NewSafeSlice[Entry](entryData)
-
+	index     = common.NewOriginIndex[Entry](entryData)
+	entryList = common.NewSafeSlice[Entry](entryData)
 	entryData = []Entry{
 		{EntryId: 1, AgentId: "director-1", Region: "us-west-1", Zone: "usw1-az1", Host: "www.host1.com", Action: "test", Timeout: 0, RateLimit: 0, RateBurst: 0, Primary: "", Secondary: "", Percentage: 0, CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 		{EntryId: 2, AgentId: "director-1", Region: "us-west-1", Zone: "usw1-az2", Host: "www.host2.com", Action: "test", Timeout: 0, RateLimit: 0, RateBurst: 0, Primary: "", Secondary: "", Percentage: 0, CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
@@ -94,7 +95,7 @@ func (Entry) Scan(columnNames []string, values []any) (e Entry, err error) {
 		case HostName:
 			e.Host = values[i].(string)
 
-		case ActionName:
+		case Action2Name:
 			e.Action = values[i].(string)
 		case TimeoutName:
 			e.Timeout = values[i].(int)

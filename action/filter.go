@@ -2,7 +2,6 @@ package action
 
 import (
 	"fmt"
-	"github.com/advanced-go/activity/common"
 	"github.com/advanced-go/stdlib/core"
 	"net/url"
 	"strconv"
@@ -19,15 +18,15 @@ func FilterT[T any](values url.Values, entries []T, valid func(url.Values, T) bo
 	var e Entry
 	ok := false
 	if values.Get(core.RegionKey) != "*" {
-		e, ok = common.lookupEntry(values)
+		e, ok = index.LookupEntry(values)
 		if !ok {
 			return nil, core.StatusNotFound()
 		}
 	}
 	values.Add("entry-id", fmt.Sprintf("%v", e.EntryId))
-	for _, e := range entries {
-		if valid(values, e) {
-			result = append(result, e)
+	for _, e1 := range entries {
+		if valid(values, e1) {
+			result = append(result, e1)
 		}
 	}
 	if len(result) == 0 {

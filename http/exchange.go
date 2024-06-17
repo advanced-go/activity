@@ -30,10 +30,13 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 	}
 	core.AddRequestId(r.Header)
 	switch p.Resource {
-	case module.Assignment:
+	case module.AssignmentRoot:
 		return assignmentExchange[core.Log](r, p)
-	case module.Inference:
+	case module.InferenceRoot:
 		return inferenceExchange[core.Log](r, p)
+	case module.ActionRoot:
+		return actionExchange[core.Log](r, p)
+
 	case core.VersionPath:
 		return httpx.NewVersionResponse(module.Version), core.StatusOK()
 	case core.AuthorityPath:

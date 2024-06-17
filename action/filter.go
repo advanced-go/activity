@@ -2,6 +2,7 @@ package action
 
 import (
 	"fmt"
+	"github.com/advanced-go/activity/common"
 	"github.com/advanced-go/stdlib/core"
 	"net/url"
 	"strconv"
@@ -18,7 +19,7 @@ func FilterT[T any](values url.Values, entries []T, valid func(url.Values, T) bo
 	var e Entry
 	ok := false
 	if values.Get(core.RegionKey) != "*" {
-		e, ok = lookupEntry(values)
+		e, ok = common.lookupEntry(values)
 		if !ok {
 			return nil, core.StatusNotFound()
 		}

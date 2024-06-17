@@ -2,6 +2,7 @@ package action
 
 import (
 	"context"
+	"github.com/advanced-go/activity/common"
 	"github.com/advanced-go/postgresql/pgxsql"
 	"github.com/advanced-go/stdlib/core"
 	"net/http"
@@ -26,13 +27,13 @@ func insertEntry[E core.ErrorHandler](ctx context.Context, h http.Header, e Entr
 
 	e.CreatedTS = time.Now().UTC()
 	e.EntryId = entryData[len(entryData)-1].EntryId + 1
-	index[e.Origin().Tag()] = e
+	common.index[e.Origin().Tag()] = e
 	entryList.Append([]Entry{e})
 	return insertStatus[E](ctx, h, e.Origin(), es)
 }
 
 func insertStatus[E core.ErrorHandler](ctx context.Context, h http.Header, o core.Origin, es EntryStatus) *core.Status {
-	e, ok := lookupEntry(o)
+	e, ok := common.lookupEntry(o)
 	if !ok {
 		return core.StatusNotFound()
 	}

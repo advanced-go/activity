@@ -88,6 +88,9 @@ func validStatus(values url.Values, e EntryStatus) bool {
 		return false
 	}
 
-	// Additional filtering
+	s := values.Get("status")
+	if s != "" && e.Status != s {
+		return false
+	}
 	return true
 }

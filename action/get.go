@@ -2,6 +2,7 @@ package action
 
 import (
 	"context"
+	"github.com/advanced-go/activity/common"
 	"github.com/advanced-go/postgresql/pgxsql"
 	"github.com/advanced-go/stdlib/core"
 	"net/http"
@@ -14,7 +15,7 @@ func get[E core.ErrorHandler, T pgxsql.Scanner[T]](ctx context.Context, h http.H
 }
 
 func getEntryByStatus(ctx context.Context, h http.Header, o core.Origin, status string) ([]Entry, *core.Status) {
-	e, ok := lookupEntry(o)
+	e, ok := common.lookupEntry(o)
 	if !ok {
 		return nil, core.StatusNotFound()
 	}

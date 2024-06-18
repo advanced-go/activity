@@ -3,6 +3,7 @@ package assignment
 import (
 	"errors"
 	"fmt"
+	"github.com/advanced-go/activity/common"
 	"net/url"
 	"time"
 )
@@ -22,11 +23,14 @@ const (
 	DetailsName   = "details"
 )
 
-var detailData = []EntryDetail{
-	{EntryId: 1, DetailId: 1, AgentId: "agent-name:agent-class:instance-id", RouteName: "search", Details: "various information", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-	{EntryId: 1, DetailId: 2, AgentId: "agent-name:agent-class:instance-id", RouteName: "host", Details: "other information", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-	{EntryId: 2, DetailId: 3, AgentId: "agent-name:agent-class:instance-id", RouteName: "egress-1", Details: "other information", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-}
+var (
+	safeDetail = common.NewSafe()
+	detailData = []EntryDetail{
+		{EntryId: 1, DetailId: 1, AgentId: "agent-name:agent-class:instance-id", RouteName: "search", Details: "various information", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{EntryId: 1, DetailId: 2, AgentId: "agent-name:agent-class:instance-id", RouteName: "host", Details: "other information", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{EntryId: 2, DetailId: 3, AgentId: "agent-name:agent-class:instance-id", RouteName: "egress-1", Details: "other information", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+	}
+)
 
 // EntryDetail - entry details
 type EntryDetail struct {

@@ -3,6 +3,7 @@ package assignment
 import (
 	"errors"
 	"fmt"
+	"github.com/advanced-go/activity/common"
 	"github.com/advanced-go/stdlib/core"
 	"net/url"
 	"time"
@@ -38,12 +39,16 @@ const (
 )
 
 // When doing an assignment, the Agent id needs to be somewhere??
-var entryData = []Entry{
-	{EntryId: 1, AgentId: "director-1", Region: "us-west-1", Zone: "usw1-az1", Host: "www.host1.com", AssigneeClass: "case-officer:006", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-	{EntryId: 2, AgentId: "director-1", Region: "us-west-1", Zone: "usw1-az2", Host: "www.host2.com", AssigneeClass: "case-officer:006", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-	{EntryId: 3, AgentId: "director-2", Region: "us-west-2", Zone: "usw2-az3", Host: "www.host1.com", AssigneeClass: "case-officer:007", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-	{EntryId: 4, AgentId: "director-2", Region: "us-west-2", Zone: "usw2-az4", Host: "www.host2.com", AssigneeClass: "case-officer:007", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-}
+var (
+	index     = common.NewOriginIndex[Entry](entryData)
+	safeEntry = common.NewSafe()
+	entryData = []Entry{
+		{EntryId: 1, AgentId: "director-1", Region: "us-west-1", Zone: "usw1-az1", Host: "www.host1.com", AssigneeClass: "case-officer:006", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{EntryId: 2, AgentId: "director-1", Region: "us-west-1", Zone: "usw1-az2", Host: "www.host2.com", AssigneeClass: "case-officer:006", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{EntryId: 3, AgentId: "director-2", Region: "us-west-2", Zone: "usw2-az3", Host: "www.host1.com", AssigneeClass: "case-officer:007", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{EntryId: 4, AgentId: "director-2", Region: "us-west-2", Zone: "usw2-az4", Host: "www.host2.com", AssigneeClass: "case-officer:007", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+	}
+)
 
 // Case office looks for open assignments, and then does an assignment to a Service Agent and updating
 // the assignment assignee id
@@ -71,6 +76,7 @@ type Entry struct {
 	AssigneeId    string `json:"assignee-id"`    // Set when an agent pulls this entry
 
 	UpdatedTS time.Time `json:"updated-ts"`
+	Status    string
 }
 
 func (e Entry) Origin() core.Origin {
@@ -102,6 +108,8 @@ func (Entry) Scan(columnNames []string, values []any) (e Entry, err error) {
 			e.AssigneeId = values[i].(string)
 		case UpdatedTSName:
 			e.UpdatedTS = values[i].(time.Time)
+		case StatusName:
+			e.Status = values[i].(string)
 		default:
 			err = errors.New(fmt.Sprintf("invalid field name: %v", name))
 			return
@@ -124,6 +132,7 @@ func (e Entry) Values() []any {
 		e.AssigneeClass,
 		e.AssigneeId,
 		e.UpdatedTS,
+		e.Status,
 	}
 }
 

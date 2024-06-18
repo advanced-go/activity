@@ -14,13 +14,11 @@ const (
 	PkgPath                = "github/advanced-go/activity/assignment"
 	assignment             = "assignment"
 	assignmentDetail       = "assignment-detail"
-	assignmentStatus       = "assignment-status"
-	assignmentStatusUpdate = "assignment-status-update"
+	assignmentStatusChange = "assignment-status-change"
 
 	entryPath             = "assignment/entry"
 	entryDetailPath       = "assignment/detail"
-	entryStatusPath       = "assignment/status"
-	entryStatusUpdatePath = "assignment/status-update"
+	entryStatusChangePath = "assignment/status-change"
 )
 
 // Get - resource GET
@@ -30,9 +28,7 @@ func Get(ctx context.Context, path string, h http.Header, values url.Values) (en
 		return GetT[Entry](ctx, h, values)
 	case entryDetailPath:
 		return GetT[EntryDetail](ctx, h, values)
-	case entryStatusPath:
-		return GetT[EntryStatus](ctx, h, values)
-	case entryStatusUpdatePath:
+	case entryStatusChangePath:
 		return GetT[EntryStatusChange](ctx, h, values)
 	default:
 		status = core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid path %v", path)))
@@ -42,7 +38,7 @@ func Get(ctx context.Context, path string, h http.Header, values url.Values) (en
 
 // Constraints - get/put type constraints
 type Constraints interface {
-	Entry | EntryDetail | EntryStatus | EntryStatusChange
+	Entry | EntryDetail | EntryStatusChange
 }
 
 // GetT - typed resource GET
@@ -52,10 +48,8 @@ func GetT[T Constraints](ctx context.Context, h http.Header, values url.Values) 
 		*p, h2, status = get[core.Log, Entry](ctx, h, values, assignment, "", nil)
 	case *[]EntryDetail:
 		*p, h2, status = get[core.Log, EntryDetail](ctx, h, values, assignmentDetail, "", nil)
-	case *[]EntryStatus:
-		*p, h2, status = get[core.Log, EntryStatus](ctx, h, values, assignmentStatus, "", nil)
 	case *[]EntryStatusChange:
-		*p, h2, status = get[core.Log, EntryStatusChange](ctx, h, values, assignmentStatusUpdate, "", nil)
+		*p, h2, status = get[core.Log, EntryStatusChange](ctx, h, values, assignmentStatusChange, "", nil)
 	default:
 		status = core.NewStatusError(http.StatusBadRequest, core.NewInvalidBodyTypeError(entries))
 	}
@@ -69,9 +63,7 @@ func Put(r *http.Request, path string) (h2 http.Header, status *core.Status) {
 		return PutT[Entry](r, nil)
 	case entryDetailPath:
 		return PutT[EntryDetail](r, nil)
-	case entryStatusPath:
-		return PutT[EntryStatus](r, nil)
-	case entryStatusUpdatePath:
+	case entryStatusChangePath:
 		return PutT[EntryStatusChange](r, nil)
 	default:
 		status = core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid path %v", path)))
@@ -98,10 +90,8 @@ func PutT[T Constraints](r *http.Request, body []T) (h2 http.Header, status *cor
 		h2, status = put[core.Log, Entry](r.Context(), core.AddRequestId(r.Header), assignment, "", *p, nil)
 	case *[]EntryDetail:
 		h2, status = put[core.Log, EntryDetail](r.Context(), core.AddRequestId(r.Header), assignmentDetail, "", *p, nil)
-	case *[]EntryStatus:
-		h2, status = put[core.Log, EntryStatus](r.Context(), core.AddRequestId(r.Header), assignmentStatus, "", *p, nil)
 	case *[]EntryStatusChange:
-		h2, status = put[core.Log, EntryStatusChange](r.Context(), core.AddRequestId(r.Header), assignmentStatusUpdate, "", *p, nil)
+		h2, status = put[core.Log, EntryStatusChange](r.Context(), core.AddRequestId(r.Header), assignmentStatusChange, "", *p, nil)
 	default:
 		status = core.NewStatusError(http.StatusBadRequest, core.NewInvalidBodyTypeError(body))
 	}
@@ -126,11 +116,6 @@ func InsertEntry(ctx context.Context, h http.Header, e Entry, assigneeId string)
 // InsertDetail - add detail
 func InsertDetail(ctx context.Context, h http.Header, o core.Origin, detail EntryDetail) *core.Status {
 	return insertDetail[core.Log](ctx, h, o, detail)
-}
-
-// InsertStatus - add status
-func InsertStatus(ctx context.Context, h http.Header, o core.Origin, es EntryStatus) *core.Status {
-	return insertStatus[core.Log](ctx, h, o, es)
 }
 
 // InsertStatusChange - add status change

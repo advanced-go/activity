@@ -17,7 +17,7 @@ func get[E core.ErrorHandler, T pgxsql.Scanner[T]](ctx context.Context, h http.H
 		return nil, h2, core.StatusNotFound()
 	}
 	if query == nil {
-		query = pgxsql.QueryT[T] //testQuery[T] //pgxsql.QueryT[T]
+		query = testQuery[T] //pgxsql.QueryT[T]
 	}
 	h2 = httpx.Forward(h2, h)
 	h2.Set(core.XFrom, module.Authority)
@@ -34,36 +34,33 @@ func testQuery[T pgxsql.Scanner[T]](_ context.Context, _ http.Header, _, _ strin
 		*p, status = FilterT[Entry](values, entryData, validEntry)
 	case *[]EntryDetail:
 		*p, status = FilterT[EntryDetail](values, detailData, validDetail)
-	case *[]EntryStatus:
-		*p, status = FilterT[EntryStatus](values, statusData, validStatus)
 	case *[]EntryStatusChange:
-		*p, status = FilterT[EntryStatusChange](values, changeData, validStatusUpdate)
+		*p, status = FilterT[EntryStatusChange](values, changeData, validStatusChange)
 	default:
 		status = core.NewStatusError(http.StatusBadRequest, core.NewInvalidBodyTypeError(entries))
 	}
 	return
 }
 
-func getEntryByStatus(ctx context.Context, h http.Header, o core.Origin, status string) ([]Entry, *core.Status) {
-	e, ok := lookupEntry(o)
-	if !ok {
-		return nil, core.StatusNotFound()
-	}
-	for i := len(statusData) - 1; i >= 0; i-- {
-		if statusData[i].EntryId == e.EntryId && statusData[i].Status == status {
-			return []Entry{e}, core.StatusOK()
-		}
-	}
-	return nil, core.StatusNotFound()
+func getEntry(values map[string][]string) ([]Entry, *core.Status) {
+	defer safeEntry.Lock()()
+	entries, status := FilterT[Entry](values, entryData, validEntry)
+	return entries, status
 }
 
-func getStatusChange[E core.ErrorHandler](ctx context.Context, h http.Header, o core.Origin, assigneeClass string) ([]EntryStatusChange, *core.Status) {
-	e, ok := lookupEntry(o)
+func getStatusChange(values map[string][]string) ([]EntryStatusChange, *core.Status) {
+	e, ok := index.LookupEntry(core.Origin{Region: values[core.RegionKey][0], Zone: values[core.ZoneKey][0], SubZone: values[core.SubZoneKey][0], Host: values[core.HostKey][0]})
 	if !ok {
 		return nil, core.StatusNotFound()
 	}
+	defer safeChange.Lock()()
+	cls := ""
+	s := values["assignee-class"]
+	if len(s) > 0 {
+		cls = s[0]
+	}
 	for _, change := range changeData {
-		if change.EntryId == e.EntryId && change.AssigneeClass == assigneeClass {
+		if change.EntryId == e.EntryId && change.AssigneeClass == cls {
 			return []EntryStatusChange{change}, core.StatusOK()
 		}
 	}

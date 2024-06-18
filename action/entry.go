@@ -31,6 +31,7 @@ const (
 	ZoneName       = "zone"
 	SubZoneName    = "sub_zone"
 	HostName       = "host"
+	RouteName      = "route"
 	Action2Name    = "action"
 	TimeoutName    = "timeout"
 	RateLimitName  = "rate_limit"
@@ -58,10 +59,11 @@ type Entry struct {
 	CreatedTS time.Time `json:"created-ts"`
 
 	// Origin + route for uniqueness
-	Region  string `json:"region"`
-	Zone    string `json:"zone"`
-	SubZone string `json:"sub-zone"`
-	Host    string `json:"host"`
+	Region    string `json:"region"`
+	Zone      string `json:"zone"`
+	SubZone   string `json:"sub-zone"`
+	Host      string `json:"host"`
+	RouteName string `json:"route"`
 
 	Action     string  `json:"action"`
 	Timeout    int     `json:"timeout"`
@@ -96,6 +98,8 @@ func (Entry) Scan(columnNames []string, values []any) (e Entry, err error) {
 			e.SubZone = values[i].(string)
 		case HostName:
 			e.Host = values[i].(string)
+		case RouteName:
+			e.RouteName = values[i].(string)
 
 		case Action2Name:
 			e.Action = values[i].(string)
@@ -131,6 +135,7 @@ func (e Entry) Values() []any {
 		e.Zone,
 		e.SubZone,
 		e.Host,
+		e.RouteName,
 
 		e.Action,
 		e.Timeout,

@@ -24,30 +24,30 @@ const (
 		"timeout,rate_limit,rate_burst) VALUES"
 	deleteSql = "DELETE FROM access_log"
 
-	EntryIdName   = "entry_id"
-	AgentIdName   = "agent_id"
-	CreatedTSName = "created_ts"
-	RegionName    = "region"
-	ZoneName      = "zone"
-	SubZoneName   = "sub_zone"
-	HostName      = "host"
-	Action2Name   = "action"
-	TimeoutName   = "timeout"
-	RateLimitName = "rate_limit"
-	RateBurstName = "rate_burst"
-	PrimaryName   = "primary"
-	SecondaryName = "secondary"
-	Percentage    = "percent"
+	EntryIdName    = "entry_id"
+	AgentIdName    = "agent_id"
+	CreatedTSName  = "created_ts"
+	RegionName     = "region"
+	ZoneName       = "zone"
+	SubZoneName    = "sub_zone"
+	HostName       = "host"
+	Action2Name    = "action"
+	TimeoutName    = "timeout"
+	RateLimitName  = "rate_limit"
+	RateBurstName  = "rate_burst"
+	PrimaryName    = "primary"
+	SecondaryName  = "secondary"
+	PercentageName = "percent"
+	StatusName     = "status"
 )
 
 var (
-	index     = common.NewOriginIndex[Entry](entryData)
 	safeEntry = common.NewSafe()
 	entryData = []Entry{
-		{EntryId: 1, AgentId: "director-1", Region: "us-west-1", Zone: "usw1-az1", Host: "www.host1.com", Action: "test", Timeout: 0, RateLimit: 0, RateBurst: 0, Primary: "", Secondary: "", Percentage: 0, CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-		{EntryId: 2, AgentId: "director-1", Region: "us-west-1", Zone: "usw1-az2", Host: "www.host2.com", Action: "test", Timeout: 0, RateLimit: 0, RateBurst: 0, Primary: "", Secondary: "", Percentage: 0, CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-		{EntryId: 3, AgentId: "director-2", Region: "us-west-2", Zone: "usw2-az3", Host: "www.host1.com", Action: "test", Timeout: 0, RateLimit: 0, RateBurst: 0, Primary: "", Secondary: "", Percentage: 0, CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-		{EntryId: 4, AgentId: "director-2", Region: "us-west-2", Zone: "usw2-az4", Host: "www.host2.com", Action: "test", Timeout: 0, RateLimit: 0, RateBurst: 0, Primary: "", Secondary: "", Percentage: 0, CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{EntryId: 1, AgentId: "director-1", Region: "us-west-1", Zone: "usw1-az1", Host: "www.host1.com", Action: "test", Timeout: 0, RateLimit: 0, RateBurst: 0, Primary: "", Secondary: "", Percentage: 0, Status: OpenStatus, CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{EntryId: 2, AgentId: "director-1", Region: "us-west-1", Zone: "usw1-az2", Host: "www.host2.com", Action: "test", Timeout: 0, RateLimit: 0, RateBurst: 0, Primary: "", Secondary: "", Percentage: 0, Status: OpenStatus, CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{EntryId: 3, AgentId: "director-2", Region: "us-west-2", Zone: "usw2-az3", Host: "www.host1.com", Action: "test", Timeout: 0, RateLimit: 0, RateBurst: 0, Primary: "", Secondary: "", Percentage: 0, Status: OpenStatus, CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{EntryId: 4, AgentId: "director-2", Region: "us-west-2", Zone: "usw2-az4", Host: "www.host2.com", Action: "test", Timeout: 0, RateLimit: 0, RateBurst: 0, Primary: "", Secondary: "", Percentage: 0, Status: OpenStatus, CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 	}
 )
 
@@ -109,8 +109,10 @@ func (Entry) Scan(columnNames []string, values []any) (e Entry, err error) {
 			e.Primary = values[i].(string)
 		case SecondaryName:
 			e.Secondary = values[i].(string)
-		case Percentage:
+		case PercentageName:
 			e.Percentage = values[i].(int)
+		case StatusName:
+			e.Status = values[i].(string)
 		default:
 			err = errors.New(fmt.Sprintf("invalid field name: %v", name))
 			return
@@ -137,6 +139,7 @@ func (e Entry) Values() []any {
 		e.Primary,
 		e.Secondary,
 		e.Percentage,
+		e.Status,
 	}
 }
 

@@ -24,7 +24,6 @@ func inferenceExchange[E core.ErrorHandler](r *http.Request, p *uri.Parsed) (*ht
 		}
 		p = p1
 	}
-
 	switch r.Method {
 	case http.MethodGet:
 		return inferenceGet[E](r.Context(), r.Header, r.URL, p.Version)

@@ -26,22 +26,22 @@ func actionExchange[E core.ErrorHandler](r *http.Request, p *uri.Parsed) (*http.
 	}
 	switch r.Method {
 	case http.MethodGet:
-		return actionGet[E](r.Context(), r.Header, r.URL, p)
+		return actionGet[E](r.Context(), r.Header, r.URL, p.Version)
 	case http.MethodPut:
-		return nil, core.StatusBadRequest()
+		return actionPut[E](r, p.Version)
 	default:
 		status := core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error invalid method: [%v]", r.Method)))
 		return httpx.NewResponse[E](status.HttpCode(), h2, status.Err)
 	}
 }
 
-func actionGet[E core.ErrorHandler](ctx context.Context, h http.Header, url *url.URL, p *uri.Parsed) (resp *http.Response, status *core.Status) {
+func actionGet[E core.ErrorHandler](ctx context.Context, h http.Header, url *url.URL, version string) (resp *http.Response, status *core.Status) {
 	var entries any
 	var h2 http.Header
 
-	switch p.Version {
+	switch version {
 	case module.Ver1, "":
-		entries, h2, status = action.Get(ctx, p.Path, h, url.Query())
+		entries, h2, status = action.Get(ctx, h, url.Query())
 	default:
 		status = core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", h.Get(core.XVersion))))
 	}
@@ -54,4 +54,20 @@ func actionGet[E core.ErrorHandler](ctx context.Context, h http.Header, url *url
 	}
 	h2.Add(httpx.ContentType, httpx.ContentTypeJson)
 	return httpx.NewResponse[E](status.HttpCode(), h2, entries)
+}
+
+func actionPut[E core.ErrorHandler](r *http.Request, version string) (resp *http.Response, status *core.Status) {
+	var h2 http.Header
+
+	switch version {
+	case module.Ver1, "":
+		h2, status = action.Put(r, nil)
+	default:
+		status = core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid version: [%v]", r.Header.Get(core.XVersion))))
+	}
+	if h2 == nil {
+		h2 = make(http.Header)
+	}
+	h2.Add(httpx.ContentType, httpx.ContentTypeText)
+	return httpx.NewResponse[E](status.HttpCode(), h2, status.Err)
 }

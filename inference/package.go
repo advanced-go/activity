@@ -10,12 +10,13 @@ import (
 )
 
 const (
-	PkgPath = "github/advanced-go/activity/inference"
+	PkgPath           = "github/advanced-go/activity/inference"
+	inferenceResource = "inference"
 )
 
 // Get - resource GET
 func Get(ctx context.Context, h http.Header, values url.Values) (entries []Entry, h2 http.Header, status *core.Status) {
-	return get[core.Log](ctx, core.AddRequestId(h), values)
+	return get[core.Log, Entry](ctx, core.AddRequestId(h), values, inferenceResource, "", nil)
 }
 
 // Put - resource PUT, with optional content override
@@ -32,5 +33,17 @@ func Put(r *http.Request, body []Entry) (http.Header, *core.Status) {
 		}
 		body = content
 	}
-	return put[core.Log](r.Context(), core.AddRequestId(r.Header), body)
+	return put[core.Log](r.Context(), core.AddRequestId(r.Header), inferenceResource, "", body, nil)
+}
+
+// GetEntry - by values
+func GetEntry(ctx context.Context, h http.Header, values url.Values) ([]Entry, *core.Status) {
+	entries, _, status := get[core.Log, Entry](ctx, h, values, inferenceResource, "", nil)
+	return entries, status
+}
+
+// InsertEntry - add entry
+func InsertEntry(ctx context.Context, h http.Header, e Entry) *core.Status {
+	_, status := put[core.Log, Entry](ctx, core.AddRequestId(h), inferenceResource, "", []Entry{e}, nil)
+	return status
 }

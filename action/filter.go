@@ -15,15 +15,7 @@ func FilterT[T any](values url.Values, entries []T, valid func(url.Values, T) bo
 		return entries, core.StatusNotFound()
 	}
 	var result []T
-	var e Entry
-	ok := false
-	if values.Get(core.RegionKey) != "*" {
-		e, ok = index.LookupEntry(values)
-		if !ok {
-			return nil, core.StatusNotFound()
-		}
-	}
-	values.Add("entry-id", fmt.Sprintf("%v", e.EntryId))
+
 	for _, e1 := range entries {
 		if valid(values, e1) {
 			result = append(result, e1)

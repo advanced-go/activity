@@ -55,8 +55,8 @@ func Put(r *http.Request, path string) (h2 http.Header, status *core.Status) {
 	switch path {
 	case entryPath:
 		return PutT[Entry](r, nil)
-	case entryStatusPath:
-		return PutT[EntryStatus](r, nil)
+	//case entryStatusPath:
+	//	return PutT[EntryStatus](r, nil)
 	default:
 		status = core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid path %v", path)))
 	}
@@ -79,9 +79,9 @@ func PutT[T Constraints](r *http.Request, body []T) (h2 http.Header, status *cor
 	}
 	switch p := any(&body).(type) {
 	case *[]Entry:
-		h2, status = put[core.Log, Entry](r.Context(), core.AddRequestId(r.Header), action, "", *p, nil)
-	case *[]EntryStatus:
-		h2, status = put[core.Log, EntryStatus](r.Context(), core.AddRequestId(r.Header), actionStatus, "", *p, nil)
+		status = insertEntry(r.Context(), core.AddRequestId(r.Header), *p)
+		//	case *[]EntryStatus:
+		//		status = insertStatus(r.Context(), core.AddRequestId(r.Header), *p)
 	default:
 		status = core.NewStatusError(http.StatusBadRequest, core.NewInvalidBodyTypeError(body))
 	}
@@ -95,10 +95,10 @@ func GetEntryByStatus(ctx context.Context, h http.Header, o core.Origin, status 
 
 // InsertEntry - add entry
 func InsertEntry(ctx context.Context, h http.Header, e Entry) *core.Status {
-	return insertEntry[core.Log](ctx, h, e)
+	return insertEntry[core.Log](ctx, h, []Entry{e})
 }
 
 // InsertStatus - add status
 func InsertStatus(ctx context.Context, h http.Header, o core.Origin, es EntryStatus) *core.Status {
-	return insertStatus[core.Log](ctx, h, o, es)
+	return insertStatus[core.Log](ctx, h, o, []EntryStatus{es})
 }

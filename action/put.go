@@ -2,7 +2,6 @@ package action
 
 import (
 	"context"
-	"github.com/advanced-go/activity/common"
 	"github.com/advanced-go/postgresql/pgxsql"
 	"github.com/advanced-go/stdlib/core"
 	"net/http"
@@ -14,7 +13,8 @@ func put[E core.ErrorHandler, T pgxsql.Scanner[T]](ctx context.Context, h http.H
 	return nil, core.StatusOK()
 }
 
-func insertEntry[E core.ErrorHandler](ctx context.Context, h http.Header, e Entry) *core.Status {
+func insertEntry(ctx context.Context, h http.Header, entries []Entry) *core.Status {
+	e := entries[0]
 	es := EntryStatus{
 		EntryId:   e.EntryId,
 		StatusId:  0,
@@ -22,27 +22,26 @@ func insertEntry[E core.ErrorHandler](ctx context.Context, h http.Header, e Entr
 		CreatedTS: time.Time{},
 		Status:    OpenStatus,
 	}
-	entryList.Lock()
-	defer entryList.Unlock()
+	defer safeEntry.Lock()()
 
 	e.CreatedTS = time.Now().UTC()
 	e.EntryId = entryData[len(entryData)-1].EntryId + 1
-	common.index[e.Origin().Tag()] = e
-	entryList.Append([]Entry{e})
-	return insertStatus[E](ctx, h, e.Origin(), es)
+	index.AddEntry(e)
+	entryData = append(entryData, e)
+	return insertStatus(ctx, h, e.Origin(), []EntryStatus{es})
 }
 
-func insertStatus[E core.ErrorHandler](ctx context.Context, h http.Header, o core.Origin, es EntryStatus) *core.Status {
-	e, ok := common.lookupEntry(o)
+func insertStatus(ctx context.Context, h http.Header, o core.Origin, entries []EntryStatus) *core.Status {
+	e, ok := index.LookupEntry(o)
 	if !ok {
 		return core.StatusNotFound()
 	}
-	statusList.Lock()
-	defer statusList.Unlock()
+	defer safeStatus.Lock()()
 
+	es := entries[0]
 	es.EntryId = e.EntryId
 	es.StatusId = statusData[len(statusData)-1].StatusId + 1
 	es.CreatedTS = time.Now().UTC()
-	statusList.Append([]EntryStatus{es})
+	statusData = append(statusData, es)
 	return core.StatusOK()
 }

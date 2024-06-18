@@ -24,8 +24,8 @@ const (
 )
 
 var (
-	statusList = common.NewSafeSlice[EntryStatus](statusData)
-
+	//statusList = common.NewSafeSlice[EntryStatus](statusData)
+	safeStatus = common.NewSafe()
 	statusData = []EntryStatus{
 		{EntryId: 1, StatusId: 1, AgentId: "agent-name:agent-class:instance-id", Status: "open", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 		{EntryId: 1, StatusId: 2, AgentId: "agent-name:agent-class:instance-id", Status: "closed", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},

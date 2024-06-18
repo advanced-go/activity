@@ -22,8 +22,8 @@ func ExampleOrder_Entry() {
 	fmt.Printf("test: Order(\"%v\") -> [cnt:%v] [result:%v]\n", q, len(entryData), result)
 
 	//Output:
-	//test: Order("") -> [cnt:4] [result:[{1 director-1 2024-06-10 09:00:35 +0000 UTC us-west-1 usw1-az1  www.host1.com test 0 0 0   0 open} {2 director-1 2024-06-10 09:00:35 +0000 UTC us-west-1 usw1-az2  www.host2.com test 0 0 0   0 open} {3 director-2 2024-06-10 09:00:35 +0000 UTC us-west-2 usw2-az3  www.host1.com test 0 0 0   0 open} {4 director-2 2024-06-10 09:00:35 +0000 UTC us-west-2 usw2-az4  www.host2.com test 0 0 0   0 open}]]
-	//test: Order("order=desc") -> [cnt:4] [result:[{4 director-2 2024-06-10 09:00:35 +0000 UTC us-west-2 usw2-az4  www.host2.com test 0 0 0   0 open} {3 director-2 2024-06-10 09:00:35 +0000 UTC us-west-2 usw2-az3  www.host1.com test 0 0 0   0 open} {2 director-1 2024-06-10 09:00:35 +0000 UTC us-west-1 usw1-az2  www.host2.com test 0 0 0   0 open} {1 director-1 2024-06-10 09:00:35 +0000 UTC us-west-1 usw1-az1  www.host1.com test 0 0 0   0 open}]]
+	//test: Order("") -> [cnt:4] [result:[{1 director-1 2024-06-10 09:00:35 +0000 UTC us-west-1 usw1-az1  www.host1.com  test 0 0 0   0 open} {2 director-1 2024-06-10 09:00:35 +0000 UTC us-west-1 usw1-az2  www.host2.com  test 0 0 0   0 open} {3 director-2 2024-06-10 09:00:35 +0000 UTC us-west-2 usw2-az3  www.host1.com  test 0 0 0   0 open} {4 director-2 2024-06-10 09:00:35 +0000 UTC us-west-2 usw2-az4  www.host2.com  test 0 0 0   0 open}]]
+	//test: Order("order=desc") -> [cnt:4] [result:[{4 director-2 2024-06-10 09:00:35 +0000 UTC us-west-2 usw2-az4  www.host2.com  test 0 0 0   0 open} {3 director-2 2024-06-10 09:00:35 +0000 UTC us-west-2 usw2-az3  www.host1.com  test 0 0 0   0 open} {2 director-1 2024-06-10 09:00:35 +0000 UTC us-west-1 usw1-az2  www.host2.com  test 0 0 0   0 open} {1 director-1 2024-06-10 09:00:35 +0000 UTC us-west-1 usw1-az1  www.host1.com  test 0 0 0   0 open}]]
 
 }
 
@@ -47,6 +47,6 @@ func ExampleFilterT_Entry() {
 	fmt.Printf("test: FilterT[Entry](\"%v\") -> [status:%v] [entries:%v]\n", q1, status, entries)
 
 	//Output:
-	//test: FilterT[Entry]("region=us-west-1&zone=usw1-az1&host=www.host1.com") -> [status:OK] [entries:[{1 director-1 2024-06-10 09:00:35 +0000 UTC us-west-1 usw1-az1  www.host1.com test 0 0 0   0 open}]]
+	//test: FilterT[Entry]("region=us-west-1&zone=usw1-az1&host=www.host1.com") -> [status:OK] [entries:[{1 director-1 2024-06-10 09:00:35 +0000 UTC us-west-1 usw1-az1  www.host1.com  test 0 0 0   0 open}]]
 
 }

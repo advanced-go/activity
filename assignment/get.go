@@ -31,8 +31,10 @@ func get[E core.ErrorHandler, T pgxsql.Scanner[T]](ctx context.Context, h http.H
 func testQuery[T pgxsql.Scanner[T]](_ context.Context, _ http.Header, _, _ string, values map[string][]string, _ ...any) (entries []T, status *core.Status) {
 	switch p := any(&entries).(type) {
 	case *[]Entry:
+		defer safeEntry.Lock()()
 		*p, status = FilterT[Entry](values, entryData, validEntry)
 	case *[]EntryDetail:
+		defer safeDetail.Lock()()
 		*p, status = FilterT[EntryDetail](values, detailData, validDetail)
 	case *[]EntryStatusChange:
 		*p, status = FilterT[EntryStatusChange](values, changeData, validStatusChange)
@@ -40,12 +42,6 @@ func testQuery[T pgxsql.Scanner[T]](_ context.Context, _ http.Header, _, _ strin
 		status = core.NewStatusError(http.StatusBadRequest, core.NewInvalidBodyTypeError(entries))
 	}
 	return
-}
-
-func getEntry(values map[string][]string) ([]Entry, *core.Status) {
-	defer safeEntry.Lock()()
-	entries, status := FilterT[Entry](values, entryData, validEntry)
-	return entries, status
 }
 
 func getStatusChange(values map[string][]string) ([]EntryStatusChange, *core.Status) {

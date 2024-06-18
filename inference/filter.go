@@ -7,14 +7,14 @@ import (
 	"strconv"
 )
 
-func originFilter(values url.Values) []Entry {
+func originFilter(values url.Values, entries []Entry) []Entry {
 	if values == nil {
-		return storage
+		return entries
 	}
 	var result []Entry
 
 	filter := core.NewOrigin(values)
-	for _, e := range storage {
+	for _, e := range entries {
 		target := core.Origin{Region: e.Region, Zone: e.Zone, SubZone: e.SubZone, Host: e.Host}
 		if core.OriginMatch(target, filter) {
 			result = append(result, e)

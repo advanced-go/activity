@@ -29,3 +29,23 @@ func (s *SafeSlice[T]) Append(items []T) {
 	//defer s.m.Unlock()
 	s.list = append(s.list, items...)
 }
+
+type Safe struct {
+	mu sync.Mutex
+}
+
+func (s *Safe) Lock() func() {
+	s.mu.Lock()
+	return func() {
+		s.mu.Unlock()
+	}
+}
+
+func (s *Safe) Unlock() {
+	s.mu.Unlock()
+}
+
+func NewSafe() *Safe {
+	s := new(Safe)
+	return s
+}

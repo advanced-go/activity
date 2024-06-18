@@ -14,10 +14,12 @@ const (
 	PkgPath                = "github/advanced-go/activity/assignment"
 	assignment             = "assignment"
 	assignmentDetail       = "assignment-detail"
+	assignmentStatus       = "assignment-status"
 	assignmentStatusChange = "assignment-status-change"
 
 	entryPath             = "assignment/entry"
 	entryDetailPath       = "assignment/detail"
+	entryStatusPath       = "assignment/status"
 	entryStatusChangePath = "assignment/status-change"
 )
 
@@ -28,6 +30,8 @@ func Get(ctx context.Context, path string, h http.Header, values url.Values) (en
 		return GetT[Entry](ctx, h, values)
 	case entryDetailPath:
 		return GetT[EntryDetail](ctx, h, values)
+	case entryStatusPath:
+		return GetT[EntryStatus](ctx, h, values)
 	case entryStatusChangePath:
 		return GetT[EntryStatusChange](ctx, h, values)
 	default:
@@ -38,7 +42,7 @@ func Get(ctx context.Context, path string, h http.Header, values url.Values) (en
 
 // Constraints - get/put type constraints
 type Constraints interface {
-	Entry | EntryDetail | EntryStatusChange
+	Entry | EntryDetail | EntryStatus | EntryStatusChange
 }
 
 // GetT - typed resource GET
@@ -48,6 +52,8 @@ func GetT[T Constraints](ctx context.Context, h http.Header, values url.Values) 
 		*p, h2, status = get[core.Log, Entry](ctx, h, values, assignment, "", nil)
 	case *[]EntryDetail:
 		*p, h2, status = get[core.Log, EntryDetail](ctx, h, values, assignmentDetail, "", nil)
+	case *[]EntryStatus:
+		*p, h2, status = get[core.Log, EntryStatus](ctx, h, values, assignmentStatus, "", nil)
 	case *[]EntryStatusChange:
 		*p, h2, status = get[core.Log, EntryStatusChange](ctx, h, values, assignmentStatusChange, "", nil)
 	default:
@@ -109,18 +115,23 @@ func GetEntryByStatus(ctx context.Context, h http.Header, o core.Origin, status 
 }
 
 // InsertEntry - add entry
-func InsertEntry(ctx context.Context, h http.Header, e Entry, assigneeId string) *core.Status {
-	return insertEntry[core.Log](ctx, h, e, assigneeId)
+func InsertEntry(ctx context.Context, entry Entry, assigneeId string) *core.Status {
+	return insertEntry([]Entry{entry}, assigneeId)
 }
 
 // InsertDetail - add detail
-func InsertDetail(ctx context.Context, h http.Header, o core.Origin, detail EntryDetail) *core.Status {
-	return insertDetail[core.Log](ctx, h, o, detail)
+func InsertDetail(ctx context.Context, o core.Origin, detail EntryDetail) *core.Status {
+	return insertDetail(o, detail)
+}
+
+// InsertStatus - add status
+func InsertStatus(ctx context.Context, o core.Origin, status EntryStatus) *core.Status {
+	return insertStatus(o, status)
 }
 
 // InsertStatusChange - add status change
-func InsertStatusChange(ctx context.Context, h http.Header, o core.Origin, change EntryStatusChange) *core.Status {
-	return insertStatusChange[core.Log](ctx, h, o, change)
+func InsertStatusChange(ctx context.Context, o core.Origin, change EntryStatusChange) *core.Status {
+	return insertStatusChange(o, change)
 }
 
 // ReassignEntry - reassign

@@ -18,8 +18,7 @@ func getEntryByStatus(ctx context.Context, h http.Header, o core.Origin, status 
 	if !ok {
 		return nil, core.StatusNotFound()
 	}
-	entryList.Lock()
-	defer entryList.Unlock()
+	defer safe.Lock()()
 
 	for i := len(statusData) - 1; i >= 0; i-- {
 		if statusData[i].EntryId == e.EntryId && statusData[i].Status == status {
@@ -30,9 +29,11 @@ func getEntryByStatus(ctx context.Context, h http.Header, o core.Origin, status 
 }
 
 func getEntry(ctx context.Context, h http.Header, values map[string][]string) ([]Entry, *core.Status) {
+	defer safe.Lock()()
 	return FilterT[Entry](values, entryData, validEntry)
 }
 
 func getStatus(ctx context.Context, h http.Header, values map[string][]string) ([]EntryStatus, *core.Status) {
+	defer safe.Lock()()
 	return FilterT[EntryStatus](values, statusData, validStatus)
 }

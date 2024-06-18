@@ -42,7 +42,7 @@ const (
 
 var (
 	index     = common.NewOriginIndex[Entry](entryData)
-	entryList = common.NewSafeSlice[Entry](entryData)
+	safe      = common.NewSafe()
 	entryData = []Entry{
 		{EntryId: 1, AgentId: "director-1", Region: "us-west-1", Zone: "usw1-az1", Host: "www.host1.com", Action: "test", Timeout: 0, RateLimit: 0, RateBurst: 0, Primary: "", Secondary: "", Percentage: 0, CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 		{EntryId: 2, AgentId: "director-1", Region: "us-west-1", Zone: "usw1-az2", Host: "www.host2.com", Action: "test", Timeout: 0, RateLimit: 0, RateBurst: 0, Primary: "", Secondary: "", Percentage: 0, CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},

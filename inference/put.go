@@ -7,7 +7,6 @@ import (
 )
 
 func put[E core.ErrorHandler](ctx context.Context, h http.Header, body []Entry) (http.Header, *core.Status) {
-
 	if len(body) == 0 {
 		return nil, core.StatusOK()
 	}

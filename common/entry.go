@@ -32,8 +32,8 @@ var entryData = []Entry{
 
 var entryList = NewOriginIndex[Entry](entryData)
 
-func ValidEntry(values url.Values, e OriginTag) bool {
-	if values == nil || e == nil {
+func ValidEntry(values url.Values, e Entry) bool {
+	if values == nil {
 		return false
 	}
 	filter := core.NewOrigin(values)

@@ -3,6 +3,7 @@ package assignment
 import (
 	"errors"
 	"fmt"
+	"github.com/advanced-go/activity/common"
 	"net/url"
 	"time"
 )
@@ -29,12 +30,15 @@ const (
 	ProcessedTSName      = "processed_ts"
 )
 
-var statusData = []EntryStatus{
-	{EntryId: 1, StatusId: 1, AgentId: "agent-name:agent-class:instance-id", Status: "open", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-	{EntryId: 1, StatusId: 2, AgentId: "agent-name:agent-class:instance-id", Status: "closed", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-	{EntryId: 3, StatusId: 3, AgentId: "agent-name:agent-class:instance-id", Status: "closed", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-	{EntryId: 4, StatusId: 4, AgentId: "agent-name:agent-class:instance-id", Status: "closed", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-}
+var (
+	safeStatus = common.NewSafe()
+	statusData = []EntryStatus{
+		{EntryId: 1, StatusId: 1, AgentId: "agent-name:agent-class:instance-id", Status: "open", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{EntryId: 1, StatusId: 2, AgentId: "agent-name:agent-class:instance-id", Status: "closed", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{EntryId: 3, StatusId: 3, AgentId: "agent-name:agent-class:instance-id", Status: "closed", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{EntryId: 4, StatusId: 4, AgentId: "agent-name:agent-class:instance-id", Status: "closed", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+	}
+)
 
 // EntryStatus - add an agentID?
 type EntryStatus struct {

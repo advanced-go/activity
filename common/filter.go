@@ -1,4 +1,4 @@
-package action
+package common
 
 import (
 	"fmt"
@@ -38,8 +38,8 @@ func Order[T any](values url.Values, entries []T) []T {
 	}
 	var result []T
 
-	for index := len(entries) - 1; index >= 0; index-- {
-		result = append(result, entries[index])
+	for i := len(entries) - 1; i >= 0; i-- {
+		result = append(result, entries[i])
 	}
 	return result
 }

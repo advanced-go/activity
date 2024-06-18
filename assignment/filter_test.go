@@ -82,13 +82,13 @@ func ExampleFilterT_Status() {
 }
 
 func ExampleFilterT_Update() {
-	entries, status := FilterT[EntryStatusChange](uri.BuildValues(q1), changeData, validStatusUpdate)
+	entries, status := FilterT[EntryStatusChange](uri.BuildValues(q1), changeData, validStatusChange)
 	fmt.Printf("test: FilterT[EntryStatusChange](\"%v\") -> [status:%v] [entries:%v]\n", q1, status, entries)
 
-	entries, status = FilterT[EntryStatusChange](uri.BuildValues(q2), changeData, validStatusUpdate)
+	entries, status = FilterT[EntryStatusChange](uri.BuildValues(q2), changeData, validStatusChange)
 	fmt.Printf("test: FilterT[EntryStatusChange](\"%v\") -> [status:%v] [entries:%v]\n", q2, status, entries)
 
-	entries, status = FilterT[EntryStatusChange](uri.BuildValues(q4), changeData, validStatusUpdate)
+	entries, status = FilterT[EntryStatusChange](uri.BuildValues(q4), changeData, validStatusChange)
 	fmt.Printf("test: FilterT[EntryStatusChange](\"%v\") -> [status:%v] [entries:%v]\n", q4, status, entries)
 
 	//Output:

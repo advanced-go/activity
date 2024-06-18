@@ -50,7 +50,7 @@ func insertEntry[E core.ErrorHandler](ctx context.Context, h http.Header, e Entr
 }
 
 func insertDetail[E core.ErrorHandler](ctx context.Context, h http.Header, o core.Origin, detail EntryDetail) *core.Status {
-	e, ok := lookupEntry(o)
+	e, ok := index.LookupEntry(o)
 	if !ok {
 		return core.StatusNotFound()
 	}
@@ -62,7 +62,7 @@ func insertDetail[E core.ErrorHandler](ctx context.Context, h http.Header, o cor
 }
 
 func insertStatus[E core.ErrorHandler](ctx context.Context, h http.Header, o core.Origin, es EntryStatus) *core.Status {
-	e, ok := lookupEntry(o)
+	e, ok := index.LookupEntry(o)
 	if !ok {
 		return core.StatusNotFound()
 	}
@@ -74,7 +74,7 @@ func insertStatus[E core.ErrorHandler](ctx context.Context, h http.Header, o cor
 }
 
 func insertStatusChange[E core.ErrorHandler](ctx context.Context, h http.Header, o core.Origin, change EntryStatusChange) *core.Status {
-	e, ok := lookupEntry(o)
+	e, ok := index.LookupEntry(o)
 	if !ok {
 		return core.StatusNotFound()
 	}

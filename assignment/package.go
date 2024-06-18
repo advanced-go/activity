@@ -99,13 +99,13 @@ func PutT[T Constraints](r *http.Request, body []T) (h2 http.Header, status *cor
 }
 
 // GetStatusChange - get change
-func GetStatusChange(ctx context.Context, h http.Header, o core.Origin, assigneeClass string) ([]EntryStatusChange, *core.Status) {
-	return getStatusChange[core.Log](ctx, h, o, assigneeClass)
+func GetStatusChange(ctx context.Context, h http.Header, values url.Values) ([]EntryStatusChange, *core.Status) {
+	return getStatusChange(ctx, h, values)
 }
 
 // GetEntryByStatus - by status
 func GetEntryByStatus(ctx context.Context, h http.Header, o core.Origin, status string) ([]Entry, *core.Status) {
-	return getEntryByStatus(ctx, h, o, status)
+	return nil, core.StatusOK() //getEntryByStatus(ctx, h, o, status)
 }
 
 // InsertEntry - add entry

@@ -2,6 +2,8 @@ package assignment
 
 import (
 	"context"
+	"fmt"
+	"github.com/advanced-go/activity/common"
 	"github.com/advanced-go/activity/module"
 	"github.com/advanced-go/postgresql/pgxsql"
 	"github.com/advanced-go/stdlib/core"
@@ -29,13 +31,19 @@ func get[E core.ErrorHandler, T pgxsql.Scanner[T]](ctx context.Context, h http.H
 }
 
 func testQuery[T pgxsql.Scanner[T]](_ context.Context, _ http.Header, _, _ string, values map[string][]string, _ ...any) (entries []T, status *core.Status) {
+	o := NewOrigin(values)
+	if o.Region != "*" {
+		if e, ok := index.LookupEntry(o); ok {
+			values["entry-id"] = []string{fmt.Sprintf("%v", e.EntryId)}
+		}
+	}
 	switch p := any(&entries).(type) {
 	case *[]Entry:
 		defer safeEntry.Lock()()
-		*p, status = FilterT[Entry](values, entryData, validEntry)
+		*p, status = common.FilterT[Entry](values, entryData, validEntry)
 	case *[]EntryDetail:
 		defer safeDetail.Lock()()
-		*p, status = FilterT[EntryDetail](values, detailData, validDetail)
+		*p, status = common.FilterT[EntryDetail](values, detailData, validDetail)
 	case *[]EntryStatus:
 		defer safeStatus.Lock()()
 		*p, status = FilterT[EntryStatus](values, statusData, validStatus)
@@ -48,8 +56,8 @@ func testQuery[T pgxsql.Scanner[T]](_ context.Context, _ http.Header, _, _ strin
 	return
 }
 
-func getStatusChange(values map[string][]string) ([]EntryStatusChange, *core.Status) {
-	e, ok := index.LookupEntry(core.Origin{Region: values[core.RegionKey][0], Zone: values[core.ZoneKey][0], SubZone: values[core.SubZoneKey][0], Host: values[core.HostKey][0]})
+func getStatusChange(ctx context.Context, h http.Header, values url.Values) ([]EntryStatusChange, *core.Status) {
+	e, ok := index.LookupEntry(core.NewOrigin(values))
 	if !ok {
 		return nil, core.StatusNotFound()
 	}
@@ -65,4 +73,29 @@ func getStatusChange(values map[string][]string) ([]EntryStatusChange, *core.Sta
 		}
 	}
 	return nil, core.StatusNotFound()
+}
+
+func NewOrigin(values map[string][]string) core.Origin {
+	region := ""
+	zone := ""
+	subZone := ""
+	host := ""
+
+	s := values[core.RegionKey]
+	if len(s) > 0 {
+		region = s[0]
+	}
+	s = values[core.ZoneKey]
+	if len(s) > 0 {
+		zone = s[0]
+	}
+	s = values[core.SubZoneKey]
+	if len(s) > 0 {
+		subZone = s[0]
+	}
+	s = values[core.HostKey]
+	if len(s) > 0 {
+		host = s[0]
+	}
+	return core.Origin{Region: region, Zone: zone, SubZone: subZone, Host: host}
 }

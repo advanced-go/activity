@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/advanced-go/activity/common"
 	"github.com/advanced-go/stdlib/core"
+	"net/url"
 	"time"
 )
 
@@ -30,7 +31,7 @@ const (
 )
 
 var (
-	safe      = common.NewSafe()
+	safeEntry = common.NewSafe()
 	entryData = []Entry{
 		{EntryId: 1, AgentId: "agent", Region: "us-west", Zone: "oregon", Host: "www.host1.com", RouteName: "route", Details: "information", Action: "processed", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 		{EntryId: 2, AgentId: "agent", Region: "us-west", Zone: "oregon", Host: "www.host2.com", RouteName: "host", Details: "text", Action: "processed", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
@@ -77,6 +78,8 @@ func (Entry) Scan(columnNames []string, values []any) (e Entry, err error) {
 			e.SubZone = values[i].(string)
 		case HostName:
 			e.Host = values[i].(string)
+		case RouteName:
+			e.RouteName = values[i].(string)
 
 		case ActionName:
 			e.Action = values[i].(string)
@@ -114,4 +117,17 @@ func (Entry) Rows(entries []Entry) [][]any {
 		values = append(values, e.Values())
 	}
 	return values
+}
+
+func validEntry(values url.Values, e Entry) bool {
+	if values == nil {
+		return false
+	}
+	filter := core.NewOrigin(values)
+	target := core.Origin{Region: e.Region, Zone: e.Zone, SubZone: e.SubZone, Host: e.Host}
+	if !core.OriginMatch(target, filter) {
+		return false
+	}
+	// Additional filtering
+	return true
 }

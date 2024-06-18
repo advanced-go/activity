@@ -36,14 +36,8 @@ func Put(r *http.Request, body []Entry) (http.Header, *core.Status) {
 	return put[core.Log](r.Context(), core.AddRequestId(r.Header), inferenceResource, "", body, nil)
 }
 
-// GetEntry - by values
-func GetEntry(ctx context.Context, h http.Header, values url.Values) ([]Entry, *core.Status) {
-	entries, _, status := get[core.Log, Entry](ctx, h, values, inferenceResource, "", nil)
-	return entries, status
-}
-
-// InsertEntry - add entry
-func InsertEntry(ctx context.Context, h http.Header, e Entry) *core.Status {
+// Insert - add entry
+func Insert(ctx context.Context, h http.Header, e Entry) *core.Status {
 	_, status := put[core.Log, Entry](ctx, core.AddRequestId(h), inferenceResource, "", []Entry{e}, nil)
 	return status
 }

@@ -5,45 +5,48 @@ import (
 	"github.com/advanced-go/stdlib/uri"
 )
 
-func _ExampleOrder() {
+const (
+	q1 = "region=us-west-1&zone=usw1-az1&host=www.host1.com"
+	q2 = "region=us-west-1&zone=usw1-az2&host=www.host2.com"
+	q3 = "region=us-west-2&zone=usw2-az3&host=www.host1.com"
+	q4 = "region=us-west-2&zone=usw2-az4&host=www.host2.com"
+)
+
+func ExampleOrder_Entry() {
 	q := ""
-	result := order(nil, entryData)
-	fmt.Printf("test: order(\"%v\") -> [cnt:%v] [result:%v]\n", q, len(entryData), result)
+	result := Order(nil, entryData)
+	fmt.Printf("test: Order(\"%v\") -> [cnt:%v] [result:%v]\n", q, len(entryData), result)
 
 	q = "order=desc"
-	result = order(uri.BuildValues(q), entryData)
-	fmt.Printf("test: order(\"%v\") -> [cnt:%v] [result:%v]\n", q, len(entryData), result)
+	result = Order(uri.BuildValues(q), entryData)
+	fmt.Printf("test: Order(\"%v\") -> [cnt:%v] [result:%v]\n", q, len(entryData), result)
 
 	//Output:
-	//fail
-}
-
-func ExampleTop() {
-	q := ""
-	result := top(nil, entryData)
-	fmt.Printf("test: top(\"%v\") -> [cnt:%v] [result:%v]\n", q, len(entryData), len(result))
-
-	q = "top=1"
-	result = top(uri.BuildValues(q), entryData)
-	fmt.Printf("test: top(\"%v\") -> [cnt:%v] [result:%v]\n", q, len(entryData), len(result))
-
-	//Output:
-	//test: top("") -> [cnt:2] [result:2]
-	//test: top("top=1") -> [cnt:2] [result:1]
+	//test: Order("") -> [cnt:4] [result:[{1 director-1 2024-06-10 09:00:35 +0000 UTC us-west-1 usw1-az1  www.host1.com  test 0 0 0   0 open} {2 director-1 2024-06-10 09:00:35 +0000 UTC us-west-1 usw1-az2  www.host2.com  test 0 0 0   0 open} {3 director-2 2024-06-10 09:00:35 +0000 UTC us-west-2 usw2-az3  www.host1.com  test 0 0 0   0 open} {4 director-2 2024-06-10 09:00:35 +0000 UTC us-west-2 usw2-az4  www.host2.com  test 0 0 0   0 open}]]
+	//test: Order("order=desc") -> [cnt:4] [result:[{4 director-2 2024-06-10 09:00:35 +0000 UTC us-west-2 usw2-az4  www.host2.com  test 0 0 0   0 open} {3 director-2 2024-06-10 09:00:35 +0000 UTC us-west-2 usw2-az3  www.host1.com  test 0 0 0   0 open} {2 director-1 2024-06-10 09:00:35 +0000 UTC us-west-1 usw1-az2  www.host2.com  test 0 0 0   0 open} {1 director-1 2024-06-10 09:00:35 +0000 UTC us-west-1 usw1-az1  www.host1.com  test 0 0 0   0 open}]]
 
 }
 
-func ExampleDistinct() {
+func ExampleTop_Entry() {
 	q := ""
-	result := distinct(nil, entryData)
-	fmt.Printf("test: distinct(\"%v\") -> [cnt:%v] [result:%v]\n", q, len(entryData), len(result))
+	result := Top(nil, entryData)
+	fmt.Printf("test: Top(\"%v\") -> [cnt:%v] [result:%v]\n", q, len(entryData), len(result))
 
-	q = "distinct=host"
-	result = distinct(uri.BuildValues(q), entryData)
-	fmt.Printf("test: distinct(\"%v\") -> [cnt:%v] [result:%v]\n", q, len(entryData), len(result))
+	q = "top=2"
+	result = Top(uri.BuildValues(q), entryData)
+	fmt.Printf("test: Top(\"%v\") -> [cnt:%v] [result:%v]\n", q, len(entryData), len(result))
 
 	//Output:
-	//test: distinct("") -> [cnt:2] [result:2]
-	//test: distinct("distinct=host") -> [cnt:2] [result:2]
+	//test: Top("") -> [cnt:4] [result:4]
+	//test: Top("top=2") -> [cnt:4] [result:2]
+
+}
+
+func ExampleFilterT_Entry() {
+	entries, status := FilterT[Entry](uri.BuildValues(q1), entryData, validEntry)
+	fmt.Printf("test: FilterT[Entry](\"%v\") -> [status:%v] [entries:%v]\n", q1, status, entries)
+
+	//Output:
+	//test: FilterT[Entry]("region=us-west-1&zone=usw1-az1&host=www.host1.com") -> [status:OK] [entries:[{1 director-1 2024-06-10 09:00:35 +0000 UTC us-west-1 usw1-az1  www.host1.com  test 0 0 0   0 open}]]
 
 }

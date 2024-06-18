@@ -38,21 +38,22 @@ func testInsert[T pgxsql.Scanner[T]](_ context.Context, _ http.Header, resource,
 		status = core.NewStatusError(http.StatusBadRequest, core.NewInvalidBodyTypeError(entries))
 	}
 	if status.OK() {
-		tag.RowsAffected = 1
+		tag.RowsAffected = int64(len(entries))
 	}
 	return
 }
 
-func insertEntry(entries []Entry) *core.Status {
-	if len(entries) != 1 {
+func insertEntry(body []Entry) *core.Status {
+	if len(body) == 0 {
 		return core.StatusBadRequest()
 	}
-	e := entries[0]
 	defer safeEntry.Lock()()
 
-	e.CreatedTS = time.Now().UTC()
-	e.Status = OpenStatus
-	e.EntryId = entryData[len(entryData)-1].EntryId + 1
-	entryData = append(entryData, e)
+	for _, e := range body {
+		e.CreatedTS = time.Now().UTC()
+		e.Status = OpenStatus
+		e.EntryId = entryData[len(entryData)-1].EntryId + 1
+		entryData = append(entryData, e)
+	}
 	return core.StatusOK()
 }

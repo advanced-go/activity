@@ -42,4 +42,4 @@ func Insert(ctx context.Context, h http.Header, e Entry) *core.Status {
 	return status
 }
 
-// Need to add an get entry for entries that are not open. Also needs to update status to closed
+// Need to add a get entry for entries that are not open. Also needs to update status to closed

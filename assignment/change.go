@@ -8,6 +8,13 @@ import (
 	"time"
 )
 
+const (
+	NewStatusName        = "new_status"
+	NewAssigneeClassName = "new_assignee_class"
+	ErrorName            = "error"
+	ProcessedTSName      = "processed_ts"
+)
+
 var (
 	safeChange = common.NewSafe()
 	changeData = []EntryStatusChange{
@@ -18,18 +25,27 @@ var (
 
 // EntryStatusChange - updates for reassignment and close
 type EntryStatusChange struct {
-	EntryId       int       `json:"entry-id"`
-	ChangeId      int       `json:"change-id"`
-	AgentId       string    `json:"agent-id"` // Creation agent id
-	CreatedTS     time.Time `json:"created-ts"`
-	AssigneeClass string    `json:"assignee-class"` // Used to determine which class of agents will receive this change
+	EntryId   int       `json:"entry-id"`
+	ChangeId  int       `json:"change-id"`
+	AgentId   string    `json:"agent-id"`
+	CreatedTS time.Time `json:"created-ts"`
+
+	// Used to determine which class of agents will receive this change
+	AssigneeClass   string `json:"assignee-class"`
+	AssigneeRegion  string `json:"assignee-region"`
+	AssigneeZone    string `json:"assignee-zone"`
+	AssigneeSubZone string `json:"assignee-sub-zone"`
+
+	NewStatus          string `json:"new-status"`
+	NewAssigneeClass   string `json:"new-assignee-class"`
+	NewAssigneeRegion  string `json:"new-assignee-region"`
+	NewAssigneeZone    string `json:"new-assignee-zone"`
+	NewAssigneeSubZone string `json:"new-assignee-sub-zone"`
 
 	// Update data. Processed agent id needed ??
 	// Error needed if updates are in an invalid order, such as a reassignment after a close
-	NewStatus        string    `json:"new-status"`         // Status can be 'closed' or 'reassignment'
-	NewAssigneeClass string    `json:"new-assignee-class"` // On reassignment, set new owner
-	Error            string    `json:"error"`
-	UpdatedTS        time.Time `json:"updated-ts"`
+	Error     string    `json:"error"`
+	UpdatedTS time.Time `json:"updated-ts"`
 }
 
 func (EntryStatusChange) Scan(columnNames []string, values []any) (e EntryStatusChange, err error) {

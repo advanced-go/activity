@@ -9,7 +9,6 @@ import (
 	"github.com/advanced-go/stdlib/httpx"
 	"net/http"
 	"net/url"
-	"time"
 )
 
 func put[E core.ErrorHandler, T pgxsql.Scanner[T]](ctx context.Context, h http.Header, resource, template string, body []T, values url.Values, insert pgxsql.InsertFuncT[T], args ...any) (h2 http.Header, status *core.Status) {
@@ -33,15 +32,9 @@ func put[E core.ErrorHandler, T pgxsql.Scanner[T]](ctx context.Context, h http.H
 }
 
 func testInsert[T pgxsql.Scanner[T]](_ context.Context, _ http.Header, resource, template string, entries []T, args ...any) (tag pgxsql.CommandTag, status *core.Status) {
-	assigneeId := ""
-	if len(args) > 0 {
-		if s, ok := args[0].(string); ok {
-			assigneeId = s
-		}
-	}
 	switch p := any(&entries).(type) {
-	case *[]Entry:
-		status = insertEntry(*p, assigneeId)
+	//case *[]Entry:
+	//	status = insertEntry(*p, assigneeId)
 	case *[]EntryDetail:
 		status = insertDetail(core.Origin{}, (*p)[0])
 	default:
@@ -51,53 +44,4 @@ func testInsert[T pgxsql.Scanner[T]](_ context.Context, _ http.Header, resource,
 		tag.RowsAffected = int64(len(entries))
 	}
 	return
-}
-
-func insertEntry(entries []Entry, assigneeId string) *core.Status {
-	defer safeEntry.Lock()()
-	for _, e := range entries {
-		es := EntryStatus{EntryId: e.EntryId, StatusId: 0, AgentId: e.AgentId, CreatedTS: time.Time{}, Status: OpenStatus, AssigneeId: assigneeId}
-		e.CreatedTS = time.Now().UTC()
-		e.EntryId = entryData[len(entryData)-1].EntryId + 1
-		insertStatus(e.Origin(), es)
-	}
-	return core.StatusOK()
-}
-
-func insertDetail(o core.Origin, detail EntryDetail) *core.Status {
-	e, ok := index.LookupEntry(o)
-	if !ok {
-		return core.StatusNotFound()
-	}
-	detail.EntryId = e.EntryId
-	detail.DetailId = detailData[len(detailData)-1].DetailId + 1
-	detail.CreatedTS = time.Now().UTC()
-	detailData = append(detailData, detail)
-	return core.StatusOK()
-}
-
-func insertStatus(o core.Origin, es EntryStatus) *core.Status {
-	e, ok := index.LookupEntry(o)
-	if !ok {
-		return core.StatusNotFound()
-	}
-	defer safeStatus.Lock()()
-
-	es.EntryId = e.EntryId
-	es.StatusId = statusData[len(statusData)-1].StatusId + 1
-	es.CreatedTS = time.Now().UTC()
-	statusData = append(statusData, es)
-	return core.StatusOK()
-}
-
-func insertStatusChange(o core.Origin, change EntryStatusChange) *core.Status {
-	e, ok := index.LookupEntry(o)
-	if !ok {
-		return core.StatusNotFound()
-	}
-	change.EntryId = e.EntryId
-	change.ChangeId = changeData[len(changeData)-1].ChangeId + 1
-	change.CreatedTS = time.Now().UTC()
-	changeData = append(changeData, change)
-	return core.StatusOK()
 }

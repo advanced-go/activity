@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/advanced-go/stdlib/core"
-	json2 "github.com/advanced-go/stdlib/json"
 	"net/http"
 	"net/url"
 )
@@ -17,22 +16,22 @@ const (
 	assignmentStatus       = "assignment-status"
 	assignmentStatusChange = "assignment-status-change"
 
-	entryPath             = "assignment/entry"
-	entryDetailPath       = "assignment/detail"
-	entryStatusPath       = "assignment/status"
-	entryStatusChangePath = "assignment/status-change"
+	assignmentPath             = "assignment"
+	assignmentDetailPath       = "assignment/detail"
+	assignmentStatusPath       = "assignment/status"
+	assignmentStatusChangePath = "assignment/status-change"
 )
 
 // Get - resource GET
 func Get(ctx context.Context, path string, h http.Header, values url.Values) (entries any, h2 http.Header, status *core.Status) {
 	switch path {
-	case entryPath:
+	case assignmentPath:
 		return GetT[Entry](ctx, h, values)
-	case entryDetailPath:
+	case assignmentDetailPath:
 		return GetT[EntryDetail](ctx, h, values)
-	case entryStatusPath:
+	case assignmentStatusPath:
 		return GetT[EntryStatus](ctx, h, values)
-	case entryStatusChangePath:
+	case assignmentStatusChangePath:
 		return GetT[EntryStatusChange](ctx, h, values)
 	default:
 		status = core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid path %v", path)))
@@ -63,6 +62,7 @@ func GetT[T Constraints](ctx context.Context, h http.Header, values url.Values) 
 }
 
 // Put - resource PUT
+/*
 func Put(r *http.Request, path string) (h2 http.Header, status *core.Status) {
 	switch path {
 	case entryPath:
@@ -91,55 +91,56 @@ func PutT[T Constraints](r *http.Request, body []T) (h2 http.Header, status *cor
 		}
 		body = content
 	}
-	switch p := any(&body).(type) {
-	case *[]Entry:
-		h2, status = put[core.Log, Entry](r.Context(), core.AddRequestId(r.Header), assignment, "", *p, nil)
-	case *[]EntryDetail:
-		h2, status = put[core.Log, EntryDetail](r.Context(), core.AddRequestId(r.Header), assignmentDetail, "", *p, nil)
-	case *[]EntryStatusChange:
-		h2, status = put[core.Log, EntryStatusChange](r.Context(), core.AddRequestId(r.Header), assignmentStatusChange, "", *p, nil)
-	default:
-		status = core.NewStatusError(http.StatusBadRequest, core.NewInvalidBodyTypeError(body))
-	}
+
+		switch p := any(&body).(type) {
+		case *[]Entry:
+			h2, status = put[core.Log, Entry](r.Context(), core.AddRequestId(r.Header), assignment, "", *p, nil)
+		case *[]EntryDetail:
+			h2, status = put[core.Log, EntryDetail](r.Context(), core.AddRequestId(r.Header), assignmentDetail, "", *p, nil)
+		case *[]EntryStatusChange:
+			h2, status = put[core.Log, EntryStatusChange](r.Context(), core.AddRequestId(r.Header), assignmentStatusChange, "", *p, nil)
+		default:
+			status = core.NewStatusError(http.StatusBadRequest, core.NewInvalidBodyTypeError(body))
+		}
 	return
 }
 
-// GetStatusChange - get change
-func GetStatusChange(ctx context.Context, h http.Header, values url.Values) ([]EntryStatusChange, *core.Status) {
-	return getStatusChange(ctx, h, values)
+*/
+
+// Workflow
+
+// Insert - add an assignment and an open status
+func Insert(ctx context.Context, entry Entry) *core.Status {
+	return core.StatusOK()
 }
 
-// GetEntryByStatus - by status
-func GetEntryByStatus(ctx context.Context, h http.Header, o core.Origin, status string) ([]Entry, *core.Status) {
-	return nil, core.StatusOK() //getEntryByStatus(ctx, h, o, status)
+// GetOpen - find an open assignment for a given assignee class and origin
+func GetOpen(ctx context.Context, assigneeClass string, assigneeOrigin core.Origin) ([]Entry, *core.Status) {
+	return nil, core.StatusOK()
 }
 
-// InsertEntry - add entry
-func InsertEntry(ctx context.Context, entry Entry, assigneeId string) *core.Status {
-	return insertEntry([]Entry{entry}, assigneeId)
+// Assign - set the status of an assignment to assigned
+func Assign(ctx context.Context, origin core.Origin, agentId, assigneeId string) *core.Status {
+	return core.StatusOK()
 }
 
-// InsertDetail - add detail
-func InsertDetail(ctx context.Context, o core.Origin, detail EntryDetail) *core.Status {
-	return insertDetail(o, detail)
+// Close - update the status of an assignment to closed
+func Close(ctx context.Context, origin core.Origin, agentId string) *core.Status {
+	return core.StatusOK()
 }
 
-// InsertStatus - add status
-func InsertStatus(ctx context.Context, o core.Origin, status EntryStatus) *core.Status {
-	return insertStatus(o, status)
+// AddDetail - add assignment details
+func AddDetail(ctx context.Context, origin core.Origin, agentId, routeName, details string) *core.Status {
+	return core.StatusOK()
 }
 
-// InsertStatusChange - add status change
-func InsertStatusChange(ctx context.Context, o core.Origin, change EntryStatusChange) *core.Status {
-	return insertStatusChange(o, change)
+// GetStatusChange - get status change by assignee
+func GetStatusChange(ctx context.Context, assigneeClass string, assigneeOrigin core.Origin) ([]EntryStatusChange, *core.Status) {
+
+	return nil, core.StatusOK()
 }
 
-// ReassignEntry - reassign
-func ReassignEntry(ctx context.Context, h http.Header, o core.Origin, assigneeClass string) *core.Status {
-	return reassignEntry[core.Log](ctx, h, o, assigneeClass)
-}
-
-// AssignEntry - assign an entry
-func AssignEntry(ctx context.Context, h http.Header, o core.Origin, assigneeId string) *core.Status {
-	return assignEntry[core.Log](ctx, h, o, assigneeId)
+// Reassign - set the status of an assignment to reassignment, and update assignment receiver
+func Reassign(ctx context.Context, origin core.Origin, agentId, newAssigneeClass string, newAssigneeOrigin core.Origin) *core.Status {
+	return core.StatusOK()
 }

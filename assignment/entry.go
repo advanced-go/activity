@@ -10,13 +10,6 @@ import (
 )
 
 const (
-	OpenStatus         = "open"
-	ClosedStatus       = "closed"
-	AssignedStatus     = "assigned"
-	ReassignmentStatus = "reassignment"
-)
-
-const (
 	//accessLogSelect = "SELECT * FROM access_log {where} order by start_time limit 2"
 	accessLogSelect = "SELECT region,customer_id,start_time,duration_str,traffic,rate_limit FROM access_log {where} order by start_time desc limit 2"
 	accessLogInsert = "INSERT INTO access_log (" +
@@ -26,16 +19,19 @@ const (
 		"timeout,rate_limit,rate_burst) VALUES"
 	deleteSql = "DELETE FROM access_log"
 
-	EntryIdName       = "entry_id"
-	AgentIdName       = "agent_id"
-	CreatedTSName     = "created_ts"
-	UpdatedTSName     = "updated_ts"
-	RegionName        = "region"
-	ZoneName          = "zone"
-	SubZoneName       = "sub_zone"
-	HostName          = "host"
-	AssigneeClassName = "assignee_class"
-	AssigneeIdName    = "assignee_id"
+	EntryIdName         = "entry_id"
+	AgentIdName         = "agent_id"
+	CreatedTSName       = "created_ts"
+	UpdatedTSName       = "updated_ts"
+	RegionName          = "region"
+	ZoneName            = "zone"
+	SubZoneName         = "sub_zone"
+	HostName            = "host"
+	AssigneeClassName   = "assignee_class"
+	AssigneeIdName      = "assignee_id"
+	AssigneeRegionName  = "assignee_region"
+	AssigneeZoneName    = "assignee_zone"
+	AssigneeSubZoneName = "assignee_sub_zone"
 )
 
 // When doing an assignment, the Agent id needs to be somewhere??
@@ -60,23 +56,21 @@ type Entry struct {
 	AgentId   string    `json:"agent-id"`
 	CreatedTS time.Time `json:"created-ts"`
 
-	// Origin + route for uniqueness
+	// Origin
 	Region  string `json:"region"`
 	Zone    string `json:"zone"`
 	SubZone string `json:"sub-zone"`
 	Host    string `json:"host"`
 
-	// Assignee Origin
+	// Assignee class + assignee Origin
+	AssigneeClass   string `json:"assignee-class"` // Only allow a certain agent class to own this
 	AssigneeRegion  string `json:"assignee-region"`
 	AssigneeZone    string `json:"assignee-zone"`
 	AssigneeSubZone string `json:"assignee-sub-zone"`
-
-	// Assignee class - these get reset, id = "", and class to new class
-	AssigneeClass string `json:"assignee-class"` // Only allow a certain agent class to own this
-	AssigneeId    string `json:"assignee-id"`    // Set when an agent pulls this entry
+	AssigneeId      string `json:"assignee-id"` // Set when an agent pulls this entry
 
 	UpdatedTS time.Time `json:"updated-ts"`
-	Status    string
+	Status    string    `json:"status"`
 }
 
 func (e Entry) Origin() core.Origin {
@@ -104,8 +98,15 @@ func (Entry) Scan(columnNames []string, values []any) (e Entry, err error) {
 
 		case AssigneeClassName:
 			e.AssigneeClass = values[i].(string)
+		case AssigneeRegionName:
+			e.AssigneeRegion = values[i].(string)
+		case AssigneeZoneName:
+			e.AssigneeZone = values[i].(string)
+		case AssigneeSubZoneName:
+			e.AssigneeSubZone = values[i].(string)
 		case AssigneeIdName:
 			e.AssigneeId = values[i].(string)
+
 		case UpdatedTSName:
 			e.UpdatedTS = values[i].(time.Time)
 		case StatusName:
@@ -130,7 +131,11 @@ func (e Entry) Values() []any {
 		e.Host,
 
 		e.AssigneeClass,
+		e.AssigneeRegion,
+		e.AssigneeZone,
+		e.AssigneeSubZone,
 		e.AssigneeId,
+
 		e.UpdatedTS,
 		e.Status,
 	}

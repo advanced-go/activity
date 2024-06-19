@@ -9,6 +9,13 @@ import (
 )
 
 const (
+	OpenStatus         = "open"
+	AssignedStatus     = "assigned"
+	ReassignmentStatus = "reassignment"
+	ClosedStatus       = "closed"
+)
+
+const (
 
 	//accessLogSelect = "SELECT * FROM access_log {where} order by start_time limit 2"
 	statusSelect = "SELECT region,customer_id,start_time,duration_str,traffic,rate_limit FROM access_log {where} order by start_time desc limit 2"
@@ -21,13 +28,9 @@ const (
 
 	//deleteSql = "DELETE FROM access_log"
 
-	StatusIdName         = "status_id"
-	ChangeIdName         = "change_id"
-	StatusName           = "status"
-	NewStatusName        = "new_status"
-	NewAssigneeClassName = "new_assignee_class"
-	ErrorName            = "error"
-	ProcessedTSName      = "processed_ts"
+	StatusIdName = "status_id"
+	ChangeIdName = "change_id"
+	StatusName   = "status"
 )
 
 var (

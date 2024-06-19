@@ -32,11 +32,11 @@ func put[E core.ErrorHandler, T pgxsql.Scanner[T]](ctx context.Context, h http.H
 }
 
 func testInsert[T pgxsql.Scanner[T]](_ context.Context, _ http.Header, resource, template string, entries []T, args ...any) (tag pgxsql.CommandTag, status *core.Status) {
-	switch p := any(&entries).(type) {
+	switch any(&entries).(type) {
 	//case *[]Entry:
 	//	status = insertEntry(*p, assigneeId)
-	case *[]EntryDetail:
-		status = insertDetail(core.Origin{}, (*p)[0])
+	//case *[]EntryDetail:
+	//	status = insertDetail(core.Origin{}, (*p)[0])
 	default:
 		status = core.NewStatusError(http.StatusBadRequest, core.NewInvalidBodyTypeError(entries))
 	}

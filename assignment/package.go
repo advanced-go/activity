@@ -107,8 +107,8 @@ func PutT[T Constraints](r *http.Request, body []T) (h2 http.Header, status *cor
 
 */
 
-// Insert - add an assignment and an open status
-func Insert(ctx context.Context, agentId string, origin core.Origin, assigneeClass string, assigneeOrigin core.Origin) *core.Status {
+// New - add an assignment and an open status
+func New(ctx context.Context, agentId string, origin core.Origin, assigneeClass string, assigneeOrigin core.Origin) *core.Status {
 	return insert(ctx, agentId, origin, assigneeClass, assigneeOrigin)
 }
 

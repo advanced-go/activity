@@ -18,7 +18,7 @@ func insert(ctx context.Context, agentId string, origin core.Origin, assigneeCla
 	defer safeEntry.Lock()()
 
 	entry := Entry{
-		EntryId:         entryData[len(entryData)-1].EntryId + 10,
+		EntryId:         entryData[len(entryData)-1].EntryId + 1,
 		AgentId:         agentId,
 		CreatedTS:       time.Now().UTC(),
 		Region:          origin.Region,
@@ -34,17 +34,32 @@ func insert(ctx context.Context, agentId string, origin core.Origin, assigneeCla
 		Status:          "",
 	}
 	entryData = append(entryData, entry)
+	index.AddEntry(entry)
 	return addStatus(ctx, origin, OpenStatus, agentId, "")
 }
 
 // getOpen - find an open assignment for a given assignee class and origin
 func getOpen(ctx context.Context, assigneeClass string, assigneeOrigin core.Origin) ([]Entry, *core.Status) {
-	return nil, core.StatusOK()
+	defer safeEntry.Lock()()
+	defer safeStatus.Lock()()
+
+	for _, e := range entryData {
+		if e.AssigneeClass != assigneeClass {
+			continue
+		}
+		if e.AssigneeRegion == assigneeOrigin.Region && e.AssigneeZone == assigneeOrigin.Zone && e.AssigneeSubZone == assigneeOrigin.SubZone {
+			_, ok := lastStatus(e.EntryId, OpenStatus)
+			if ok {
+				return []Entry{e}, core.StatusOK()
+			}
+		}
+	}
+	return nil, core.StatusNotFound()
 }
 
 // assign - set the status of an assignment to assigned
 func assign(ctx context.Context, origin core.Origin, agentId, assigneeId string) *core.Status {
-	return core.StatusOK()
+	return addStatus(ctx, origin, AssignedStatus, agentId, assigneeId)
 }
 
 // closeAssignment - add a closed status
@@ -72,7 +87,7 @@ func addDetail(ctx context.Context, origin core.Origin, agentId, routeName, deta
 	return core.StatusOK()
 }
 
-// addStatus - update the status of an assignment to closed
+// addStatus - add a status
 func addStatus(ctx context.Context, origin core.Origin, status, agentId, assigneeId string) *core.Status {
 	e, ok := index.LookupEntry(origin)
 	if !ok {
@@ -90,4 +105,13 @@ func addStatus(ctx context.Context, origin core.Origin, status, agentId, assigne
 	}
 	statusData = append(statusData, es)
 	return core.StatusOK()
+}
+
+func lastStatus(entryId int, status string) (EntryStatus, bool) {
+	for i := len(statusData) - 1; i >= 0; i-- {
+		if statusData[i].EntryId == entryId && statusData[i].Status == status {
+			return statusData[i], true
+		}
+	}
+	return EntryStatus{}, false
 }

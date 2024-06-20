@@ -9,10 +9,12 @@ import (
 )
 
 const (
-	OpenStatus         = "open"
-	AssignedStatus     = "assigned"
-	ReassignmentStatus = "reassignment"
-	ClosedStatus       = "closed"
+	OpenStatus        = "open"
+	AssignedStatus    = "assigned"
+	ReassigningStatus = "reassigning"
+	ReassignedStatus  = "reassigned"
+	ClosingStatus     = "closing"
+	ClosedStatus      = "closed"
 )
 
 const (

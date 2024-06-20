@@ -1,7 +1,6 @@
 package assignment
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"github.com/advanced-go/stdlib/core"
@@ -82,11 +81,21 @@ func addDetail(origin core.Origin, agentId, routeName, details string) *core.Sta
 	return core.StatusOK()
 }
 
+// processClose - process a closed status update
+func processClose(origin core.Origin, agentId string) *core.Status {
+	status := addStatus(origin, ClosedStatus, agentId, "")
+	if status.OK() {
+		updateStatus(origin, ClosedStatus)
+	}
+	return status
+}
+
 // processReassignment - process a reassignment
-func processReassignment(ctx context.Context, change []EntryStatusChange) *core.Status {
+func processReassignment(origin core.Origin, agentId string, change []EntryStatusChange) *core.Status {
 	return core.StatusOK()
 }
 
+/*
 func reassignEntry(o core.Origin, assigneeTag string) *core.Status {
 	e, ok := index.LookupEntry(o)
 	if !ok {
@@ -121,3 +130,6 @@ func assignEntry(o core.Origin, assigneeId string) *core.Status {
 	}
 	return core.StatusNotFound()
 }
+
+
+*/

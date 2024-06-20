@@ -72,6 +72,10 @@ func addCloseStatusChange(origin core.Origin, agentId, assigneeTag string) *core
 		UpdatedTS:      time.Time{},
 	}
 	changeData = append(changeData, chg)
+	status := addStatus(origin, ClosingStatus, agentId, assigneeTag)
+	if status.OK() {
+		updateStatus(origin, ClosingStatus)
+	}
 	return core.StatusOK()
 }
 
@@ -88,12 +92,16 @@ func addReassignmentStatusChange(origin core.Origin, agentId, assigneeTag, newAs
 		AgentId:        agentId,
 		CreatedTS:      time.Now().UTC(),
 		AssigneeTag:    assigneeTag,
-		NewStatus:      ReassignmentStatus,
+		NewStatus:      ReassignedStatus,
 		NewAssigneeTag: newAssigneeTag,
 		Error:          "",
 		UpdatedTS:      time.Time{},
 	}
 	changeData = append(changeData, chg)
+	status := addStatus(origin, ReassigningStatus, agentId, assigneeTag)
+	if status.OK() {
+		updateStatus(origin, ReassigningStatus)
+	}
 	return core.StatusOK()
 }
 

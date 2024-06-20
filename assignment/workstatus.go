@@ -7,18 +7,22 @@ import (
 
 // assign - add an assigned status
 func assign(origin core.Origin, agentId, assigneeId string) *core.Status {
-	return addStatus(origin, AssignedStatus, agentId, assigneeId)
+	status := addStatus(origin, AssignedStatus, agentId, assigneeId)
+	if status.OK() {
+		status = updateStatus(origin, ClosedStatus)
+	}
+	return status
 }
 
 // closeAssignment - add a closed status
-func closeAssignment(origin core.Origin, agentId string) *core.Status {
-	return addStatus(origin, ClosedStatus, agentId, "")
-}
+//func closeAssignment(origin core.Origin, agentId string) *core.Status {
+//	return addStatus(origin, ClosedStatus, agentId, "")
+//}
 
 // reassign - set the status of an assignment to reassignment, and update assignment receiver
-func reassign(origin core.Origin, agentId, newAssigneeClass string, newAssigneeOrigin core.Origin) *core.Status {
-	return core.StatusOK()
-}
+//func reassign(origin core.Origin, agentId, newAssigneeClass string, newAssigneeOrigin core.Origin) *core.Status {
+//	return core.StatusOK()
+//}
 
 // addStatus - add a status
 func addStatus(origin core.Origin, status, agentId, assigneeId string) *core.Status {
@@ -49,7 +53,7 @@ func lastStatus(entryId int, status string) (EntryStatus, bool) {
 	return EntryStatus{}, false
 }
 
-func addCloseStatusChange(origin core.Origin, agentId, assigneeClass string, assigneeOrigin core.Origin) *core.Status {
+func addCloseStatusChange(origin core.Origin, agentId, assigneeTag string) *core.Status {
 	e, ok := index.LookupEntry(origin)
 	if !ok {
 		return core.StatusNotFound()
@@ -57,27 +61,21 @@ func addCloseStatusChange(origin core.Origin, agentId, assigneeClass string, ass
 	defer safeChange.Lock()()
 
 	chg := EntryStatusChange{
-		EntryId:            e.EntryId,
-		ChangeId:           changeData[len(changeData)-1].ChangeId + 1,
-		AgentId:            agentId,
-		CreatedTS:          time.Now().UTC(),
-		AssigneeClass:      assigneeClass,
-		AssigneeRegion:     assigneeOrigin.Region,
-		AssigneeZone:       assigneeOrigin.Zone,
-		AssigneeSubZone:    assigneeOrigin.SubZone,
-		NewStatus:          ClosedStatus,
-		NewAssigneeClass:   "",
-		NewAssigneeRegion:  "",
-		NewAssigneeZone:    "",
-		NewAssigneeSubZone: "",
-		Error:              "",
-		UpdatedTS:          time.Time{},
+		EntryId:        e.EntryId,
+		ChangeId:       changeData[len(changeData)-1].ChangeId + 1,
+		AgentId:        agentId,
+		CreatedTS:      time.Now().UTC(),
+		AssigneeTag:    assigneeTag,
+		NewStatus:      ClosedStatus,
+		NewAssigneeTag: "",
+		Error:          "",
+		UpdatedTS:      time.Time{},
 	}
 	changeData = append(changeData, chg)
 	return core.StatusOK()
 }
 
-func addReassignmentStatusChange(origin core.Origin, agentId, assigneeClass string, assigneeOrigin core.Origin, newAssigneeClass string, newAssigneeOrigin core.Origin) *core.Status {
+func addReassignmentStatusChange(origin core.Origin, agentId, assigneeTag, newAssigneeTag string) *core.Status {
 	e, ok := index.LookupEntry(origin)
 	if !ok {
 		return core.StatusNotFound()
@@ -85,34 +83,28 @@ func addReassignmentStatusChange(origin core.Origin, agentId, assigneeClass stri
 	defer safeChange.Lock()()
 
 	chg := EntryStatusChange{
-		EntryId:            e.EntryId,
-		ChangeId:           changeData[len(changeData)-1].ChangeId + 1,
-		AgentId:            agentId,
-		CreatedTS:          time.Now().UTC(),
-		AssigneeClass:      assigneeClass,
-		AssigneeRegion:     assigneeOrigin.Region,
-		AssigneeZone:       assigneeOrigin.Zone,
-		AssigneeSubZone:    assigneeOrigin.SubZone,
-		NewStatus:          ReassignmentStatus,
-		NewAssigneeClass:   newAssigneeClass,
-		NewAssigneeRegion:  newAssigneeOrigin.Region,
-		NewAssigneeZone:    newAssigneeOrigin.Zone,
-		NewAssigneeSubZone: newAssigneeOrigin.SubZone,
-		Error:              "",
-		UpdatedTS:          time.Time{},
+		EntryId:        e.EntryId,
+		ChangeId:       changeData[len(changeData)-1].ChangeId + 1,
+		AgentId:        agentId,
+		CreatedTS:      time.Now().UTC(),
+		AssigneeTag:    assigneeTag,
+		NewStatus:      ReassignmentStatus,
+		NewAssigneeTag: newAssigneeTag,
+		Error:          "",
+		UpdatedTS:      time.Time{},
 	}
 	changeData = append(changeData, chg)
 	return core.StatusOK()
 }
 
 // getStatusChange - get status change by assignee and class
-func getStatusChange(status, assigneeClass string, assigneeOrigin core.Origin) ([]EntryStatusChange, *core.Status) {
+func getStatusChange(status, assigneeTag string) ([]EntryStatusChange, *core.Status) {
 	defer safeChange.Lock()()
 	for _, chg := range changeData {
 		if chg.NewStatus != status {
 			continue
 		}
-		if chg.AssigneeClass == assigneeClass && chg.AssigneeRegion == assigneeOrigin.Region && chg.AssigneeZone == assigneeOrigin.Zone && chg.AssigneeSubZone == assigneeOrigin.SubZone {
+		if chg.AssigneeTag == assigneeTag {
 			return []EntryStatusChange{chg}, core.StatusOK()
 		}
 	}

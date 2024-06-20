@@ -9,17 +9,17 @@ import (
 )
 
 const (
-	NewStatusName        = "new_status"
-	NewAssigneeClassName = "new_assignee_class"
-	ErrorName            = "error"
-	ProcessedTSName      = "processed_ts"
+	NewStatusName      = "new_status"
+	NewAssigneeTagName = "new_assignee_class"
+	ErrorName          = "error"
+	ProcessedTSName    = "processed_ts"
 )
 
 var (
 	safeChange = common.NewSafe()
 	changeData = []EntryStatusChange{
-		{EntryId: 1, ChangeId: 1, AgentId: "agent-name:agent-class:instance-id", AssigneeClass: "class", NewStatus: "closed", NewAssigneeClass: "new", Error: "test error", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-		{EntryId: 1, ChangeId: 2, AgentId: "agent-name:agent-class:instance-id", AssigneeClass: "class2", NewStatus: "closed", NewAssigneeClass: "new", Error: "test2 error", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{EntryId: 1, ChangeId: 1, AgentId: "agent-name:agent-class:instance-id", AssigneeTag: "class", NewStatus: "closed", NewAssigneeTag: "new", Error: "test error", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{EntryId: 1, ChangeId: 2, AgentId: "agent-name:agent-class:instance-id", AssigneeTag: "class2", NewStatus: "closed", NewAssigneeTag: "new", Error: "test2 error", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 	}
 )
 
@@ -31,16 +31,10 @@ type EntryStatusChange struct {
 	CreatedTS time.Time `json:"created-ts"`
 
 	// Used to determine which class of agents will receive this change
-	AssigneeClass   string `json:"assignee-class"`
-	AssigneeRegion  string `json:"assignee-region"`
-	AssigneeZone    string `json:"assignee-zone"`
-	AssigneeSubZone string `json:"assignee-sub-zone"`
+	AssigneeTag string `json:"assignee-tag"`
 
-	NewStatus          string `json:"new-status"`
-	NewAssigneeClass   string `json:"new-assignee-class"`
-	NewAssigneeRegion  string `json:"new-assignee-region"`
-	NewAssigneeZone    string `json:"new-assignee-zone"`
-	NewAssigneeSubZone string `json:"new-assignee-sub-zone"`
+	NewStatus      string `json:"new-status"`
+	NewAssigneeTag string `json:"new-assignee-tag"`
 
 	// Update data. Processed agent id needed ??
 	// Error needed if updates are in an invalid order, such as a reassignment after a close
@@ -59,12 +53,12 @@ func (EntryStatusChange) Scan(columnNames []string, values []any) (e EntryStatus
 			e.AgentId = values[i].(string)
 		case CreatedTSName:
 			e.CreatedTS = values[i].(time.Time)
-		case AssigneeClassName:
-			e.AssigneeClass = values[i].(string)
+		case AssigneeTagName:
+			e.AssigneeTag = values[i].(string)
 		case NewStatusName:
 			e.NewStatus = values[i].(string)
-		case NewAssigneeClassName:
-			e.NewAssigneeClass = values[i].(string)
+		case NewAssigneeTagName:
+			e.NewAssigneeTag = values[i].(string)
 		case ErrorName:
 			e.Error = values[i].(string)
 		case ProcessedTSName:
@@ -83,9 +77,9 @@ func (a EntryStatusChange) Values() []any {
 		a.ChangeId,
 		a.AgentId,
 		a.CreatedTS,
-		a.AssigneeClass,
+		a.AssigneeTag,
 		a.NewStatus,
-		a.NewAssigneeClass,
+		a.NewAssigneeTag,
 		a.Error,
 		a.UpdatedTS,
 	}

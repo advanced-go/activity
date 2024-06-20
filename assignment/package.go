@@ -108,23 +108,13 @@ func PutT[T Constraints](r *http.Request, body []T) (h2 http.Header, status *cor
 */
 
 // New - add an assignment and an open status
-func New(ctx context.Context, agentId string, origin core.Origin, assigneeClass string, assigneeOrigin core.Origin) *core.Status {
-	return insert(agentId, origin, assigneeClass, assigneeOrigin)
+func New(ctx context.Context, agentId string, origin core.Origin, assigneeTag string) *core.Status {
+	return insert(agentId, origin, assigneeTag)
 }
 
 // GetOpen - find an open assignment for a given assignee class and origin
-func GetOpen(ctx context.Context, assigneeClass string, assigneeOrigin core.Origin) ([]Entry, *core.Status) {
-	return getOpen(assigneeClass, assigneeOrigin)
-}
-
-// Assign - set the status of an assignment to assigned
-func Assign(ctx context.Context, origin core.Origin, agentId, assigneeId string) *core.Status {
-	return assign(origin, agentId, assignmentStatus)
-}
-
-// Close - update the status of an assignment to closed
-func Close(ctx context.Context, origin core.Origin, agentId string) *core.Status {
-	return closeAssignment(origin, agentId)
+func GetOpen(ctx context.Context, assigneeTag string) ([]Entry, *core.Status) {
+	return getOpen(assigneeTag)
 }
 
 // AddDetail - add assignment details
@@ -132,22 +122,32 @@ func AddDetail(ctx context.Context, origin core.Origin, agentId, routeName, deta
 	return addDetail(origin, agentId, routeName, details)
 }
 
+// Assign - set the status of an assignment to assigned
+func Assign(ctx context.Context, origin core.Origin, agentId, assigneeId string) *core.Status {
+	return assign(origin, agentId, assignmentStatus)
+}
+
+// Reassign - set the status of an assignment to reassignment, and update assignment receiver
+func Reassign(ctx context.Context, origin core.Origin, agentId, assigneeTag, newAssigneeTag string) *core.Status {
+	return addReassignmentStatusChange(origin, agentId, assigneeTag, newAssigneeTag)
+}
+
+// Close - add a closed status change
+func Close(ctx context.Context, origin core.Origin, agentId, assigneeTag string) *core.Status {
+	return addCloseStatusChange(origin, agentId, assigneeTag)
+}
+
 // GetCloseStatusChange - get status change by assignee for close status
-func GetCloseStatusChange(ctx context.Context, assigneeClass string, assigneeOrigin core.Origin) ([]EntryStatusChange, *core.Status) {
-	return getStatusChange(ClosedStatus, assigneeClass, assigneeOrigin)
+func GetCloseStatusChange(ctx context.Context, assigneeTag string) ([]EntryStatusChange, *core.Status) {
+	return getStatusChange(ClosedStatus, assigneeTag)
 }
 
 // GetReassignmentStatusChange - get status change by assignee for reassignment status
-func GetReassignmentStatusChange(ctx context.Context, assigneeClass string, assigneeOrigin core.Origin) ([]EntryStatusChange, *core.Status) {
-	return getStatusChange(ReassignmentStatus, assigneeClass, assigneeOrigin)
+func GetReassignmentStatusChange(ctx context.Context, assigneeTag string) ([]EntryStatusChange, *core.Status) {
+	return getStatusChange(ReassignmentStatus, assigneeTag)
 }
 
 // ProcessReassignment - process the reassignment
 func ProcessReassignment(ctx context.Context, change []EntryStatusChange) *core.Status {
 	return processReassignment(ctx, change)
-}
-
-// Reassign - set the status of an assignment to reassignment, and update assignment receiver
-func Reassign(ctx context.Context, origin core.Origin, agentId, newAssigneeClass string, newAssigneeOrigin core.Origin) *core.Status {
-	return reassign(origin, agentId, newAssigneeClass, newAssigneeOrigin)
 }

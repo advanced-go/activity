@@ -9,7 +9,7 @@ import (
 )
 
 // insert - add an assignment and an open status
-func insert(agentId string, origin core.Origin, assigneeClass string, assigneeOrigin core.Origin) *core.Status {
+func insert(agentId string, origin core.Origin, assigneeTag string) *core.Status {
 	// Enforce unique constraint
 	_, ok := index.LookupEntry(origin)
 	if ok {
@@ -18,36 +18,30 @@ func insert(agentId string, origin core.Origin, assigneeClass string, assigneeOr
 	defer safeEntry.Lock()()
 
 	entry := Entry{
-		EntryId:         entryData[len(entryData)-1].EntryId + 1,
-		AgentId:         agentId,
-		CreatedTS:       time.Now().UTC(),
-		Region:          origin.Region,
-		Zone:            origin.Zone,
-		SubZone:         origin.SubZone,
-		Host:            origin.Host,
-		AssigneeClass:   assigneeClass,
-		AssigneeRegion:  assigneeOrigin.Region,
-		AssigneeZone:    assigneeOrigin.Zone,
-		AssigneeSubZone: assigneeOrigin.SubZone,
-		AssigneeId:      "",
-		UpdatedTS:       time.Time{},
-		Status:          "",
+		EntryId:     entryData[len(entryData)-1].EntryId + 1,
+		AgentId:     agentId,
+		CreatedTS:   time.Now().UTC(),
+		Region:      origin.Region,
+		Zone:        origin.Zone,
+		SubZone:     origin.SubZone,
+		Host:        origin.Host,
+		AssigneeTag: assigneeTag,
+		AssigneeId:  "",
+		UpdatedTS:   time.Time{},
+		Status:      "",
 	}
 	entryData = append(entryData, entry)
 	index.AddEntry(entry)
 	return addStatus(origin, OpenStatus, agentId, "")
 }
 
-// getOpen - find an open assignment for a given assignee class and origin
-func getOpen(assigneeClass string, assigneeOrigin core.Origin) ([]Entry, *core.Status) {
+// getOpen - find an open assignment for a given assignee tag
+func getOpen(assigneeTag string) ([]Entry, *core.Status) {
 	defer safeEntry.Lock()()
 	defer safeStatus.Lock()()
 
 	for _, e := range entryData {
-		if e.AssigneeClass != assigneeClass {
-			continue
-		}
-		if e.AssigneeRegion == assigneeOrigin.Region && e.AssigneeZone == assigneeOrigin.Zone && e.AssigneeSubZone == assigneeOrigin.SubZone {
+		if e.AssigneeTag == assigneeTag {
 			_, ok := lastStatus(e.EntryId, OpenStatus)
 			if ok {
 				return []Entry{e}, core.StatusOK()
@@ -55,6 +49,17 @@ func getOpen(assigneeClass string, assigneeOrigin core.Origin) ([]Entry, *core.S
 		}
 	}
 	return nil, core.StatusNotFound()
+}
+
+func updateStatus(origin core.Origin, status string) *core.Status {
+	defer safeEntry.Lock()()
+
+	for i, e := range entryData {
+		if e.Region == origin.Region && e.Zone == origin.Zone && e.SubZone == origin.SubZone && e.Host == origin.Host {
+			entryData[i].Status = status
+		}
+	}
+	return core.StatusOK()
 }
 
 // addDetail - add assignment details
@@ -82,7 +87,7 @@ func processReassignment(ctx context.Context, change []EntryStatusChange) *core.
 	return core.StatusOK()
 }
 
-func reassignEntry(o core.Origin, assigneeClass string) *core.Status {
+func reassignEntry(o core.Origin, assigneeTag string) *core.Status {
 	e, ok := index.LookupEntry(o)
 	if !ok {
 		return core.StatusNotFound()
@@ -92,7 +97,7 @@ func reassignEntry(o core.Origin, assigneeClass string) *core.Status {
 	for i, entry := range entryData {
 		if entry.EntryId == e.EntryId {
 			entryData[i].UpdatedTS = time.Now().UTC()
-			entryData[i].AssigneeClass = assigneeClass
+			entryData[i].AssigneeTag = assigneeTag
 			//entryData[i].AssigneeId = ""
 			return core.StatusOK()
 		}

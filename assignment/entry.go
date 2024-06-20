@@ -27,7 +27,7 @@ const (
 	ZoneName            = "zone"
 	SubZoneName         = "sub_zone"
 	HostName            = "host"
-	AssigneeClassName   = "assignee_class"
+	AssigneeTagName     = "assignee_tag"
 	AssigneeIdName      = "assignee_id"
 	AssigneeRegionName  = "assignee_region"
 	AssigneeZoneName    = "assignee_zone"
@@ -39,10 +39,10 @@ var (
 	index     = common.NewOriginIndex[Entry](entryData)
 	safeEntry = common.NewSafe()
 	entryData = []Entry{
-		{EntryId: 1, AgentId: "director-1", Region: "us-west-1", Zone: "usw1-az1", Host: "www.host1.com", AssigneeClass: "case-officer:006", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-		{EntryId: 2, AgentId: "director-1", Region: "us-west-1", Zone: "usw1-az2", Host: "www.host2.com", AssigneeClass: "case-officer:006", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-		{EntryId: 3, AgentId: "director-2", Region: "us-west-2", Zone: "usw2-az3", Host: "www.host1.com", AssigneeClass: "case-officer:007", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-		{EntryId: 4, AgentId: "director-2", Region: "us-west-2", Zone: "usw2-az4", Host: "www.host2.com", AssigneeClass: "case-officer:007", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{EntryId: 1, AgentId: "director-1", Region: "us-west-1", Zone: "usw1-az1", Host: "www.host1.com", AssigneeTag: "us-west-1:usw1-az1:case-officer-006", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{EntryId: 2, AgentId: "director-1", Region: "us-west-1", Zone: "usw1-az2", Host: "www.host2.com", AssigneeTag: "us-west-1:usw1-az1:case-officer-006", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{EntryId: 3, AgentId: "director-2", Region: "us-west-2", Zone: "usw2-az3", Host: "www.host1.com", AssigneeTag: "us-west-2:usw2-az3:case-officer-007", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{EntryId: 4, AgentId: "director-2", Region: "us-west-2", Zone: "usw2-az4", Host: "www.host2.com", AssigneeTag: "us-west-2:usw2-az4:case-officer-007", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 	}
 )
 
@@ -62,12 +62,9 @@ type Entry struct {
 	SubZone string `json:"sub-zone"`
 	Host    string `json:"host"`
 
-	// Assignee class + assignee Origin
-	AssigneeClass   string `json:"assignee-class"` // Only allow a certain agent class to own this
-	AssigneeRegion  string `json:"assignee-region"`
-	AssigneeZone    string `json:"assignee-zone"`
-	AssigneeSubZone string `json:"assignee-sub-zone"`
-	AssigneeId      string `json:"assignee-id"` // Set when an agent pulls this entry
+	// Region + Zone + Class
+	AssigneeTag string `json:"assignee-tag"` // Assigned to an agent class and origin
+	AssigneeId  string `json:"assignee-id"`  // Set when an agent pulls this entry
 
 	UpdatedTS time.Time `json:"updated-ts"`
 	Status    string    `json:"status"`
@@ -96,14 +93,8 @@ func (Entry) Scan(columnNames []string, values []any) (e Entry, err error) {
 		case HostName:
 			e.Host = values[i].(string)
 
-		case AssigneeClassName:
-			e.AssigneeClass = values[i].(string)
-		case AssigneeRegionName:
-			e.AssigneeRegion = values[i].(string)
-		case AssigneeZoneName:
-			e.AssigneeZone = values[i].(string)
-		case AssigneeSubZoneName:
-			e.AssigneeSubZone = values[i].(string)
+		case AssigneeTagName:
+			e.AssigneeTag = values[i].(string)
 		case AssigneeIdName:
 			e.AssigneeId = values[i].(string)
 
@@ -130,10 +121,7 @@ func (e Entry) Values() []any {
 		e.SubZone,
 		e.Host,
 
-		e.AssigneeClass,
-		e.AssigneeRegion,
-		e.AssigneeZone,
-		e.AssigneeSubZone,
+		e.AssigneeTag,
 		e.AssigneeId,
 
 		e.UpdatedTS,

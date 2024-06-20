@@ -138,12 +138,12 @@ func Close(ctx context.Context, origin core.Origin, agentId, assigneeTag string)
 }
 
 // GetCloseStatusChange - get status change by assignee for close status
-func GetCloseStatusChange(ctx context.Context, assigneeTag string) ([]EntryStatusChange, *core.Status) {
+func GetCloseStatusChange(ctx context.Context, assigneeTag string) (EntryStatusChange, *core.Status) {
 	return getStatusChange(ClosedStatus, assigneeTag)
 }
 
 // GetReassignmentStatusChange - get status change by assignee for reassignment status
-func GetReassignmentStatusChange(ctx context.Context, assigneeTag string) ([]EntryStatusChange, *core.Status) {
+func GetReassignmentStatusChange(ctx context.Context, assigneeTag string) (EntryStatusChange, *core.Status) {
 	return getStatusChange(ReassignedStatus, assigneeTag)
 }
 
@@ -153,6 +153,6 @@ func ProcessClose(ctx context.Context, origin core.Origin, agentId string) *core
 }
 
 // ProcessReassignment - process the reassignment
-func ProcessReassignment(ctx context.Context, origin core.Origin, agentId string, change []EntryStatusChange) *core.Status {
+func ProcessReassignment(ctx context.Context, origin core.Origin, agentId string, change EntryStatusChange) *core.Status {
 	return processReassignment(origin, agentId, change)
 }

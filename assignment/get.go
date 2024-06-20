@@ -55,3 +55,7 @@ func testQuery[T pgxsql.Scanner[T]](_ context.Context, _ http.Header, _, _ strin
 	}
 	return
 }
+
+func NewOrigin(values url.Values) core.Origin {
+	return core.Origin{}
+}

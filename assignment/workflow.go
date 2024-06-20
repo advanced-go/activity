@@ -51,6 +51,10 @@ func getOpen(assigneeTag string) ([]Entry, *core.Status) {
 }
 
 func updateStatus(origin core.Origin, status string) *core.Status {
+	_, ok := index.LookupEntry(origin)
+	if !ok {
+		return core.StatusNotFound()
+	}
 	defer safeEntry.Lock()()
 
 	for i, e := range entryData {
@@ -83,6 +87,11 @@ func addDetail(origin core.Origin, agentId, routeName, details string) *core.Sta
 
 // processClose - process a closed status update
 func processClose(origin core.Origin, agentId string) *core.Status {
+	_, ok := index.LookupEntry(origin)
+	if !ok {
+		return core.StatusNotFound()
+	}
+
 	status := addStatus(origin, ClosedStatus, agentId, "")
 	if status.OK() {
 		updateStatus(origin, ClosedStatus)
@@ -91,8 +100,21 @@ func processClose(origin core.Origin, agentId string) *core.Status {
 }
 
 // processReassignment - process a reassignment
-func processReassignment(origin core.Origin, agentId string, change []EntryStatusChange) *core.Status {
-	return core.StatusOK()
+func processReassignment(origin core.Origin, agentId string, change EntryStatusChange) *core.Status {
+	_, ok := index.LookupEntry(origin)
+	if !ok {
+		return core.StatusNotFound()
+	}
+
+	if change.NewStatus != ReassignedStatus {
+		return core.StatusBadRequest()
+	}
+
+	status := addStatus(origin, ReassignedStatus, agentId, "")
+	if status.OK() {
+		updateStatus(origin, ReassignedStatus)
+	}
+	return status
 }
 
 /*

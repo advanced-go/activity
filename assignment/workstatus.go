@@ -7,22 +7,17 @@ import (
 
 // assign - add an assigned status
 func assign(origin core.Origin, agentId, assigneeId string) *core.Status {
+	_, ok := index.LookupEntry(origin)
+	if !ok {
+		return core.StatusNotFound()
+	}
+
 	status := addStatus(origin, AssignedStatus, agentId, assigneeId)
 	if status.OK() {
 		status = updateStatus(origin, ClosedStatus)
 	}
 	return status
 }
-
-// closeAssignment - add a closed status
-//func closeAssignment(origin core.Origin, agentId string) *core.Status {
-//	return addStatus(origin, ClosedStatus, agentId, "")
-//}
-
-// reassign - set the status of an assignment to reassignment, and update assignment receiver
-//func reassign(origin core.Origin, agentId, newAssigneeClass string, newAssigneeOrigin core.Origin) *core.Status {
-//	return core.StatusOK()
-//}
 
 // addStatus - add a status
 func addStatus(origin core.Origin, status, agentId, assigneeId string) *core.Status {
@@ -58,6 +53,8 @@ func addCloseStatusChange(origin core.Origin, agentId, assigneeTag string) *core
 	if !ok {
 		return core.StatusNotFound()
 	}
+	// TODO: if current status is closing or closed then return an error status
+
 	defer safeChange.Lock()()
 
 	chg := EntryStatusChange{
@@ -84,6 +81,8 @@ func addReassignmentStatusChange(origin core.Origin, agentId, assigneeTag, newAs
 	if !ok {
 		return core.StatusNotFound()
 	}
+	// TODO: if current status is reassigning or reassigned then return an error status
+
 	defer safeChange.Lock()()
 
 	chg := EntryStatusChange{
@@ -106,15 +105,17 @@ func addReassignmentStatusChange(origin core.Origin, agentId, assigneeTag, newAs
 }
 
 // getStatusChange - get status change by assignee and class
-func getStatusChange(status, assigneeTag string) ([]EntryStatusChange, *core.Status) {
+func getStatusChange(status, assigneeTag string) (EntryStatusChange, *core.Status) {
 	defer safeChange.Lock()()
 	for _, chg := range changeData {
-		if chg.NewStatus != status {
+		if chg.NewStatus != status || chg.AssigneeTag != assigneeTag {
 			continue
 		}
-		if chg.AssigneeTag == assigneeTag {
-			return []EntryStatusChange{chg}, core.StatusOK()
+		year, _, _ := chg.UpdatedTS.Date()
+		if year == 1 {
+			continue
 		}
+		return chg, core.StatusOK()
 	}
-	return nil, core.StatusNotFound()
+	return EntryStatusChange{}, core.StatusNotFound()
 }

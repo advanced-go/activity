@@ -23,6 +23,10 @@ var (
 	}
 )
 
+func lastChange() EntryStatusChange {
+	return changeData[len(changeData)-1]
+}
+
 // EntryStatusChange - updates for reassignment and close
 type EntryStatusChange struct {
 	EntryId   int       `json:"entry-id"`

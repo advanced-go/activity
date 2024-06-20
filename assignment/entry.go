@@ -39,12 +39,17 @@ var (
 	index     = common.NewOriginIndex[Entry](entryData)
 	safeEntry = common.NewSafe()
 	entryData = []Entry{
-		{EntryId: 1, AgentId: "director-1", Region: "us-west-1", Zone: "usw1-az1", Host: "www.host1.com", AssigneeTag: "us-west-1:usw1-az1:case-officer-006", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-		{EntryId: 2, AgentId: "director-1", Region: "us-west-1", Zone: "usw1-az2", Host: "www.host2.com", AssigneeTag: "us-west-1:usw1-az1:case-officer-006", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-		{EntryId: 3, AgentId: "director-2", Region: "us-west-2", Zone: "usw2-az3", Host: "www.host1.com", AssigneeTag: "us-west-2:usw2-az3:case-officer-007", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-		{EntryId: 4, AgentId: "director-2", Region: "us-west-2", Zone: "usw2-az4", Host: "www.host2.com", AssigneeTag: "us-west-2:usw2-az4:case-officer-007", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{EntryId: 1, AgentId: "director-1", Region: "us-west-1", Zone: "usw1-az1", Host: "www.host1.com", AssigneeTag: "us-west-1:usw1-az1:case-officer-006", Status: OpenStatus, CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{EntryId: 2, AgentId: "director-1", Region: "us-west-1", Zone: "usw1-az2", Host: "www.host2.com", AssigneeTag: "us-west-1:usw1-az1:case-officer-006", Status: OpenStatus, CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{EntryId: 3, AgentId: "director-2", Region: "us-west-2", Zone: "usw2-az3", Host: "www.host1.com", AssigneeTag: "us-west-2:usw2-az3:case-officer-007", Status: OpenStatus, CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{EntryId: 4, AgentId: "director-2", Region: "us-west-2", Zone: "usw2-az4", Host: "www.host2.com", AssigneeTag: "us-west-2:usw2-az4:case-officer-007", Status: OpenStatus, CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 	}
 )
+
+func lastEntry() Entry {
+	//defer safeEntry.Lock()()
+	return entryData[len(entryData)-1]
+}
 
 // Case office looks for open assignments, and then does an assignment to a Service Agent and updating
 // the assignment assignee id

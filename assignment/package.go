@@ -129,12 +129,12 @@ func Assign(ctx context.Context, origin core.Origin, agentId, assigneeId string)
 
 // Reassign - set the status of an assignment to reassignment, and update assignment receiver
 func Reassign(ctx context.Context, origin core.Origin, agentId, assigneeTag, newAssigneeTag string) *core.Status {
-	return addReassignmentStatusChange(origin, agentId, assigneeTag, newAssigneeTag)
+	return addReassigningStatusChange(origin, agentId, assigneeTag, newAssigneeTag)
 }
 
 // Close - add a closed status change
 func Close(ctx context.Context, origin core.Origin, agentId, assigneeTag string) *core.Status {
-	return addCloseStatusChange(origin, agentId, assigneeTag)
+	return addClosingStatusChange(origin, agentId, assigneeTag)
 }
 
 // GetCloseStatusChange - get status change by assignee for close status

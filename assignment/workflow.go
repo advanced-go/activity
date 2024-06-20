@@ -17,7 +17,7 @@ func insert(agentId string, origin core.Origin, assigneeTag string) *core.Status
 	defer safeEntry.Lock()()
 
 	entry := Entry{
-		EntryId:     entryData[len(entryData)-1].EntryId + 1,
+		EntryId:     lastEntry().EntryId + 1,
 		AgentId:     agentId,
 		CreatedTS:   time.Now().UTC(),
 		Region:      origin.Region,
@@ -41,7 +41,7 @@ func getOpen(assigneeTag string) ([]Entry, *core.Status) {
 
 	for _, e := range entryData {
 		if e.AssigneeTag == assigneeTag {
-			_, ok := lastStatus(e.EntryId, OpenStatus)
+			_, ok := lastStatusFilter(e.EntryId, OpenStatus)
 			if ok {
 				return []Entry{e}, core.StatusOK()
 			}
@@ -50,7 +50,7 @@ func getOpen(assigneeTag string) ([]Entry, *core.Status) {
 	return nil, core.StatusNotFound()
 }
 
-func updateStatus(origin core.Origin, status string) *core.Status {
+func updateEntryStatus(origin core.Origin, status string) *core.Status {
 	_, ok := index.LookupEntry(origin)
 	if !ok {
 		return core.StatusNotFound()
@@ -75,7 +75,7 @@ func addDetail(origin core.Origin, agentId, routeName, details string) *core.Sta
 
 	detail := EntryDetail{
 		EntryId:   e.EntryId,
-		DetailId:  detailData[len(detailData)-1].DetailId + 1,
+		DetailId:  lastDetail().DetailId + 1,
 		AgentId:   agentId,
 		CreatedTS: time.Now().UTC(),
 		RouteName: routeName,
@@ -94,7 +94,7 @@ func processClose(origin core.Origin, agentId string) *core.Status {
 
 	status := addStatus(origin, ClosedStatus, agentId, "")
 	if status.OK() {
-		updateStatus(origin, ClosedStatus)
+		updateEntryStatus(origin, ClosedStatus)
 	}
 	return status
 }
@@ -112,7 +112,7 @@ func processReassignment(origin core.Origin, agentId string, change EntryStatusC
 
 	status := addStatus(origin, ReassignedStatus, agentId, "")
 	if status.OK() {
-		updateStatus(origin, ReassignedStatus)
+		updateEntryStatus(origin, ReassignedStatus)
 	}
 	return status
 }

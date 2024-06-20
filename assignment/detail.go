@@ -32,6 +32,10 @@ var (
 	}
 )
 
+func lastDetail() EntryDetail {
+	return detailData[len(detailData)-1]
+}
+
 // EntryDetail - entry details
 type EntryDetail struct {
 	EntryId   int       `json:"entry-id"`

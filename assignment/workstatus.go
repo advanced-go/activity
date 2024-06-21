@@ -34,7 +34,7 @@ func addClosingStatusChange(origin core.Origin, agentId, assigneeTag string) *co
 		AgentId:        agentId,
 		CreatedTS:      time.Now().UTC(),
 		AssigneeTag:    assigneeTag,
-		NewStatus:      ClosingStatus,
+		NewStatus:      ClosedStatus,
 		NewAssigneeTag: "",
 		Error:          "",
 		UpdatedTS:      time.Time{},
@@ -62,7 +62,7 @@ func addReassigningStatusChange(origin core.Origin, agentId, assigneeTag, newAss
 		AgentId:        agentId,
 		CreatedTS:      time.Now().UTC(),
 		AssigneeTag:    assigneeTag,
-		NewStatus:      ReassigningStatus,
+		NewStatus:      OpenStatus,
 		NewAssigneeTag: newAssigneeTag,
 		Error:          "",
 		UpdatedTS:      time.Time{},
@@ -91,6 +91,18 @@ func getStatusChange(status, assigneeTag string) (EntryStatusChange, *core.Statu
 	return EntryStatusChange{}, core.StatusNotFound()
 }
 
+func updateStatusChange(change EntryStatusChange) *core.Status {
+	defer safeChange.Lock()()
+
+	for i, chg := range changeData {
+		if chg.EntryId == change.EntryId && chg.ChangeId == change.ChangeId {
+			changeData[i].UpdatedTS = time.Now().UTC()
+			return core.StatusOK()
+		}
+	}
+	return core.StatusNotFound()
+}
+
 // addStatus - add a status
 func addStatus(origin core.Origin, status, agentId, assigneeId string) *core.Status {
 	e, ok := index.LookupEntry(origin)
@@ -114,6 +126,7 @@ func addStatus(origin core.Origin, status, agentId, assigneeId string) *core.Sta
 	return core.StatusOK()
 }
 
+/*
 func lastStatusFilter(entryId int, status string) (EntryStatus, bool) {
 	if entryId < 0 || status == "" {
 		return EntryStatus{}, false
@@ -125,3 +138,6 @@ func lastStatusFilter(entryId int, status string) (EntryStatus, bool) {
 	}
 	return EntryStatus{}, false
 }
+
+
+*/

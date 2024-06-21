@@ -108,8 +108,8 @@ func PutT[T Constraints](r *http.Request, body []T) (h2 http.Header, status *cor
 */
 
 // New - add an assignment and an open status
-func New(ctx context.Context, agentId string, origin core.Origin, assigneeTag string) *core.Status {
-	return insert(agentId, origin, assigneeTag)
+func New(ctx context.Context, origin core.Origin, agentId, assigneeTag string) *core.Status {
+	return insert(origin, agentId, assigneeTag)
 }
 
 // GetOpen - find an open assignment for a given assignee class and origin
@@ -142,14 +142,14 @@ func GetCloseStatusChange(ctx context.Context, assigneeTag string) (EntryStatusC
 	return getStatusChange(ClosedStatus, assigneeTag)
 }
 
-// GetReassignmentStatusChange - get status change by assignee for reassignment status
+// GetReassignmentStatusChange - get status change by assignee for open status
 func GetReassignmentStatusChange(ctx context.Context, assigneeTag string) (EntryStatusChange, *core.Status) {
-	return getStatusChange(ReassignedStatus, assigneeTag)
+	return getStatusChange(OpenStatus, assigneeTag)
 }
 
 // ProcessClose - process the close status change
-func ProcessClose(ctx context.Context, origin core.Origin, agentId string) *core.Status {
-	return processClose(origin, agentId)
+func ProcessClose(ctx context.Context, origin core.Origin, agentId string, change EntryStatusChange) *core.Status {
+	return processClose(origin, agentId, change)
 }
 
 // ProcessReassignment - process the reassignment

@@ -19,7 +19,7 @@ var (
 	safeChange = common.NewSafe()
 	changeData = []EntryStatusChange{
 		{EntryId: 1, ChangeId: 1, AgentId: "agent-name:agent-class:instance-id", AssigneeTag: "class", NewStatus: "closed", NewAssigneeTag: "new", Error: "test error", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
-		{EntryId: 1, ChangeId: 2, AgentId: "agent-name:agent-class:instance-id", AssigneeTag: "class2", NewStatus: "closed", NewAssigneeTag: "new", Error: "test2 error", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
+		{EntryId: 1, ChangeId: 2, AgentId: "agent-name:agent-class:instance-id", AssigneeTag: "class2", NewStatus: "open", NewAssigneeTag: "new", Error: "test2 error", CreatedTS: time.Date(2024, 6, 10, 7, 120, 35, 0, time.UTC)},
 	}
 )
 

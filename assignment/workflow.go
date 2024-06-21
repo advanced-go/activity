@@ -8,7 +8,7 @@ import (
 )
 
 // insert - add an assignment and an open status
-func insert(agentId string, origin core.Origin, assigneeTag string) *core.Status {
+func insert(origin core.Origin, agentId, assigneeTag string) *core.Status {
 	// Enforce unique constraint
 	_, ok := index.LookupEntry(origin)
 	if ok {
@@ -37,14 +37,10 @@ func insert(agentId string, origin core.Origin, assigneeTag string) *core.Status
 // getOpen - find an open assignment for a given assignee tag
 func getOpen(assigneeTag string) ([]Entry, *core.Status) {
 	defer safeEntry.Lock()()
-	defer safeStatus.Lock()()
 
 	for _, e := range entryData {
-		if e.AssigneeTag == assigneeTag {
-			_, ok := lastStatusFilter(e.EntryId, OpenStatus)
-			if ok {
-				return []Entry{e}, core.StatusOK()
-			}
+		if e.AssigneeTag == assigneeTag && e.Status == OpenStatus {
+			return []Entry{e}, core.StatusOK()
 		}
 	}
 	return nil, core.StatusNotFound()
@@ -86,13 +82,17 @@ func addDetail(origin core.Origin, agentId, routeName, details string) *core.Sta
 }
 
 // processClose - process a closed status update
-func processClose(origin core.Origin, agentId string) *core.Status {
+func processClose(origin core.Origin, agentId string, change EntryStatusChange) *core.Status {
 	_, ok := index.LookupEntry(origin)
 	if !ok {
 		return core.StatusNotFound()
 	}
 
-	status := addStatus(origin, ClosedStatus, agentId, "")
+	status := updateStatusChange(change)
+	if !status.OK() {
+		return status
+	}
+	status = addStatus(origin, ClosedStatus, agentId, "")
 	if status.OK() {
 		updateEntryStatus(origin, ClosedStatus)
 	}
@@ -105,15 +105,24 @@ func processReassignment(origin core.Origin, agentId string, change EntryStatusC
 	if !ok {
 		return core.StatusNotFound()
 	}
-
-	if change.NewStatus != ReassignedStatus {
+	if change.NewStatus != OpenStatus {
 		return core.StatusBadRequest()
 	}
 
-	status := addStatus(origin, ReassignedStatus, agentId, "")
-	if status.OK() {
-		updateEntryStatus(origin, ReassignedStatus)
+	defer safeEntry.Lock()()
+	for i, e := range entryData {
+		if e.Region == origin.Region && e.Zone == origin.Zone && e.SubZone == origin.SubZone && e.Host == origin.Host {
+			entryData[i].Status = OpenStatus
+			entryData[i].AssigneeTag = change.NewAssigneeTag
+			entryData[i].UpdatedTS = time.Now().UTC()
+			break
+		}
 	}
+	status := updateStatusChange(change)
+	if !status.OK() {
+		return status
+	}
+	status = addStatus(origin, OpenStatus, agentId, "")
 	return status
 }
 

@@ -19,19 +19,16 @@ const (
 		"timeout,rate_limit,rate_burst) VALUES"
 	deleteSql = "DELETE FROM access_log"
 
-	EntryIdName         = "entry_id"
-	AgentIdName         = "agent_id"
-	CreatedTSName       = "created_ts"
-	UpdatedTSName       = "updated_ts"
-	RegionName          = "region"
-	ZoneName            = "zone"
-	SubZoneName         = "sub_zone"
-	HostName            = "host"
-	AssigneeTagName     = "assignee_tag"
-	AssigneeIdName      = "assignee_id"
-	AssigneeRegionName  = "assignee_region"
-	AssigneeZoneName    = "assignee_zone"
-	AssigneeSubZoneName = "assignee_sub_zone"
+	EntryIdName     = "entry_id"
+	AgentIdName     = "agent_id"
+	CreatedTSName   = "created_ts"
+	UpdatedTSName   = "updated_ts"
+	RegionName      = "region"
+	ZoneName        = "zone"
+	SubZoneName     = "sub_zone"
+	HostName        = "host"
+	AssigneeTagName = "assignee_tag"
+	AssigneeIdName  = "assignee_id"
 )
 
 // When doing an assignment, the Agent id needs to be somewhere??
@@ -47,7 +44,6 @@ var (
 )
 
 func lastEntry() Entry {
-	//defer safeEntry.Lock()()
 	return entryData[len(entryData)-1]
 }
 

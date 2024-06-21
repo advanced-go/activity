@@ -12,7 +12,6 @@ const (
 	OpenStatus        = "open"
 	AssignedStatus    = "assigned"
 	ReassigningStatus = "reassigning"
-	ReassignedStatus  = "reassigned"
 	ClosingStatus     = "closing"
 	ClosedStatus      = "closed"
 )

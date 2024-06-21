@@ -50,27 +50,28 @@ func _ExampleAddStatus() {
 
 }
 
-func ExampleLastStatusFilter() {
-	item, ok := lastStatusFilter(-1, "")
-	fmt.Printf("test: lastStatusFilter() -> [item:%v] [ok:%v]\n", item, ok)
+/*
+	func ExampleLastStatusFilter() {
+		item, ok := lastStatusFilter(-1, "")
+		fmt.Printf("test: lastStatusFilter() -> [item:%v] [ok:%v]\n", item, ok)
 
-	item, ok = lastStatusFilter(1, "")
-	fmt.Printf("test: lastStatusFilter() -> [item:%v] [ok:%v]\n", item, ok)
+		item, ok = lastStatusFilter(1, "")
+		fmt.Printf("test: lastStatusFilter() -> [item:%v] [ok:%v]\n", item, ok)
 
-	item, ok = lastStatusFilter(3, OpenStatus)
-	fmt.Printf("test: lastStatusFilter() -> [item:%v] [ok:%v]\n", item, ok)
+		item, ok = lastStatusFilter(3, OpenStatus)
+		fmt.Printf("test: lastStatusFilter() -> [item:%v] [ok:%v]\n", item, ok)
 
-	item, ok = lastStatusFilter(3, ClosingStatus)
-	fmt.Printf("test: lastStatusFilter() -> [item:%v] [ok:%v]\n", item, ok)
+		item, ok = lastStatusFilter(3, ClosingStatus)
+		fmt.Printf("test: lastStatusFilter() -> [item:%v] [ok:%v]\n", item, ok)
 
-	//Output:
-	//test: lastStatusFilter() -> [item:{0 0  0001-01-01 00:00:00 +0000 UTC  }] [ok:false]
-	//test: lastStatusFilter() -> [item:{0 0  0001-01-01 00:00:00 +0000 UTC  }] [ok:false]
-	//test: lastStatusFilter() -> [item:{0 0  0001-01-01 00:00:00 +0000 UTC  }] [ok:false]
-	//test: lastStatusFilter() -> [item:{3 3 agent-name:agent-class:instance-id 2024-06-10 09:00:35 +0000 UTC closing }] [ok:true]
+		//Output:
+		//test: lastStatusFilter() -> [item:{0 0  0001-01-01 00:00:00 +0000 UTC  }] [ok:false]
+		//test: lastStatusFilter() -> [item:{0 0  0001-01-01 00:00:00 +0000 UTC  }] [ok:false]
+		//test: lastStatusFilter() -> [item:{0 0  0001-01-01 00:00:00 +0000 UTC  }] [ok:false]
+		//test: lastStatusFilter() -> [item:{3 3 agent-name:agent-class:instance-id 2024-06-10 09:00:35 +0000 UTC closing }] [ok:true]
 
 }
-
+*/
 func _ExampleAssign() {
 	o := core.Origin{Region: "us-west-2", Zone: "usw2-az4", Host: "www.host2.com"}
 

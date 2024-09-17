@@ -1,0 +1,40 @@
+HTTP/1.1 200 OK
+Date: Mon, 27 Jul 2009 12:28:53 GMT
+Server: Apache/2.2.14 (Win32)
+Content-Type: application/json
+Connection: Closed
+
+[
+  {
+    "customer-id": "C001",
+    "address-1":"1514 Cedar Ridge Road",
+    "city":"Vinton",
+    "state":"IA",
+    "postal-code":"52349",
+    "email":"before-email@hotmail.com"
+  },
+  {
+    "customer-id": "C002",
+    "address-1":"5494 Lakeview Drive",
+    "city":"Clear Lake",
+    "state":"IA",
+    "postal-code":"50428",
+    "email":"before-email2@yahoo.com"
+  },
+  {
+    "customer-id": "D001",
+    "address-1":"123 Main",
+    "city":"Anytown",
+    "state":"OH",
+    "postal-code":"12345",
+    "email":"before-email@hotmail.com"
+  },
+  {
+    "customer-id": "D002",
+    "address-1":"456 Oak Street",
+    "city":"Clearview",
+    "state":"AK",
+    "postal-code":"00000",
+    "email":"before-email2@yahoo.com"
+  }
+]

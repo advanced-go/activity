@@ -1,0 +1,16 @@
+HTTP/1.1 200 OK
+Date: Mon, 27 Jul 2009 12:28:53 GMT
+Server: Apache/2.2.14 (Win32)
+Content-Type: application/json
+Connection: Closed
+
+[
+  {
+    "customer-id": "C001",
+    "address-1":"1514 Cedar Ridge Road",
+    "city":"Vinton",
+    "state":"IA",
+    "postal-code":"52349",
+    "email":"before-email@hotmail.com"
+   }
+ ]

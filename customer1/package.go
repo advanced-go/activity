@@ -5,27 +5,27 @@ import (
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/uri"
 	"net/http"
-	"net/url"
 )
 
 const (
-	PkgPath      = "github/advanced-go/customer/address1"
-	UpstreamPath = "storage/address"
-	CustomerKey  = "customer"
-	StateKey     = "state"
-	Route        = "customer-address"
+	PkgPath = "github/advanced-go/customer/address1"
+	Route   = "customer-activity"
+
+	CustomerHost      = "localhost:8082"
+	CustomerAuthority = "github/advanced-go/customer"
+	CustomerPath      = "v1/address/entry"
+
+	ObservationHost        = "localhost:8083"
+	ObservationAuthority   = "github/advanced-go/observation"
+	ObservationIngressPath = "v1/timeseries/ingress/entry"
+	ObservationEgressPath  = "v1/timeseries/egress/entry"
 )
 
 var (
 	resolver = uri.NewResolver("localhost:8081")
 )
 
-// AddressStorage - egress URLs
-func AddressStorage(host, path string, values url.Values, h http.Header) string {
-	return resolver.Url(host, path, values, h)
-}
-
-// Get - activity1 resource GET
+// Get - customer1 resource GET
 func Get(r *http.Request, _ string) (entries []Entry, h2 http.Header, status *core.Status) {
 	if r == nil {
 		return entries, h2, core.NewStatusError(core.StatusInvalidArgument, errors.New("error: http.Request is"))

@@ -11,10 +11,10 @@ import (
 func ExampleGet_Customer() {
 	values := make(url.Values)
 	values.Add(customerKey, "C001")
-	path := uri.BuildPath(CustomerAuthority, CustomerPath, values)
+	path := uri.BuildPath(CustomerAuthority, Customer1AddressPath, values)
 	h := uri.AddResolverContentLocation(nil, path, testrsc.Addr1GetRespTest)
 
-	entries, _, status := get[core.Output](nil, h, activityIngressPath, values)
+	entries, _, status := get[core.Output](nil, h, activity1IngressPath, values)
 	fmt.Printf("test: get() -> [status:%v] [path:%v] [entries:%v]\n", status, path, len(entries))
 
 	//Output:

@@ -9,19 +9,19 @@ import (
 )
 
 const (
-	PkgPath             = "github/advanced-go/activity/customer1"
-	Route               = "customer-activity"
-	activityIngressPath = "v1/ingress/entry"
-	activityEgressPath  = "v1/egress/entry"
+	PkgPath              = "github/advanced-go/activity/customer1"
+	Route                = "customer-activity"
+	activity1IngressPath = "v1/ingress/entry"
+	activity1EgressPath  = "v1/egress/entry"
 
-	CustomerHost      = "localhost:8082"
-	CustomerAuthority = "github/advanced-go/customer"
-	CustomerPath      = "v1/address/entry"
+	CustomerHost         = "localhost:8082"
+	CustomerAuthority    = "github/advanced-go/customer"
+	Customer1AddressPath = "v1/address/entry"
 
-	EventsHost        = "localhost:8083"
-	EventsAuthority   = "github/advanced-go/events"
-	EventsIngressPath = "v1/log/ingress/entry"
-	EventsEgressPath  = "v1/log/egress/entry"
+	EventsHost         = "localhost:8083"
+	EventsAuthority    = "github/advanced-go/events"
+	Events1IngressPath = "v1/log/ingress/entry"
+	Events1EgressPath  = "v1/log/egress/entry"
 )
 
 var (
@@ -43,8 +43,8 @@ func httpGet[E core.ErrorHandler](r *http.Request, path string) ([]byte, http.He
 	var e E
 
 	switch path {
-	case activityIngressPath:
-		t, h2, status := get[E](r.Context(), core.AddRequestId(r.Header), activityIngressPath, r.URL.Query())
+	case activity1IngressPath:
+		t, h2, status := get[E](r.Context(), core.AddRequestId(r.Header), activity1IngressPath, r.URL.Query())
 		if !status.OK() {
 			return nil, h2, status
 		}
@@ -54,8 +54,8 @@ func httpGet[E core.ErrorHandler](r *http.Request, path string) ([]byte, http.He
 			return nil, h2, status1
 		}
 		return buf, h2, status1
-	case activityEgressPath:
-		t, h2, status := get[E](r.Context(), core.AddRequestId(r.Header), activityEgressPath, r.URL.Query())
+	case activity1EgressPath:
+		t, h2, status := get[E](r.Context(), core.AddRequestId(r.Header), activity1EgressPath, r.URL.Query())
 		if !status.OK() {
 			return nil, h2, status
 		}

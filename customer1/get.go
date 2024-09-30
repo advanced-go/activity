@@ -40,15 +40,16 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, resource strin
 	}
 
 	// Do the multi exchange
-	r := newResults(h, e)
-	httpx.MultiExchange(reqs, r.onResponse)
-	if r.failure {
-		return nil, h2, r.status
+	ex := newExchange(h, e)
+	httpx.MultiExchange(reqs, ex.onResponse)
+	if ex.failure {
+		return nil, h2, ex.status
 	}
 
 	// Build resulting entries
-	entries = r.buildEntries()
-	if r.failure {
+	entries, status = buildEntries(ex)
+	if !status.OK() {
+		e.Handle(status.WithRequestId(h))
 		return nil, h2, status
 	}
 

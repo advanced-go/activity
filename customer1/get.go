@@ -33,24 +33,20 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, resource strin
 	h = testOverride(h)
 
 	// Build requests
-	reqs, status1 := buildRequests(ctx, h, resource, values)
-	if !status.OK() {
-		e.Handle(status.WithRequestId(h))
-		return nil, h2, status1
-	}
-
-	// Do the multi exchange
 	ex := newExchange(h, e)
-	httpx.MultiExchange(reqs, ex.onResponse)
+	ex.buildRequests(ctx, h, resource, values)
 	if ex.failure {
 		return nil, h2, ex.status
 	}
-
-	// Build resulting entries
-	entries, status = buildEntries(ex)
-	if !status.OK() {
-		e.Handle(status.WithRequestId(h))
-		return nil, h2, status
+	// Do multi exchange
+	ex.do()
+	if ex.failure {
+		return nil, h2, ex.status
+	}
+	// Build entries
+	entries = ex.buildEntries()
+	if ex.failure {
+		return nil, h2, ex.status
 	}
 
 	// Test only

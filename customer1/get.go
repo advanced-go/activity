@@ -2,7 +2,6 @@ package customer1
 
 import (
 	"context"
-	"fmt"
 	"github.com/advanced-go/activity/testrsc"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
@@ -32,16 +31,27 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, resource strin
 	}
 	// Test only
 	h = testOverride(h)
-	results, status1 := exchange(ctx, h, resource, values)
-	if !status1.OK() {
-		e.Handle(status1.WithRequestId(h))
-		return nil, h2, status1
-	}
-	entries, status = buildEntries(results)
+
+	// Build requests
+	reqs, status1 := buildRequests(ctx, h, resource, values)
 	if !status.OK() {
 		e.Handle(status.WithRequestId(h))
+		return nil, h2, status1
+	}
+
+	// Do the multi exchange
+	r := newResults(h, e)
+	httpx.MultiExchange(reqs, r.onResponse)
+	if r.failure {
+		return nil, h2, r.status
+	}
+
+	// Build resulting entries
+	entries = r.buildEntries()
+	if r.failure {
 		return nil, h2, status
 	}
+
 	// Test only
 	entries = filter(entries, values)
 	if len(entries) == 0 {
@@ -50,20 +60,6 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, resource strin
 		h2 = httpx.SetHeader(h2, httpx.ContentType, httpx.ContentTypeJson)
 	}
 	return
-}
-
-func onResponse(resp *http.Response, status *core.Status) (failure, proceed bool) {
-	//fmt.Printf("[req:%v]\n [resp:%v]\n [status:%v]\n", resp.Request, resp, status)
-	fmt.Printf("[status:%v]\n", status)
-	return !status.OK(), true
-}
-
-func exchange(ctx context.Context, h http.Header, resource string, values url.Values) ([]core.ExchangeResult, *core.Status) {
-	reqs, status := buildRequests(ctx, h, resource, values)
-	if !status.OK() {
-		return nil, status
-	}
-	return httpx.MultiExchange(reqs, onResponse)
 }
 
 func filter(entries []Entry, values url.Values) (result []Entry) {

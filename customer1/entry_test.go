@@ -9,7 +9,7 @@ import (
 )
 
 var data = []Entry{
-	{Customer: Address{
+	{Customer: address{
 		CustomerId:   "C001",
 		AddressLine1: "Test Line 1",
 		AddressLine2: "Test Line 2",
@@ -18,7 +18,7 @@ var data = []Entry{
 		PostalCode:   "PostalCode",
 		Email:        "email@email.com",
 	},
-		Activity: []Log{{Origin: core.Origin{Region: "us-west", Zone: "oregon", SubZone: "dc1", Host: "www.google.com", Route: "google-search"},
+		Activity: []log{{Origin: core.Origin{Region: "us-west", Zone: "oregon", SubZone: "dc1", Host: "www.google.com", Route: "google-search"},
 			StartTime: time.Now().UTC(), Duration: 123, Traffic: "Ingress", Method: "GET", Uri: "test", StatusCode: 200, Timeout: 2500, RateLimit: -1, RateBurst: -1, ControllerCode: "TO"},
 		},
 	},

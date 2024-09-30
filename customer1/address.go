@@ -1,7 +1,7 @@
 package customer1
 
 // Address - customer address1 struct
-type Address struct {
+type address struct {
 	CustomerId string `json:"customer-id"`
 	//CreatedTS  time.Time `json:"created-ts"`
 

@@ -1,8 +1,8 @@
 package customer1
 
 type Entry struct {
-	Customer Address `json:"customer"`
-	Activity []Log   `json:"activity"`
+	Customer address `json:"customer"`
+	Activity []log   `json:"activity"`
 }
 
 func (e Entry) CustomerId() string {

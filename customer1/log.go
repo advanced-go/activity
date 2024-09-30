@@ -6,7 +6,7 @@ import (
 )
 
 // Log - access log struct
-type Log struct {
+type log struct {
 	//CustomerId string    `json:"customer-id"`
 	Origin core.Origin `json:"origin"`
 

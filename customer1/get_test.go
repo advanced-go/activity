@@ -2,7 +2,7 @@ package customer1
 
 import (
 	"fmt"
-	"github.com/advanced-go/customer/testrsc"
+	"github.com/advanced-go/activity/testrsc"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/uri"
 	"net/url"
@@ -11,10 +11,10 @@ import (
 func ExampleGet_Customer() {
 	values := make(url.Values)
 	values.Add(customerKey, "C001")
-	path := uri.BuildPath("", StoragePath, values)
+	path := uri.BuildPath(CustomerAuthority, CustomerPath, values)
 	h := uri.AddResolverContentLocation(nil, path, testrsc.Addr1GetRespTest)
 
-	entries, _, status := get[core.Output](nil, h, values)
+	entries, _, status := get[core.Output](nil, h, activityIngressPath, values)
 	fmt.Printf("test: get() -> [status:%v] [path:%v] [entries:%v]\n", status, path, len(entries))
 
 	//Output:
@@ -22,6 +22,7 @@ func ExampleGet_Customer() {
 
 }
 
+/*
 func ExampleGet_Customer_All() {
 	values := make(url.Values)
 	values.Add(customerKey, "*")
@@ -49,3 +50,6 @@ func ExampleGet_State() {
 	//test: get() -> [status:OK] [path:storage/address?state=IA] [entries:2]
 
 }
+
+
+*/

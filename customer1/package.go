@@ -3,22 +3,25 @@ package customer1
 import (
 	"errors"
 	"github.com/advanced-go/stdlib/core"
+	json2 "github.com/advanced-go/stdlib/json"
 	"github.com/advanced-go/stdlib/uri"
 	"net/http"
 )
 
 const (
-	PkgPath = "github/advanced-go/customer/address1"
-	Route   = "customer-activity"
+	PkgPath             = "github/advanced-go/activity/customer1"
+	Route               = "customer-activity"
+	activityIngressPath = "v1/ingress/entry"
+	activityEgressPath  = "v1/egress/entry"
 
 	CustomerHost      = "localhost:8082"
 	CustomerAuthority = "github/advanced-go/customer"
 	CustomerPath      = "v1/address/entry"
 
-	ObservationHost        = "localhost:8083"
-	ObservationAuthority   = "github/advanced-go/observation"
-	ObservationIngressPath = "v1/timeseries/ingress/entry"
-	ObservationEgressPath  = "v1/timeseries/egress/entry"
+	EventsHost        = "localhost:8083"
+	EventsAuthority   = "github/advanced-go/events"
+	EventsIngressPath = "v1/log/ingress/entry"
+	EventsEgressPath  = "v1/log/egress/entry"
 )
 
 var (
@@ -26,9 +29,44 @@ var (
 )
 
 // Get - customer1 resource GET
-func Get(r *http.Request, _ string) (entries []Entry, h2 http.Header, status *core.Status) {
+func Get(r *http.Request, path string) ([]byte, http.Header, *core.Status) {
 	if r == nil {
-		return entries, h2, core.NewStatusError(core.StatusInvalidArgument, errors.New("error: http.Request is"))
+		return nil, nil, core.NewStatusError(core.StatusInvalidArgument, errors.New("error: http.Request is"))
 	}
-	return nil, h2, core.StatusNotFound()
+	if r.Header.Get(core.XFrom) == "" {
+		return httpGet[core.Log](r, path)
+	}
+	return httpGet[core.Output](r, path)
+}
+
+func httpGet[E core.ErrorHandler](r *http.Request, path string) ([]byte, http.Header, *core.Status) {
+	var e E
+
+	switch path {
+	case activityIngressPath:
+		t, h2, status := get[E](r.Context(), core.AddRequestId(r.Header), activityIngressPath, r.URL.Query())
+		if !status.OK() {
+			return nil, h2, status
+		}
+		buf, status1 := json2.Marshal(t)
+		if !status1.OK() {
+			e.Handle(status1)
+			return nil, h2, status1
+		}
+		return buf, h2, status1
+	case activityEgressPath:
+		t, h2, status := get[E](r.Context(), core.AddRequestId(r.Header), activityEgressPath, r.URL.Query())
+		if !status.OK() {
+			return nil, h2, status
+		}
+		buf, status1 := json2.Marshal(t)
+		if !status1.OK() {
+			e.Handle(status1)
+			return nil, h2, status1
+		}
+		return buf, h2, status1
+	default:
+		status := core.NewStatusError(http.StatusBadRequest, errors.New("error: resource is not ingress or egress"))
+		return nil, nil, status
+	}
 }

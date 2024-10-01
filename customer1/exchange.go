@@ -16,13 +16,40 @@ const (
 	eventId    = "event"
 )
 
+type response[T any] struct {
+	content []T
+	resp    *http.Response
+}
+
+func (r response[T]) StatusCode() int {
+	if r.resp == nil {
+		return http.StatusInternalServerError
+	}
+	return r.resp.StatusCode
+}
+
+func (r response[T]) Header() http.Header {
+	if r.resp == nil {
+		return make(http.Header)
+	}
+	return r.resp.Header
+}
+
+func (r response[T]) OK() bool {
+	if r.resp == nil {
+		return false
+	}
+	return r.StatusCode() == http.StatusOK
+}
+
 type exchange struct {
-	failure bool
-	h       http.Header
-	addr    []address
-	events  []log
+	h http.Header
+
+	addr  response[address]
+	event response[log]
+
 	reqs    []httpx.RequestItem
-	status  *core.Status
+	failure *core.Status
 	handler core.ErrorHandler
 }
 
@@ -33,11 +60,9 @@ func newExchange(h http.Header, handler core.ErrorHandler) *exchange {
 	return r
 }
 
-func (e *exchange) handleError(status *core.Status) *core.Status {
+func (e *exchange) handleError(status *core.Status) {
 	e.handler.Handle(status.WithRequestId(e.h))
-	e.status = status
-	e.failure = true
-	return status
+	e.failure = status
 }
 
 func (e *exchange) buildRequests(ctx context.Context, h http.Header, resource string, values url.Values) {
@@ -72,7 +97,7 @@ func (e *exchange) buildRequests(ctx context.Context, h http.Header, resource st
 	}
 }
 
-func (e *exchange) onResponse(item httpx.RequestItem, resp *http.Response, status *core.Status) (proceed bool) {
+func (e *exchange) onResponse(id string, resp *http.Response, status *core.Status) (proceed bool) {
 	// Check for connectivity errors, Gateway Timeout, Too Many Requests, and Internal Server Error
 	// TODO: verify status for connectivity errors.
 	if status.Code == http.StatusGatewayTimeout || status.Code == http.StatusTooManyRequests || status.Code == http.StatusInternalServerError {
@@ -81,15 +106,17 @@ func (e *exchange) onResponse(item httpx.RequestItem, resp *http.Response, statu
 	}
 	var status1 *core.Status
 
-	switch item.Id {
+	switch id {
 	case customerId:
-		e.addr, status1 = json.New[[]address](resp.Body, resp.Header)
+		e.addr.resp = resp
+		e.addr.content, status1 = json.New[[]address](resp.Body, resp.Header)
 		if !status1.OK() {
 			e.handleError(status1)
 			return false
 		}
 	case eventId:
-		e.events, status1 = json.New[[]log](resp.Body, resp.Header)
+		e.event.resp = resp
+		e.event.content, status1 = json.New[[]log](resp.Body, resp.Header)
 		if !status1.OK() {
 			e.handleError(status1)
 			return false
@@ -102,6 +129,51 @@ func (e *exchange) do() {
 	httpx.MultiExchange(e.reqs, e.onResponse)
 }
 
-func (e *exchange) buildEntries() []Entry {
-	return nil
+// TODO : verify responses, create entries, and set header values.
+func (e *exchange) buildResults() ([]Entry, http.Header) {
+	// Verify responses
+	if !e.addr.OK() || !e.event.OK() {
+		e.handleError(core.NewStatusError(core.StatusInvalidContent, errors.New("error: a response is mot OK")).WithRequestId(e.h))
+		return nil, nil
+	}
+	// Build header
+	h := httpx.SetHeader(nil, httpx.ContentType, httpx.ContentTypeJson)
+
+	// Build entries
+	entry := Entry{
+		Customer: e.addr.content[0],
+		Activity: e.event.content,
+	}
+	return []Entry{entry}, h
 }
+
+/*
+
+//resp    map[string]*http.Response
+	//mu      sync.RWMutex
+
+func (e *exchange) addResponse(id string, resp *http.Response) {
+	if resp == nil || id == "" {
+		return
+	}
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	e.resp[id] = resp
+}
+
+func (e *exchange) response(id string) *http.Response {
+	if id == "" {
+		e.handleError(core.NewStatusError(core.StatusInvalidArgument, errors.New("error: response id is empty")))
+		return nil
+	}
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	resp := e.resp[id]
+	if resp == nil {
+		e.handleError(core.NewStatusError(core.StatusInvalidArgument, errors.New(fmt.Sprintf("error: response not found %v", id))))
+	}
+	return resp
+}
+
+
+*/

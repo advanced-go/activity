@@ -35,26 +35,24 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, resource strin
 	// Build requests
 	ex := newExchange(h, e)
 	ex.buildRequests(ctx, h, resource, values)
-	if ex.failure {
-		return nil, h2, ex.status
+	if ex.failure != nil {
+		return nil, h2, ex.failure
 	}
 	// Do multi exchange
 	ex.do()
-	if ex.failure {
-		return nil, h2, ex.status
+	if ex.failure != nil {
+		return nil, h2, ex.failure
 	}
-	// Build entries
-	entries = ex.buildEntries()
-	if ex.failure {
-		return nil, h2, ex.status
+	// Build results
+	entries, h2 = ex.buildResults()
+	if ex.failure != nil {
+		return nil, h2, ex.failure
 	}
 
 	// Test only
 	entries = filter(entries, values)
 	if len(entries) == 0 {
 		status = core.NewStatus(http.StatusNotFound)
-	} else {
-		h2 = httpx.SetHeader(h2, httpx.ContentType, httpx.ContentTypeJson)
 	}
 	return
 }

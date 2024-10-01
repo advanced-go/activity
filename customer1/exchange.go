@@ -3,6 +3,7 @@ package customer1
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	"github.com/advanced-go/stdlib/json"
@@ -86,6 +87,11 @@ func (e *exchange) onResponse(id string, resp *http.Response, status *core.Statu
 	if status.Code == http.StatusGatewayTimeout || status.Code == http.StatusTooManyRequests || status.Code == http.StatusInternalServerError {
 		e.handleError(status)
 		return false
+	}
+	// If not OK then return as there is no content
+	if resp.StatusCode != http.StatusOK {
+		fmt.Printf("status code : %v\n", resp.StatusCode)
+		return true
 	}
 	var status1 *core.Status
 

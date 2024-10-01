@@ -18,6 +18,7 @@ func buildRequests(ctx context.Context, h http.Header, resource string, values u
 	if err != nil {
 		return nil, core.NewStatusError(core.StatusInvalidArgument, err)
 	}
+	httpx.Forward(req.Header, h)
 	reqs = append(reqs, httpx.RequestItem{Id: customerId, Request: req})
 
 	switch resource {
@@ -27,6 +28,7 @@ func buildRequests(ctx context.Context, h http.Header, resource string, values u
 		if err != nil {
 			return nil, core.NewStatusError(core.StatusInvalidArgument, err)
 		}
+		httpx.Forward(req.Header, h)
 		reqs = append(reqs, httpx.RequestItem{Id: eventId, Request: req})
 	case activity1EgressPath:
 		u = resolver.Url(EventsHost, EventsAuthority, Events1EgressPath, values, h)
@@ -34,6 +36,7 @@ func buildRequests(ctx context.Context, h http.Header, resource string, values u
 		if err != nil {
 			return nil, core.NewStatusError(core.StatusInvalidArgument, err)
 		}
+		httpx.Forward(req.Header, h)
 		reqs = append(reqs, httpx.RequestItem{Id: eventId, Request: req})
 	default:
 		return nil, core.NewStatusError(core.StatusInvalidArgument, errors.New(fmt.Sprintf("error: invalid resource %v", resource)))

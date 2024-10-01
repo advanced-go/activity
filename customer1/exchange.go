@@ -17,7 +17,7 @@ const (
 )
 
 type response[T any] struct {
-	content []T
+	content T
 	resp    *http.Response
 }
 
@@ -45,8 +45,8 @@ func (r response[T]) OK() bool {
 type exchange struct {
 	h http.Header
 
-	addr  response[address]
-	event response[log]
+	addr  response[[]address]
+	event response[[]log]
 
 	reqs    []httpx.RequestItem
 	failure *core.Status

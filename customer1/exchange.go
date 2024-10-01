@@ -3,7 +3,6 @@ package customer1
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	"github.com/advanced-go/stdlib/json"
@@ -15,6 +14,8 @@ const (
 	customerId = "customer"
 	eventId    = "event"
 )
+
+type requestsFunc func(ctx context.Context, h http.Header, resource string, values url.Values) ([]httpx.RequestItem, *core.Status)
 
 type response[T any] struct {
 	content T
@@ -48,15 +49,20 @@ type exchange struct {
 	addr  response[[]address]
 	event response[[]log]
 
-	reqs    []httpx.RequestItem
-	failure *core.Status
-	handler core.ErrorHandler
+	reqs     []httpx.RequestItem
+	failure  *core.Status
+	handler  core.ErrorHandler
+	requests requestsFunc
 }
 
-func newExchange(h http.Header, handler core.ErrorHandler) *exchange {
+func newExchange(h http.Header, handler core.ErrorHandler, requests requestsFunc) *exchange {
 	r := new(exchange)
 	r.h = h
+	if r.h == nil {
+		r.h = make(http.Header)
+	}
 	r.handler = handler
+	r.requests = requests
 	return r
 }
 
@@ -66,34 +72,11 @@ func (e *exchange) handleError(status *core.Status) {
 }
 
 func (e *exchange) buildRequests(ctx context.Context, h http.Header, resource string, values url.Values) {
-	u := resolver.Url(CustomerHost, CustomerAuthority, Customer1AddressPath, values, h)
-	req, err := http.NewRequestWithContext(core.NewContext(ctx), http.MethodGet, u, nil)
-	if err != nil {
-		e.handleError(core.NewStatusError(core.StatusInvalidArgument, err))
-		return
-	}
-	e.reqs = append(e.reqs, httpx.RequestItem{Id: customerId, Request: req})
-
-	switch resource {
-	case activity1IngressPath:
-		u = resolver.Url(EventsHost, EventsAuthority, Events1IngressPath, values, h)
-		req, err = http.NewRequestWithContext(core.NewContext(ctx), http.MethodGet, u, nil)
-		if err != nil {
-			e.handleError(core.NewStatusError(core.StatusInvalidArgument, err))
-			return
-		}
-		e.reqs = append(e.reqs, httpx.RequestItem{Id: eventId, Request: req})
-	case activity1EgressPath:
-		u = resolver.Url(EventsHost, EventsAuthority, Events1EgressPath, values, h)
-		req, err = http.NewRequestWithContext(core.NewContext(ctx), http.MethodGet, u, nil)
-		if err != nil {
-			e.handleError(core.NewStatusError(core.StatusInvalidArgument, err))
-			return
-		}
-		e.reqs = append(e.reqs, httpx.RequestItem{Id: eventId, Request: req})
-	default:
-		e.handleError(core.NewStatusError(core.StatusInvalidArgument, errors.New(fmt.Sprintf("error: invalid resource %v", resource))))
-		return
+	e.reqs, e.failure = e.requests(ctx, h, resource, values)
+	if !e.failure.OK() {
+		e.handleError(e.failure)
+	} else {
+		e.failure = nil
 	}
 }
 

@@ -33,7 +33,7 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, resource strin
 	h = testOverride(h)
 
 	// Build requests
-	ex := newExchange(h, e)
+	ex := newExchange(h, e, buildRequests)
 	ex.buildRequests(ctx, h, resource, values)
 	if ex.failure != nil {
 		return nil, h2, ex.failure

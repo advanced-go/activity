@@ -73,7 +73,9 @@ func (e *exchange) buildRequests(ctx context.Context, h http.Header, resource st
 }
 
 func (e *exchange) onResponse(item httpx.RequestItem, resp *http.Response, status *core.Status) (proceed bool) {
-	if !status.OK() {
+	// Check for connectivity errors, Gateway Timeout, Too Many Requests, and Internal Server Error
+	// TODO: verify status for connectivity errors.
+	if status.Code == http.StatusGatewayTimeout || status.Code == http.StatusTooManyRequests || status.Code == http.StatusInternalServerError {
 		e.handleError(status)
 		return false
 	}

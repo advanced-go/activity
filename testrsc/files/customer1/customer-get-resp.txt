@@ -1,0 +1,16 @@
+HTTP/1.1 200 OK
+Date: Mon, 27 Jul 2009 12:28:53 GMT
+Server: Apache/2.2.14 (Win32)
+Content-Type: application/json
+Connection: Closed
+
+[
+  {
+    "customer-id": "D001",
+    "address-1":"123 Main",
+    "city":"Anytown",
+    "state":"OH",
+    "postal-code":"12345",
+    "email":"before-email@hotmail.com"
+  }
+]

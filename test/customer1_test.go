@@ -1,9 +1,9 @@
 package test
 
 import (
-	"github.com/advanced-go/customer/address1"
-	http2 "github.com/advanced-go/customer/http"
-	"github.com/advanced-go/customer/testrsc"
+	"github.com/advanced-go/activity/customer1"
+	http2 "github.com/advanced-go/activity/http"
+	"github.com/advanced-go/activity/testrsc"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/core/coretest"
 	httpt "github.com/advanced-go/stdlib/httpx/httpxtest"
@@ -12,16 +12,16 @@ import (
 	"testing"
 )
 
-func TestExchange1(t *testing.T) {
+func TestCustomer1(t *testing.T) {
 	tests := []struct {
 		name   string
 		req    *http.Request
 		resp   *http.Response
 		status *core.Status
 	}{
-		{name: "get-error-header", req: httpt.NewRequestTest(testrsc.Addr1GetReqErrHeader, t), resp: httpt.NewResponseTest(testrsc.Addr1GetResp, t), status: core.StatusOK()},
-		{name: "get-error-content", req: httpt.NewRequestTest(testrsc.Addr1GetReq, t), resp: httpt.NewResponseTest(testrsc.Addr1GetRespErrContent, t), status: core.StatusOK()},
-		{name: "get-entry", req: httpt.NewRequestTest(testrsc.Addr1GetReq, t), resp: httpt.NewResponseTest(testrsc.Addr1GetResp, t), status: core.StatusOK()},
+		{name: "get-entry", req: httpt.NewRequestTest(testrsc.Customer1EgressGetReq, t), resp: httpt.NewResponseTest(testrsc.Customer1EgressGetResp, t), status: core.StatusOK()},
+
+		//
 	}
 	for _, tt := range tests {
 		ok := true
@@ -35,10 +35,10 @@ func TestExchange1(t *testing.T) {
 				t.Errorf("Exchange() got status code : %v, want status code : %v", resp.StatusCode, tt.resp.StatusCode)
 				ok = false
 			}
-			var gotT []address1.Entry
-			var wantT []address1.Entry
+			var gotT []customer1.Entry
+			var wantT []customer1.Entry
 			if ok {
-				gotT, wantT, ok = httpt.Deserialize[coretest.Output, []address1.Entry](resp.Body, tt.resp.Body, t)
+				gotT, wantT, ok = httpt.Deserialize[coretest.Output, []customer1.Entry](resp.Body, tt.resp.Body, t)
 			}
 			if ok {
 				if !reflect.DeepEqual(gotT, wantT) {

@@ -1,0 +1,40 @@
+HTTP/1.1 200 OK
+Date: Mon, 27 Jul 2009 12:28:53 GMT
+Server: Apache/2.2.14 (Win32)
+Content-Type: application/json
+Connection: Closed
+
+[
+  {
+    "customer":  {
+      "customer-id":"C001",
+      "address-1":"Test Line 1",
+      "address-2":"Test Line 2",
+      "city":"City",
+      "state":"State",
+      "postal-code":"PostalCode",
+      "email":"email@email.com"
+    },
+    "activity":[ {
+      "origin":{
+        "region":"us-west",
+        "zone":"oregon",
+        "sub-zone":"dc1",
+        "host":"www.google.com",
+        "route":"google-search",
+        "instance-id":""
+      },
+      "start-time":"2024-09-30T13:03:19.9546829Z",
+      "duration":123,
+      "traffic":"Ingress",
+      "method":"GET",
+      "uri":"test",
+      "status-code":200,
+      "timeout":2500,
+      "rate-limit":-1,
+      "rate-burst":-1,
+      "cc":"TO"
+    }
+    ]
+  }
+]

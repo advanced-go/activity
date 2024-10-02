@@ -5,20 +5,10 @@ const (
 
 	cust1BasePath = "file:///f:/files/customer1"
 
-	Customer1Entry = cust1BasePath + "/entry.json"
+	Customer1Entry         = cust1BasePath + "/entry.json"
+	Customer1EgressGetReq  = cust1BasePath + "/egress-get-req.txt"
+	Customer1EgressGetResp = cust1BasePath + "/egress-get-resp.txt"
 
-	Addr1GetRespTest = cust1BasePath + "/get-resp-test.txt"
-
-	/*
-		//Addr1EntryTest = Addr1BasePath + "/entry-test.json"
-
-			//Addr1GetReq      = Addr1BasePath + "/get-req.txt"
-			//Addr1GetResp     = cust1BasePath + "/get-resp.txt"
-
-			Addr1GetReqErrHeader   = Addr1BasePath + "/get-req-error-header.txt"
-		Addr1GetRespErrContent = Addr1BasePath + "/get-resp-error-content.txt"
-
-		Addr1PutRespFailure = Addr1BasePath + "/put-resp-failure.txt"
-
-	*/
+	CustomerServiceGetResp = cust1BasePath + "/customer-get-resp.txt"
+	EventsServiceGetResp   = cust1BasePath + "/egress-log-get-resp.txt"
 )

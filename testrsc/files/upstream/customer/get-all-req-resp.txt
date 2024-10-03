@@ -1,0 +1,47 @@
+HTTP/1.1 200 OK
+X-Route: customer-address
+Date: Thu, 03 Oct 2024 15:39:22 GMT
+Content-Type: application/json
+
+[
+  {
+    "customer-id": "C001",
+    "created-ts": "0001-01-01T00:00:00Z",
+    "address-1": "1514 Cedar Ridge Road",
+    "address-2": "",
+    "city": "Vinton",
+    "state": "IA",
+    "postal-code": "52349",
+    "email": "before-email@hotmail.com"
+  },
+  {
+    "customer-id": "C002",
+    "created-ts": "0001-01-01T00:00:00Z",
+    "address-1": "5494 Lakeview Drive",
+    "address-2": "",
+    "city": "Clear Lake",
+    "state": "IA",
+    "postal-code": "50428",
+    "email": "before-email2@yahoo.com"
+  },
+  {
+    "customer-id": "D001",
+    "created-ts": "0001-01-01T00:00:00Z",
+    "address-1": "123 Main",
+    "address-2": "",
+    "city": "Anytown",
+    "state": "OH",
+    "postal-code": "12345",
+    "email": "before-email@hotmail.com"
+  },
+  {
+    "customer-id": "D002",
+    "created-ts": "0001-01-01T00:00:00Z",
+    "address-1": "456 Oak Street",
+    "address-2": "",
+    "city": "Clearview",
+    "state": "AK",
+    "postal-code": "00000",
+    "email": "before-email2@yahoo.com"
+  }
+]

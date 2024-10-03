@@ -1,0 +1,3 @@
+GET /github/advanced-go/events:v1/log/ingress/entry?region=* HTTP/1.1
+Host: localhost:8083
+

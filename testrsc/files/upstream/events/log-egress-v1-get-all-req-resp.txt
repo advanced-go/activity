@@ -1,0 +1,71 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+X-Route: log-events
+Date: Thu, 03 Oct 2024 15:39:22 GMT
+
+[
+  {
+    "customer-id": "D001",
+    "start-time": "2024-06-03T18:29:16.0447249Z",
+    "duration": 100,
+    "traffic": "egress",
+    "created-ts": "2024-06-03T18:29:16.0450098Z",
+    "origin": {
+      "region": "us-west",
+      "zone": "oregon",
+      "sub-zone": "dc1",
+      "host": "www.test-host.com",
+      "route": "google-search",
+      "instance-id": "123456"
+    },
+    "request-id": "req-id",
+    "relates-to": "relate-to",
+    "location": "",
+    "proto": "HTTP/1.1",
+    "method": "GET",
+    "from": "www.google.com",
+    "to": "",
+    "uri": "",
+    "path": "/search",
+    "query": "",
+    "status-code": 200,
+    "encoding": "gzip",
+    "bytes": 12345,
+    "timeout": 500,
+    "rate-limit": 100,
+    "rate-burst": 10,
+    "cc": "RL"
+  },
+  {
+    "customer-id": "D002",
+    "start-time": "2024-06-03T18:29:16.0450098Z",
+    "duration": 500,
+    "traffic": "egress",
+    "created-ts": "2024-06-03T18:29:16.0450098Z",
+    "origin": {
+      "region": "us-west",
+      "zone": "oregon",
+      "sub-zone": "dc2",
+      "host": "www.search.yahoo.com",
+      "route": "search",
+      "instance-id": "123456"
+    },
+    "request-id": "request-id",
+    "relates-to": "language-query",
+    "location": "",
+    "proto": "HTTP/1.1",
+    "method": "GET",
+    "from": "github/advanced-go/observation",
+    "to": "github/advanced-go/search",
+    "uri": "",
+    "path": "/search",
+    "query": "",
+    "status-code": 200,
+    "encoding": "gzip",
+    "bytes": 12345,
+    "timeout": 500,
+    "rate-limit": 100,
+    "rate-burst": 10,
+    "cc": "TO"
+  }
+]

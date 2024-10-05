@@ -6,7 +6,7 @@ const (
 	cust1BasePath = "file:///f:/files/customer1"
 
 	Customer1Entry         = cust1BasePath + "/entry.json"
-	Customer1EgressGetReq  = cust1BasePath + "/egress-get-req.txt"
+	Customer1EgressGetReq  = cust1BasePath + "/egress-get-C001-req.txt"
 	Customer1EgressGetResp = cust1BasePath + "/egress-get-resp.txt"
 
 	CustomerServiceGetResp = cust1BasePath + "/customer-get-resp.txt"

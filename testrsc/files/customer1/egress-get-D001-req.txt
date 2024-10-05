@@ -1,0 +1,3 @@
+GET /github/advanced-go/activity:v1/customer/egress/entry?customer=D001 HTTP/1.1
+X-Resolver: v1/address/entry?customer=D001->file:///f:/files/upstream/customer/get-D001-req-resp.txt
+

@@ -1,3 +1,0 @@
-GET /github/advanced-go/activity:v1/customer/egress/entry?customer=D001 HTTP/1.1
-X-Content-Location-Resolver: customer/egress/entry?customer=D001->file:///f:/files/address1/egress-get-resp.txt
-

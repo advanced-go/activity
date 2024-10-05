@@ -1,7 +1,6 @@
 HTTP/1.1 200 OK
 Content-Type: application/json
-X-Route: log-events
-Date: Thu, 03 Oct 2024 17:51:13 GMT
+Date: Sat, 05 Oct 2024 13:28:08 GMT
 
 [
   {

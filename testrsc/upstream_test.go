@@ -42,7 +42,7 @@ func ExampleBuildUpstream() {
 		}
 		resp, status1 := httpx.Do(req)
 		if !status1.OK() {
-			fmt.Printf("error: Do(\"%v\") -> %v\n", info.Req, status1)
+			fmt.Printf("error: Do(\"%v\") -> [status:%v]] [url:%v]\n", info.Req, status1, req.URL.String())
 			continue
 		}
 		if resp.Header.Get(httpx.ContentType) == httpx.ContentTypeJson {

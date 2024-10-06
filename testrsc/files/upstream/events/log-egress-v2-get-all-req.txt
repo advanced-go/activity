@@ -1,3 +1,0 @@
-GET /github/advanced-go/events:v2/log/egress/entry?region=* HTTP/1.1
-Host: localhost:8083
-

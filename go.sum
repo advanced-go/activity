@@ -18,5 +18,7 @@ github.com/advanced-go/stdlib v0.0.0-20241003172949-2a360cdfa7c6 h1:y+ngHcZkCq5+
 github.com/advanced-go/stdlib v0.0.0-20241003172949-2a360cdfa7c6/go.mod h1:bvuWc7Tx57LArgrEvbPxKW4hvIYGS3pw7iG4P6xofoQ=
 github.com/advanced-go/stdlib v0.0.0-20241005141142-3f9245186f8b h1:tgVSSbobDEFVxV3g/+5GWpyjbpvkf/sOyyf6TtcDCP4=
 github.com/advanced-go/stdlib v0.0.0-20241005141142-3f9245186f8b/go.mod h1:bvuWc7Tx57LArgrEvbPxKW4hvIYGS3pw7iG4P6xofoQ=
+github.com/advanced-go/stdlib v0.0.0-20241006123034-8ffc264c681e h1:NUfzBwGmKdU55e/8CcdDdBljKbVwLYKf/B7C79qGRfQ=
+github.com/advanced-go/stdlib v0.0.0-20241006123034-8ffc264c681e/go.mod h1:bvuWc7Tx57LArgrEvbPxKW4hvIYGS3pw7iG4P6xofoQ=
 github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=
 github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=

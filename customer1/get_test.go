@@ -19,7 +19,7 @@ func ExampleGet_Customer() {
 
 	h.Add(core.XRequestId, "123-456")
 	entries, _, status := get[core.Output](nil, h, activityEgressPath, values)
-	fmt.Printf("test: get() -> [status:%v] %v\n", status, entries)
+	fmt.Printf("test: get() -> [status:%v34] %v\n", status, entries)
 
 	//Output:
 	//test: get() -> [status:OK] [{{D001 123 Main  Anytown OH 12345 before-email@hotmail.com} [{{us-west oregon dc1 www.test-host.com google-search 123456} 2024-06-03 18:29:16.0447249 +0000 UTC 100 egress GET  200 500 100 10 RL}]}]

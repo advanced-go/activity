@@ -14,14 +14,14 @@ const (
 	activity1IngressPath = "v1/ingress/entry"
 	activity1EgressPath  = "v1/egress/entry"
 
-	CustomerHost         = "localhost:8082"
-	CustomerAuthority    = "github/advanced-go/customer"
-	Customer1AddressPath = "v1/address/entry"
+	CustomerHost          = "localhost:8082"
+	CustomerAuthority     = "github/advanced-go/customer"
+	CustomerV1AddressPath = "v1/address/entry"
 
-	EventsHost         = "localhost:8083"
-	EventsAuthority    = "github/advanced-go/events"
-	Events1IngressPath = "v1/log/ingress/entry"
-	Events1EgressPath  = "v1/log/egress/entry"
+	EventsHost          = "localhost:8083"
+	EventsAuthority     = "github/advanced-go/events"
+	EventsV1IngressPath = "v1/log/ingress/entry"
+	EventsV1EgressPath  = "v1/log/egress/entry"
 )
 
 var (

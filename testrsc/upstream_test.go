@@ -17,7 +17,7 @@ func ExampleBuildUpstream() {
 		{Dir: customerDir, Req: "get-C001-req.txt"},
 		{Dir: customerDir, Req: "get-D001-req.txt"},
 
-		{Dir: eventsDir, Req: "log-egress-v1-D001-get-req.txt"},
+		{Dir: eventsDir, Req: "get-v1-log-egress-D001-req.txt"},
 
 		//
 	}

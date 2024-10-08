@@ -84,14 +84,17 @@ func (e *exchange) buildRequests(ctx context.Context, h http.Header, resource st
 func (e *exchange) onResponse(id string, resp *http.Response, status *core.Status) (proceed bool) {
 	// Check for connectivity errors, Gateway Timeout, Too Many Requests, and Internal Server Error
 	// TODO: verify status for connectivity errors.
-	if status.Code == http.StatusGatewayTimeout || status.Code == http.StatusTooManyRequests || status.Code == http.StatusInternalServerError {
+	switch status.Code {
+	case http.StatusGatewayTimeout, http.StatusTooManyRequests, http.StatusInternalServerError:
 		e.handleError(status)
 		return false
-	}
-	// If not OK then return as there is no content
-	if resp.StatusCode != http.StatusOK {
-		fmt.Printf("status code : %v\n", resp.StatusCode)
-		return true
+	//case http.StatusNotFound:
+	default:
+		// If not OK then return as there is no content
+		if resp.StatusCode != http.StatusOK {
+			fmt.Printf("status code : %v\n", resp.StatusCode)
+			return true
+		}
 	}
 	var status1 *core.Status
 
@@ -121,8 +124,12 @@ func (e *exchange) do() {
 // TODO : verify responses, create entries, and set header values.
 func (e *exchange) buildResults() ([]Entry, http.Header) {
 	// Verify responses
+	//if !e.addr.OK() {
+	//	e.handleError(e.addr.core.NewStatusError(core.StatusInvalidContent, errors.New("error: a response is not OK")).WithRequestId(e.h))
+	//	return nil, nil
+	//}
 	if !e.addr.OK() || !e.event.OK() {
-		e.handleError(core.NewStatusError(core.StatusInvalidContent, errors.New("error: a response is mot OK")).WithRequestId(e.h))
+		e.handleError(core.NewStatusError(core.StatusInvalidContent, errors.New("error: a response is not OK")).WithRequestId(e.h))
 		return nil, nil
 	}
 	// Build header

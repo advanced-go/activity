@@ -35,7 +35,7 @@ func ExampleEncode() {
 }
 
 func ExampleDecode() {
-	e, status := json.New[[]Entry](testrsc.Customer1Entry, nil)
+	e, status := json.New[[]Entry](testrsc.CUST1BasePath, nil)
 	fmt.Printf("test: Decode()-> [status:%v] %v\n", status, e)
 
 	//Output:

@@ -3,12 +3,14 @@ package testrsc
 const (
 	PkgPath = "github/advanced-go/activity/testrsc"
 
-	cust1BasePath = "file:///f:/files/customer1"
+	CUST1BasePath = "file:///f:/files/customer1"
 
-	Customer1Entry         = cust1BasePath + "/entry.json"
-	Customer1EgressGetReq  = cust1BasePath + "/egress-get-C001-req.txt"
-	Customer1EgressGetResp = cust1BasePath + "/egress-get-resp.txt"
+	//Customer1Entry         = cust1BasePath + "/entry.json"
+	//Customer1EgressGetReq  = cust1BasePath + "/egress-get-C001-req.txt"
+	//Customer1EgressGetResp = cust1BasePath + "/egress-get-resp.txt"
 
-	CustomerServiceGetResp = cust1BasePath + "/customer-get-resp.txt"
-	EventsServiceGetResp   = cust1BasePath + "/egress-log-get-resp.txt"
+	CustomerC001GetResp = "file:///f:/files/upstream/customer/get-C001-req-resp.txt"
+	CustomerD001GetResp = "file:///f:/files/upstream/customer/get-D001-req-resp.txt"
+
+	EventsV1LogEgressD001GetResp = "file:///f:/files/upstream/events/get-v1-log-egress-D001-req-resp.txt"
 )

@@ -16,10 +16,10 @@ const (
 )
 
 func testOverride(h http.Header) http.Header {
-	if h != nil && h.Get(uri.XResolver) != "" {
+	if h != nil && h.Get(uri.XContentResolver) != "" {
 		return h
 	}
-	return httpx.SetHeader(h, uri.XResolver, testrsc.Customer1Entry)
+	return httpx.SetHeader(h, uri.XContentResolver, testrsc.CUST1BasePath)
 }
 
 func get[E core.ErrorHandler](ctx context.Context, h http.Header, resource string, values url.Values) (entries []Entry, h2 http.Header, status *core.Status) {
@@ -53,6 +53,8 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, resource strin
 	entries = filter(entries, values)
 	if len(entries) == 0 {
 		status = core.NewStatus(http.StatusNotFound)
+	} else {
+		status = core.StatusOK()
 	}
 	return
 }

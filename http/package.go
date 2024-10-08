@@ -9,7 +9,13 @@ import (
 	"net/http"
 )
 
-// https://localhost:8081/github/advanced-go/observation:v1/search?q=golang
+const (
+	PkgPath    = "github/advanced-go/activity/http"
+	ver1       = "v1"
+	ver2       = "v2"
+	timeseries = "timeseries"
+	log        = "log"
+)
 
 var (
 	authorityResponse = httpx.NewAuthorityResponse(module.Authority)

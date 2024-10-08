@@ -13,7 +13,7 @@ import (
 func buildRequests(ctx context.Context, h http.Header, resource string, values url.Values) ([]httpx.RequestItem, *core.Status) {
 	var reqs []httpx.RequestItem
 
-	u := resolver.Url(CustomerHost, CustomerAuthority, Customer1AddressPath, values, h)
+	u := resolver.Url(CustomerHost, CustomerAuthority, CustomerV1AddressPath, values, h)
 	req, err := http.NewRequestWithContext(core.NewContext(ctx), http.MethodGet, u, nil)
 	if err != nil {
 		return nil, core.NewStatusError(core.StatusInvalidArgument, err)
@@ -23,7 +23,7 @@ func buildRequests(ctx context.Context, h http.Header, resource string, values u
 
 	switch resource {
 	case activity1IngressPath:
-		u = resolver.Url(EventsHost, EventsAuthority, Events1IngressPath, values, h)
+		u = resolver.Url(EventsHost, EventsAuthority, EventsV1IngressPath, values, h)
 		req, err = http.NewRequestWithContext(core.NewContext(ctx), http.MethodGet, u, nil)
 		if err != nil {
 			return nil, core.NewStatusError(core.StatusInvalidArgument, err)
@@ -31,7 +31,7 @@ func buildRequests(ctx context.Context, h http.Header, resource string, values u
 		httpx.Forward(req.Header, h)
 		reqs = append(reqs, httpx.RequestItem{Id: eventId, Request: req})
 	case activity1EgressPath:
-		u = resolver.Url(EventsHost, EventsAuthority, Events1EgressPath, values, h)
+		u = resolver.Url(EventsHost, EventsAuthority, EventsV1EgressPath, values, h)
 		req, err = http.NewRequestWithContext(core.NewContext(ctx), http.MethodGet, u, nil)
 		if err != nil {
 			return nil, core.NewStatusError(core.StatusInvalidArgument, err)

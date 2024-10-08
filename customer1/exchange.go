@@ -50,20 +50,20 @@ type exchange struct {
 	addr  response[[]address]
 	event response[[]log]
 
-	reqs     []httpx.RequestItem
-	failure  *core.Status
-	handler  core.ErrorHandler
-	requests requestsFunc
+	reqs    []httpx.RequestItem
+	failure *core.Status
+	handler core.ErrorHandler
+	//requests requestsFunc
 }
 
-func newExchange(h http.Header, handler core.ErrorHandler, requests requestsFunc) *exchange {
+func newExchange(h http.Header, handler core.ErrorHandler) *exchange {
 	r := new(exchange)
 	r.h = h
 	if r.h == nil {
 		r.h = make(http.Header)
 	}
 	r.handler = handler
-	r.requests = requests
+	//r.requests = requests
 	return r
 }
 
@@ -73,12 +73,44 @@ func (e *exchange) handleError(status *core.Status) {
 }
 
 func (e *exchange) buildRequests(ctx context.Context, h http.Header, resource string, values url.Values) {
-	e.reqs, e.failure = e.requests(ctx, h, resource, values)
-	if !e.failure.OK() {
-		e.handleError(e.failure)
-	} else {
-		e.failure = nil
+	u := resolver.Url(CustomerHost, CustomerAuthority, CustomerV1AddressPath, values, h)
+	req, err := http.NewRequestWithContext(core.NewContext(ctx), http.MethodGet, u, nil)
+	if err != nil {
+		e.handleError(core.NewStatusError(core.StatusInvalidArgument, err))
+		return
 	}
+	httpx.Forward(req.Header, h)
+	e.reqs = append(e.reqs, httpx.RequestItem{Id: customerId, Request: req})
+
+	switch resource {
+	case activity1IngressPath:
+		u = resolver.Url(EventsHost, EventsAuthority, EventsV1IngressPath, values, h)
+		req, err = http.NewRequestWithContext(core.NewContext(ctx), http.MethodGet, u, nil)
+		if err != nil {
+			e.handleError(core.NewStatusError(core.StatusInvalidArgument, err))
+			return
+		}
+		httpx.Forward(req.Header, h)
+		e.reqs = append(e.reqs, httpx.RequestItem{Id: eventId, Request: req})
+	case activity1EgressPath:
+		u = resolver.Url(EventsHost, EventsAuthority, EventsV1EgressPath, values, h)
+		req, err = http.NewRequestWithContext(core.NewContext(ctx), http.MethodGet, u, nil)
+		if err != nil {
+			e.handleError(core.NewStatusError(core.StatusInvalidArgument, err))
+			return
+		}
+		httpx.Forward(req.Header, h)
+		e.reqs = append(e.reqs, httpx.RequestItem{Id: eventId, Request: req})
+	default:
+		e.handleError(core.NewStatusError(core.StatusInvalidArgument, errors.New(fmt.Sprintf("error: invalid resource %v", resource))))
+	}
+	//return reqs, core.StatusOK()
+	//e.reqs, e.failure = e.requests(ctx, h, resource, values)
+	//if !e.failure.OK() {
+	//	e.handleError(e.failure)
+	//} else {
+	//	e.failure = nil
+	//}
 }
 
 func (e *exchange) onResponse(id string, resp *http.Response, status *core.Status) (proceed bool) {

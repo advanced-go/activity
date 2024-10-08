@@ -3,9 +3,9 @@ package testrsc
 const (
 	PkgPath = "github/advanced-go/activity/testrsc"
 
-	CUST1BasePath = "file:///f:/files/customer1"
+	CUSTV1BasePath = "file:///f:/files/customer1"
 
-	//Customer1Entry         = cust1BasePath + "/entry.json"
+	CustomerV1Entry = CUSTV1BasePath + "/entry.json"
 	//Customer1EgressGetReq  = cust1BasePath + "/egress-get-C001-req.txt"
 	//Customer1EgressGetResp = cust1BasePath + "/egress-get-resp.txt"
 

@@ -1,3 +1,0 @@
-GET /github/advanced-go/customer:v1/address/entry HTTP/1.1
-Content-Location: file:///f:/files/address1/entry.json
-

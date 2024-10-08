@@ -19,7 +19,7 @@ func testOverride(h http.Header) http.Header {
 	if h != nil && h.Get(uri.XContentResolver) != "" {
 		return h
 	}
-	return httpx.SetHeader(h, uri.XContentResolver, testrsc.CUST1BasePath)
+	return httpx.SetHeader(h, uri.XContentResolver, testrsc.CustomerV1Entry)
 }
 
 func get[E core.ErrorHandler](ctx context.Context, h http.Header, resource string, values url.Values) (entries []Entry, h2 http.Header, status *core.Status) {
@@ -33,7 +33,7 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, resource strin
 	h = testOverride(h)
 
 	// Build requests
-	ex := newExchange(h, e, buildRequests)
+	ex := newExchange(h, e)
 	ex.buildRequests(ctx, h, resource, values)
 	if ex.failure != nil {
 		return nil, h2, ex.failure

@@ -11,10 +11,10 @@ import (
 func ExampleGet_Customer() {
 	values := make(url.Values)
 	values.Add(customerKey, "D001")
-	path := uri.BuildPath(CustomerAuthority, Customer1AddressPath, values)
+	path := uri.BuildPath(CustomerAuthority, CustomerV1AddressPath, values)
 	h := uri.AddResolverContentLocation(nil, path, testrsc.CustomerD001GetResp)
 
-	path = uri.BuildPath(EventsAuthority, Events1EgressPath, values)
+	path = uri.BuildPath(EventsAuthority, EventsV1EgressPath, values)
 	uri.AddResolverContentLocation(h, path, testrsc.EventsV1LogEgressD001GetResp)
 
 	h.Add(core.XRequestId, "123-456")

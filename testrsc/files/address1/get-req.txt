@@ -1,3 +1,0 @@
-GET /github/advanced-go/customer:v1/address/entry?customer=C001 HTTP/1.1
-X-Resolver: storage/address?customer=C001->file:///f:/files/address1/get-resp.txt
-

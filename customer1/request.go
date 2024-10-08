@@ -22,7 +22,7 @@ func buildRequests(ctx context.Context, h http.Header, resource string, values u
 	reqs = append(reqs, httpx.RequestItem{Id: customerId, Request: req})
 
 	switch resource {
-	case activity1IngressPath:
+	case activityIngressPath:
 		u = resolver.Url(EventsHost, EventsAuthority, EventsV1IngressPath, values, h)
 		req, err = http.NewRequestWithContext(core.NewContext(ctx), http.MethodGet, u, nil)
 		if err != nil {
@@ -30,7 +30,7 @@ func buildRequests(ctx context.Context, h http.Header, resource string, values u
 		}
 		httpx.Forward(req.Header, h)
 		reqs = append(reqs, httpx.RequestItem{Id: eventId, Request: req})
-	case activity1EgressPath:
+	case activityEgressPath:
 		u = resolver.Url(EventsHost, EventsAuthority, EventsV1EgressPath, values, h)
 		req, err = http.NewRequestWithContext(core.NewContext(ctx), http.MethodGet, u, nil)
 		if err != nil {

@@ -19,7 +19,7 @@ func TestCustomer1(t *testing.T) {
 		resp   *http.Response
 		status *core.Status
 	}{
-		{name: "get-entry", req: httpt.NewRequestTest(testrsc.Customer1EgressGetReq, t), resp: httpt.NewResponseTest(testrsc.Customer1EgressGetResp, t), status: core.StatusOK()},
+		{name: "get-v1-egress-D001", req: httpt.NewRequestTest(testrsc.CustomerGetV1EgressD001Req, t), resp: httpt.NewResponseTest(testrsc.CustomerGetV1EgressD001Resp, t), status: core.StatusOK()},
 
 		//
 	}

@@ -61,6 +61,7 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, resource strin
 	if len(entries) == 0 {
 		status = core.NewStatus(http.StatusNotFound)
 	} else {
+		h2 = httpx.SetHeader(nil, httpx.ContentType, httpx.ContentTypeJson)
 		status = core.StatusOK()
 	}
 	return

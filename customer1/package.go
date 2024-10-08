@@ -2,6 +2,7 @@ package customer1
 
 import (
 	"errors"
+	"fmt"
 	"github.com/advanced-go/stdlib/core"
 	json2 "github.com/advanced-go/stdlib/json"
 	"github.com/advanced-go/stdlib/uri"
@@ -9,10 +10,10 @@ import (
 )
 
 const (
-	PkgPath              = "github/advanced-go/activity/customer1"
-	Route                = "customer-activity"
-	activity1IngressPath = "v1/ingress/entry"
-	activity1EgressPath  = "v1/egress/entry"
+	PkgPath             = "github/advanced-go/activity/customer1"
+	Route               = "customer-activity"
+	activityIngressPath = "customer/ingress/entry"
+	activityEgressPath  = "customer/egress/entry"
 
 	CustomerHost          = "localhost:8082"
 	CustomerAuthority     = "github/advanced-go/customer"
@@ -43,8 +44,8 @@ func httpGet[E core.ErrorHandler](r *http.Request, path string) ([]byte, http.He
 	var e E
 
 	switch path {
-	case activity1IngressPath:
-		t, h2, status := get[E](r.Context(), core.AddRequestId(r.Header), activity1IngressPath, r.URL.Query())
+	case activityIngressPath:
+		t, h2, status := get[E](r.Context(), core.AddRequestId(r.Header), activityIngressPath, r.URL.Query())
 		if !status.OK() {
 			return nil, h2, status
 		}
@@ -54,8 +55,8 @@ func httpGet[E core.ErrorHandler](r *http.Request, path string) ([]byte, http.He
 			return nil, h2, status1
 		}
 		return buf, h2, status1
-	case activity1EgressPath:
-		t, h2, status := get[E](r.Context(), core.AddRequestId(r.Header), activity1EgressPath, r.URL.Query())
+	case activityEgressPath:
+		t, h2, status := get[E](r.Context(), core.AddRequestId(r.Header), activityEgressPath, r.URL.Query())
 		if !status.OK() {
 			return nil, h2, status
 		}
@@ -66,7 +67,7 @@ func httpGet[E core.ErrorHandler](r *http.Request, path string) ([]byte, http.He
 		}
 		return buf, h2, status1
 	default:
-		status := core.NewStatusError(http.StatusBadRequest, errors.New("error: resource is not ingress or egress"))
+		status := core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: resource path is invalid [%v]", path)))
 		return nil, nil, status
 	}
 }

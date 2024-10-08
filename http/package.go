@@ -28,16 +28,16 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 
 	if r == nil {
 		status := core.NewStatusError(http.StatusBadRequest, errors.New("request is nil"))
-		return httpx.NewResponse[core.Log](status.HttpCode(), h2, status.Err)
+		return httpx.NewResponse(status.HttpCode(), h2, status.Err)
 	}
 	p, status := httpx.ValidateURL(r.URL, module.Authority)
 	if !status.OK() {
-		return httpx.NewResponse[core.Log](status.HttpCode(), h2, status.Err)
+		return httpx.NewResponse(status.HttpCode(), h2, status.Err)
 	}
 	core.AddRequestId(r.Header)
 	switch p.Resource {
 	case module.CustomerResource:
-		return customerExchange[core.Log](r, p)
+		return customerExchange(r, p)
 	case core.VersionPath:
 		return httpx.NewVersionResponse(module.Version), core.StatusOK()
 	case core.AuthorityPath:
@@ -46,6 +46,6 @@ func Exchange(r *http.Request) (*http.Response, *core.Status) {
 		return httpx.NewHealthResponseOK(), core.StatusOK()
 	default:
 		status = core.NewStatusError(http.StatusNotFound, errors.New(fmt.Sprintf("error invalid URI, resource not found: [%v]", p.Resource)))
-		return httpx.NewResponse[core.Log](status.HttpCode(), h2, status.Err)
+		return httpx.NewResponse(status.HttpCode(), h2, status.Err)
 	}
 }

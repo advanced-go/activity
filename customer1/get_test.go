@@ -12,13 +12,13 @@ func ExampleGet_Customer() {
 	values := make(url.Values)
 	values.Add(customerKey, "D001")
 	path := uri.BuildPath(CustomerAuthority, CustomerV1AddressPath, values)
-	h := uri.AddResolverEntry(nil, path, testrsc.CustomerD001GetResp)
+	h := uri.AddResolverEntry(nil, path, testrsc.AddrGetV1D001Resp)
 
 	path = uri.BuildPath(EventsAuthority, EventsV1EgressPath, values)
-	uri.AddResolverEntry(h, path, testrsc.EventsV1LogEgressD001GetResp)
+	uri.AddResolverEntry(h, path, testrsc.EventsGetV1LogEgressD001Resp)
 
 	h.Add(core.XRequestId, "123-456")
-	entries, _, status := get[core.Output](nil, h, activity1EgressPath, values)
+	entries, _, status := get[core.Output](nil, h, activityEgressPath, values)
 	fmt.Printf("test: get() -> [status:%v] %v\n", status, entries)
 
 	//Output:

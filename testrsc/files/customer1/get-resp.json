@@ -1,0 +1,34 @@
+[
+  {
+    "customer":{
+      "customer-id":"C001",
+      "address-1":"Test Line 1",
+      "address-2":"Test Line 2",
+      "city":"City",
+      "state":"State",
+      "postal-code":"PostalCode",
+      "email":"email@email.com"},
+    "activity":[
+      {
+        "origin":{
+          "region":"us-west",
+          "zone":"oregon",
+          "sub-zone":"dc1",
+          "host":"www.google.com",
+          "route":"google-search",
+          "instance-id":""
+        },
+        "start-time":"2024-10-08T19:08:21.3321735Z",
+        "duration":123,
+        "traffic":"Ingress",
+        "method":"GET",
+        "uri":"test",
+        "status-code":200,
+        "timeout":2500,
+        "rate-limit":-1,
+        "rate-burst":-1,
+        "cc":"TO"
+      }
+    ]
+  }
+]

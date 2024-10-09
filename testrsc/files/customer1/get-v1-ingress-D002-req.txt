@@ -1,0 +1,5 @@
+GET /github/advanced-go/activity:v1/customer/ingress/entry?customer=D002 HTTP/1.1
+X-Content-Resolver: github/advanced-go/customer:v1/address/entry?customer=D002->file:///f:/files/upstream/customer/get-D002-req-resp.txt
+X-Content-Resolver: github/advanced-go/events:v1/log/ingress/entry?customer=D002->file:///f:/files/upstream/events/get-v1-log-ingress-D002-req-resp.txt
+
+

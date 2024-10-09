@@ -14,10 +14,11 @@ const (
 
 func ExampleBuildUpstream() {
 	items := []httpxtest.FileList{
-		{Dir: customerDir, Req: "get-C001-req.txt"},
+		{Dir: customerDir, Req: "get-D002-req.txt"},
 		{Dir: customerDir, Req: "get-D001-req.txt"},
 
 		{Dir: eventsDir, Req: "get-v1-log-egress-D001-req.txt"},
+		{Dir: eventsDir, Req: "get-v1-log-ingress-D002-req.txt"},
 
 		//
 	}

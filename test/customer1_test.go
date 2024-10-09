@@ -42,7 +42,7 @@ func TestCustomer1(t *testing.T) {
 			}
 			if ok {
 				if !reflect.DeepEqual(gotT, wantT) {
-					t.Errorf("Exchange() got = %v, want %v", gotT, wantT)
+					t.Errorf("Exchange() \ngot  = %v, \nwant = %v", gotT, wantT)
 				}
 			}
 		})

@@ -1,0 +1,16 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Wed, 09 Oct 2024 09:05:33 GMT
+
+[
+  {
+    "customer-id": "D002",
+    "created-ts": "0001-01-01T00:00:00Z",
+    "address-1": "456 Oak Street",
+    "address-2": "",
+    "city": "Clearview",
+    "state": "AK",
+    "postal-code": "00000",
+    "email": "before-email2@yahoo.com"
+  }
+]

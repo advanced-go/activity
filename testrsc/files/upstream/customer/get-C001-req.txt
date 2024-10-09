@@ -1,3 +1,0 @@
-GET /github/advanced-go/customer:v1/address/entry?customer=C001 HTTP/1.1
-Host: localhost:8082
-

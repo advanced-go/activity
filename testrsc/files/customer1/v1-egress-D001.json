@@ -1,9 +1,3 @@
-HTTP/1.1 200 OK
-Date: Mon, 27 Jul 2009 12:28:53 GMT
-Server: Apache/2.2.14 (Win32)
-Content-Type: application/json
-Connection: Closed
-
 [
   {
     "customer":{
@@ -23,15 +17,15 @@ Connection: Closed
           "sub-zone":"dc1",
           "host":"www.test-host.com",
           "route":"google-search",
-          "instance-id":"123456"
+          "instance-id":""
         },
-        "start-time":"2024-06-03T18:29:16.0447249Z",
-        "duration":100,
-        "traffic":"egress",
+        "start-time":"2024-10-08T19:08:21.3321735Z",
+        "duration":123,
+        "traffic":"Ingress",
         "method":"GET",
-        "uri":"",
+        "uri":"test",
         "status-code":200,
-        "timeout":500,
+        "timeout":2500,
         "rate-limit":-1,
         "rate-burst":-1,
         "cc":"TO"

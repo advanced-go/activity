@@ -20,6 +20,7 @@ func TestCustomer1(t *testing.T) {
 		status *core.Status
 	}{
 		{name: "get-v1-egress-D001", req: httpt.NewRequestTest(testrsc.CustomerGetV1EgressD001Req, t), resp: httpt.NewResponseTest(testrsc.CustomerGetV1EgressD001Resp, t), status: core.StatusOK()},
+		{name: "get-v1-ingress-D002", req: httpt.NewRequestTest(testrsc.CustomerGetV1IngressD002Req, t), resp: httpt.NewResponseTest(testrsc.CustomerGetV1IngressD002Resp, t), status: core.StatusOK()},
 
 		//
 	}

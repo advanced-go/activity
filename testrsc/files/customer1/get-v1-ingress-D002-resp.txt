@@ -1,0 +1,43 @@
+HTTP/1.1 200 OK
+Date: Mon, 27 Jul 2009 12:28:53 GMT
+Server: Apache/2.2.14 (Win32)
+Content-Type: application/json
+Connection: Closed
+
+[
+  {
+    "customer":{
+      "customer-id": "D002",
+      "created-ts": "0001-01-01T00:00:00Z",
+      "address-1": "456 Oak Street",
+      "address-2": "",
+      "city": "Clearview",
+      "state": "AK",
+      "postal-code": "00000",
+      "email": "before-email2@yahoo.com"
+    },
+    "activity":[
+      {
+        "origin":{
+          "region":"us-west",
+          "zone":"oregon",
+          "sub-zone":"dc2",
+          "host":"www.search.yahoo.com",
+          "route":"host",
+          "instance-id":"123456"
+        },
+        "start-time":"2024-06-03T18:29:16.0450098Z",
+        "duration":500,
+        "traffic":"ingress",
+        "method":"GET",
+        "uri":"",
+        "status-code":200,
+        "timeout":500,
+        "rate-limit":100,
+        "rate-burst":10,
+        "cc":"TO"
+      }
+    ]
+  }
+]
+

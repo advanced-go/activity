@@ -9,6 +9,9 @@ const (
 	CustomerGetV1EgressD001Req  = CUSTV1BasePath + "/get-v1-egress-D001-req.txt"
 	CustomerGetV1EgressD001Resp = CUSTV1BasePath + "/get-v1-egress-D001-resp.txt"
 
+	CustomerGetV1IngressD002Req  = CUSTV1BasePath + "/get-v1-ingress-D002-req.txt"
+	CustomerGetV1IngressD002Resp = CUSTV1BasePath + "/get-v1-ingress-D002-resp.txt"
+
 	AddrGetV1C001Resp = "file:///f:/files/upstream/customer/get-C001-req-resp.txt"
 	AddrGetV1D001Resp = "file:///f:/files/upstream/customer/get-D001-req-resp.txt"
 

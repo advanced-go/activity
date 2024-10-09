@@ -32,9 +32,9 @@ Connection: Closed
         "uri":"",
         "status-code":200,
         "timeout":500,
-        "rate-limit":-1,
-        "rate-burst":-1,
-        "cc":"TO"
+        "rate-limit":100,
+        "rate-burst":10,
+        "cc":"RL"
       }
     ]
   }

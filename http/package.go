@@ -10,11 +10,9 @@ import (
 )
 
 const (
-	PkgPath    = "github/advanced-go/activity/http"
-	ver1       = "v1"
-	ver2       = "v2"
-	timeseries = "timeseries"
-	log        = "log"
+	PkgPath = "github/advanced-go/activity/http"
+	ver1    = "v1"
+	ver2    = "v2"
 )
 
 var (

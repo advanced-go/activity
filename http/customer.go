@@ -26,7 +26,6 @@ func customerExchange(r *http.Request, p *uri.Parsed) (*http.Response, *core.Sta
 	case http.MethodGet:
 		return customerGet(r, p)
 	case http.MethodPut:
-		//return assignmentPut[E](r, p)
 	default:
 		status := core.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error invalid method: [%v]", r.Method)))
 		return httpx.NewResponse(status.HttpCode(), h2, status.Err)
@@ -49,5 +48,4 @@ func customerGet(r *http.Request, p *uri.Parsed) (resp *http.Response, status *c
 		return resp, status
 	}
 	return httpx.NewResponse(status.HttpCode(), h2, entries)
-
 }

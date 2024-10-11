@@ -8,7 +8,79 @@ import (
 	"net/url"
 )
 
-func ExampleGet_Customer() {
+func ExampleGet_Customer_Failure() {
+	values := make(url.Values)
+	values.Add(customerKey, "D001")
+	path := uri.BuildPath(CustomerAuthority, CustomerV1AddressPath, values)
+	h := uri.AddResolverEntry(nil, path, testrsc.Http500Resp)
+
+	path = uri.BuildPath(EventsAuthority, EventsV1EgressPath, values)
+	uri.AddResolverEntry(h, path, testrsc.EventsGetV1LogEgressD001Resp)
+
+	h.Add(core.XRequestId, "123-456")
+	entries, _, status := get[core.Output](nil, h, activityEgressPath, values)
+	fmt.Printf("test: get() -> [status:%v] %v\n", status, entries)
+
+	//Output:
+	//test: get() -> [status:Internal Error [multiple errors]] []
+
+}
+
+func ExampleGet_Events_Failure() {
+	values := make(url.Values)
+	values.Add(customerKey, "D001")
+	path := uri.BuildPath(CustomerAuthority, CustomerV1AddressPath, values)
+	h := uri.AddResolverEntry(nil, path, testrsc.AddrGetV1D001Resp)
+
+	path = uri.BuildPath(EventsAuthority, EventsV1EgressPath, values)
+	uri.AddResolverEntry(h, path, testrsc.Http504Resp)
+
+	h.Add(core.XRequestId, "123-456")
+	entries, _, status := get[core.Output](nil, h, activityEgressPath, values)
+	fmt.Printf("test: get() -> [status:%v] %v\n", status, entries)
+
+	//Output:
+	//test: get() -> [status:Internal Error [multiple errors]] []
+
+}
+
+func ExampleGet_Customer_Not_Found() {
+	values := make(url.Values)
+	values.Add(customerKey, "D001")
+	path := uri.BuildPath(CustomerAuthority, CustomerV1AddressPath, values)
+	h := uri.AddResolverEntry(nil, path, testrsc.Http404Resp)
+
+	path = uri.BuildPath(EventsAuthority, EventsV1EgressPath, values)
+	uri.AddResolverEntry(h, path, testrsc.EventsGetV1LogEgressD001Resp)
+
+	h.Add(core.XRequestId, "123-456")
+	entries, _, status := get[core.Output](nil, h, activityEgressPath, values)
+	fmt.Printf("test: get() -> [status:%v] %v\n", status, entries)
+
+	//Output:
+	//test: get() -> [status:Not Found] []
+
+}
+
+func ExampleGet_Events_Not_Found() {
+	values := make(url.Values)
+	values.Add(customerKey, "D001")
+	path := uri.BuildPath(CustomerAuthority, CustomerV1AddressPath, values)
+	h := uri.AddResolverEntry(nil, path, testrsc.AddrGetV1D001Resp)
+
+	path = uri.BuildPath(EventsAuthority, EventsV1EgressPath, values)
+	uri.AddResolverEntry(h, path, testrsc.Http404Resp)
+
+	h.Add(core.XRequestId, "123-456")
+	entries, _, status := get[core.Output](nil, h, activityEgressPath, values)
+	fmt.Printf("test: get() -> [status:%v] %v\n", status, entries)
+
+	//Output:
+	//test: get() -> [status:OK] [{{D001 123 Main  Anytown OH 12345 before-email@hotmail.com} []}]
+
+}
+
+func ExampleGet_OK() {
 	values := make(url.Values)
 	values.Add(customerKey, "D001")
 	path := uri.BuildPath(CustomerAuthority, CustomerV1AddressPath, values)
@@ -19,41 +91,9 @@ func ExampleGet_Customer() {
 
 	h.Add(core.XRequestId, "123-456")
 	entries, _, status := get[core.Output](nil, h, activityEgressPath, values)
-	fmt.Printf("test: get() -> [status:%v34] %v\n", status, entries)
+	fmt.Printf("test: get() -> [status:%v] %v\n", status, entries)
 
 	//Output:
 	//test: get() -> [status:OK] [{{D001 123 Main  Anytown OH 12345 before-email@hotmail.com} [{{us-west oregon dc1 www.test-host.com google-search 123456} 2024-06-03 18:29:16.0447249 +0000 UTC 100 egress GET  200 500 100 10 RL}]}]
 
 }
-
-/*
-func ExampleGet_Customer_All() {
-	values := make(url.Values)
-	values.Add(customerKey, "*")
-	path := uri.BuildPath("", StoragePath, values)
-	h := uri.AddResolverContentLocation(nil, path, testrsc.Addr1GetRespTest)
-
-	entries, _, status := get[core.Output](nil, h, values)
-	fmt.Printf("test: get() -> [status:%v] [path:%v] [entries:%v]\n", status, path, len(entries))
-
-	//Output:
-	//test: get() -> [status:OK] [path:storage/address?customer=*] [entries:4]
-
-}
-
-func ExampleGet_State() {
-	values := make(url.Values)
-	values.Add(stateKey, "IA")
-	path := uri.BuildPath("", StoragePath, values)
-	h := uri.AddResolverContentLocation(nil, path, testrsc.Addr1GetRespTest)
-
-	entries, _, status := get[core.Output](nil, h, values)
-	fmt.Printf("test: get() -> [status:%v] [path:%v] [entries:%v]\n", status, path, len(entries))
-
-	//Output:
-	//test: get() -> [status:OK] [path:storage/address?state=IA] [entries:2]
-
-}
-
-
-*/

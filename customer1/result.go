@@ -10,6 +10,9 @@ func buildResults(r *response) ([]Entry, http.Header, *core.Status) {
 
 	// Build header
 	h2 := httpx.SetHeader(nil, httpx.ContentType, httpx.ContentTypeJson)
+	if r.addr.Status().NotFound() {
+		return []Entry{}, httpx.SetHeader(nil, httpx.ContentType, httpx.ContentTypeText), r.addr.Status()
+	}
 
 	// Build entries
 	entry := Entry{

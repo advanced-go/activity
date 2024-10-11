@@ -84,8 +84,16 @@ func verifyResponses[E core.ErrorHandler](r *response, h http.Header) *core.Stat
 	if !r.isNonSuccessful() {
 		return core.StatusOK()
 	}
+	cnt := 0
 	for _, status := range r.nonSuccess {
+		if status.NotFound() {
+			continue
+		}
+		cnt++
 		e.Handle(status.WithRequestId(h))
+	}
+	if cnt == 0 {
+		return core.StatusOK()
 	}
 	return core.NewStatusError(http.StatusInternalServerError, errors.New("multiple errors"))
 }

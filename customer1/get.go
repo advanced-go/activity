@@ -30,7 +30,7 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, resource strin
 		return nil, h2, core.StatusNotFound()
 	}
 	// Test only
-	h = testOverride(h)
+	//h = testOverride(h)
 
 	// Build requests
 	reqs, status1 := buildRequests(ctx, h, resource, values)
@@ -57,7 +57,7 @@ func get[E core.ErrorHandler](ctx context.Context, h http.Header, resource strin
 	}
 
 	// Test only
-	entries = filter(entries, values)
+	//entries = filter(entries, values)
 	if len(entries) == 0 {
 		status = core.NewStatus(http.StatusNotFound)
 	} else {

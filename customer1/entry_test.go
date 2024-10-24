@@ -3,7 +3,8 @@ package customer1
 import (
 	"fmt"
 	"github.com/advanced-go/activity/testrsc"
-	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/common/core"
+	"github.com/advanced-go/common/jsonx"
 	"github.com/advanced-go/stdlib/json"
 	"time"
 )
@@ -25,7 +26,7 @@ var data = []Entry{
 }
 
 func ExampleEncode() {
-	buf, status := json.Marshal(data)
+	buf, status := jsonx.Marshal(data)
 
 	fmt.Printf("test: Encode() -> [status:%v] %v\n", status, string(buf))
 

@@ -2,8 +2,8 @@ package customer1
 
 import (
 	"errors"
-	"github.com/advanced-go/stdlib/core"
-	"github.com/advanced-go/stdlib/json"
+	"github.com/advanced-go/common/core"
+	"github.com/advanced-go/common/jsonx"
 	"net/http"
 	"sync"
 )
@@ -61,7 +61,7 @@ func (r *response) handler(id string, resp *http.Response, status *core.Status) 
 		r.addr.status = status
 		r.addr.resp = resp
 		if status.OK() {
-			r.addr.content, r.addr.status = json.New[[]address](resp.Body, resp.Header)
+			r.addr.content, r.addr.status = jsonx.New[[]address](resp.Body, resp.Header)
 		}
 		if !r.addr.status.OK() {
 			r.addNonSuccessful(r.addr.status)
@@ -70,7 +70,7 @@ func (r *response) handler(id string, resp *http.Response, status *core.Status) 
 		r.event.status = status
 		r.event.resp = resp
 		if status.OK() {
-			r.event.content, r.event.status = json.New[[]log](resp.Body, resp.Header)
+			r.event.content, r.event.status = jsonx.New[[]log](resp.Body, resp.Header)
 		}
 		if !r.event.status.OK() {
 			r.addNonSuccessful(r.event.status)

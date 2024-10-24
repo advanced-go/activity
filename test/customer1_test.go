@@ -4,9 +4,8 @@ import (
 	"github.com/advanced-go/activity/customer1"
 	http2 "github.com/advanced-go/activity/http"
 	"github.com/advanced-go/activity/testrsc"
-	"github.com/advanced-go/stdlib/core"
-	"github.com/advanced-go/stdlib/core/coretest"
-	httpt "github.com/advanced-go/stdlib/httpx/httpxtest"
+	"github.com/advanced-go/common/core"
+	"github.com/advanced-go/common/test"
 	"net/http"
 	"reflect"
 	"testing"
@@ -19,8 +18,8 @@ func TestCustomer1(t *testing.T) {
 		resp   *http.Response
 		status *core.Status
 	}{
-		{name: "get-v1-egress-D001", req: httpt.NewRequestTest(testrsc.CustomerGetV1EgressD001Req, t), resp: httpt.NewResponseTest(testrsc.CustomerGetV1EgressD001Resp, t), status: core.StatusOK()},
-		{name: "get-v1-ingress-D002", req: httpt.NewRequestTest(testrsc.CustomerGetV1IngressD002Req, t), resp: httpt.NewResponseTest(testrsc.CustomerGetV1IngressD002Resp, t), status: core.StatusOK()},
+		{name: "get-v1-egress-D001", req: test.NewRequestTest(testrsc.CustomerGetV1EgressD001Req, t), resp: test.NewResponseTest(testrsc.CustomerGetV1EgressD001Resp, t), status: core.StatusOK()},
+		{name: "get-v1-ingress-D002", req: test.NewRequestTest(testrsc.CustomerGetV1IngressD002Req, t), resp: test.NewResponseTest(testrsc.CustomerGetV1IngressD002Resp, t), status: core.StatusOK()},
 
 		//
 	}
@@ -39,7 +38,7 @@ func TestCustomer1(t *testing.T) {
 			var gotT []customer1.Entry
 			var wantT []customer1.Entry
 			if ok {
-				gotT, wantT, ok = httpt.Deserialize[coretest.Output, []customer1.Entry](resp.Body, tt.resp.Body, t)
+				gotT, wantT, ok = test.Deserialize[test.Output, []customer1.Entry](resp.Body, tt.resp.Body, t)
 			}
 			if ok {
 				if !reflect.DeepEqual(gotT, wantT) {

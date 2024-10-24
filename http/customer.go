@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"github.com/advanced-go/activity/customer1"
 	"github.com/advanced-go/activity/module"
-	"github.com/advanced-go/stdlib/core"
-	"github.com/advanced-go/stdlib/httpx"
-	"github.com/advanced-go/stdlib/uri"
+	"github.com/advanced-go/common/core"
+	"github.com/advanced-go/common/httpx"
+	"github.com/advanced-go/common/uri"
 	"net/http"
 )
 
@@ -16,9 +16,9 @@ func customerExchange(r *http.Request, p *uri.Parsed) (*http.Response, *core.Sta
 	h2.Add(httpx.ContentType, httpx.ContentTypeText)
 
 	if p == nil {
-		p1, status := httpx.ValidateURL(r.URL, module.Authority)
-		if !status.OK() {
-			return httpx.NewResponse(status.HttpCode(), h2, status.Err)
+		p1, err := uri.ValidateURL(r.URL, module.Authority)
+		if err != nil {
+			return httpx.NewResponse(http.StatusBadRequest, h2, err)
 		}
 		p = p1
 	}

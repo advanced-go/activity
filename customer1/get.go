@@ -2,8 +2,8 @@ package customer1
 
 import (
 	"context"
-	"github.com/advanced-go/stdlib/core"
-	"github.com/advanced-go/stdlib/httpx"
+	"github.com/advanced-go/common/core"
+	"github.com/advanced-go/common/httpx"
 	"net/http"
 	"net/url"
 )

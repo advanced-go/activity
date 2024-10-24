@@ -2,9 +2,9 @@ package testrsc
 
 import (
 	"fmt"
-	"github.com/advanced-go/stdlib/core"
-	"github.com/advanced-go/stdlib/host"
-	"github.com/advanced-go/stdlib/messaging"
+	"github.com/advanced-go/common/core"
+	"github.com/advanced-go/common/host"
+	"github.com/advanced-go/common/messaging"
 	"net/http"
 	"time"
 )

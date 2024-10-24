@@ -3,9 +3,9 @@ package customer1
 import (
 	"errors"
 	"fmt"
-	"github.com/advanced-go/stdlib/core"
-	json2 "github.com/advanced-go/stdlib/json"
-	"github.com/advanced-go/stdlib/uri"
+	"github.com/advanced-go/common/core"
+	"github.com/advanced-go/common/jsonx"
+	"github.com/advanced-go/common/uri"
 	"net/http"
 )
 
@@ -49,7 +49,7 @@ func httpGet[E core.ErrorHandler](r *http.Request, path string) ([]byte, http.He
 		if !status.OK() {
 			return nil, h2, status
 		}
-		buf, status1 := json2.Marshal(t)
+		buf, status1 := jsonx.Marshal(t)
 		if !status1.OK() {
 			e.Handle(status1)
 			return nil, h2, status1
@@ -60,7 +60,7 @@ func httpGet[E core.ErrorHandler](r *http.Request, path string) ([]byte, http.He
 		if !status.OK() {
 			return nil, h2, status
 		}
-		buf, status1 := json2.Marshal(t)
+		buf, status1 := jsonx.Marshal(t)
 		if !status1.OK() {
 			e.Handle(status1)
 			return nil, h2, status1

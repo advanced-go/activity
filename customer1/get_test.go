@@ -3,8 +3,8 @@ package customer1
 import (
 	"fmt"
 	"github.com/advanced-go/activity/testrsc"
-	"github.com/advanced-go/stdlib/core"
-	"github.com/advanced-go/stdlib/uri"
+	"github.com/advanced-go/common/core"
+	"github.com/advanced-go/common/uri"
 	"net/url"
 )
 

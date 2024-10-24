@@ -1,7 +1,7 @@
 package customer1
 
 import (
-	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/common/core"
 	"time"
 )
 

@@ -2,9 +2,9 @@ package testrsc
 
 import (
 	"fmt"
-	"github.com/advanced-go/stdlib/httpx"
+	"github.com/advanced-go/common/httpx"
+	"github.com/advanced-go/common/test"
 	"github.com/advanced-go/stdlib/httpx/httpxtest"
-	json2 "github.com/advanced-go/stdlib/json"
 )
 
 const (
@@ -13,7 +13,7 @@ const (
 )
 
 func ExampleBuildUpstream() {
-	items := []httpxtest.FileList{
+	items := []test.FileList{
 		{Dir: customerDir, Req: "get-D002-req.txt"},
 		{Dir: customerDir, Req: "get-D001-req.txt"},
 

@@ -3,8 +3,8 @@ package testrsc
 import (
 	"fmt"
 	"github.com/advanced-go/common/httpx"
+	"github.com/advanced-go/common/jsonx"
 	"github.com/advanced-go/common/test"
-	"github.com/advanced-go/stdlib/httpx/httpxtest"
 )
 
 const (
@@ -28,7 +28,7 @@ func ExampleBuildUpstream() {
 	for _, info := range items {
 		var err error
 
-		req, status := httpxtest.NewRequest(info.RequestPath())
+		req, status := test.NewRequest(info.RequestPath())
 		if !status.OK() {
 			fmt.Printf("error: NewRequest(\"%v\") ->  %v\n", info.Req, status)
 			continue
@@ -44,13 +44,13 @@ func ExampleBuildUpstream() {
 			continue
 		}
 		if resp.Header.Get(httpx.ContentType) == httpx.ContentTypeJson {
-			resp.Body, status = json2.Indent(resp.Body, resp.Header, "", "  ")
+			resp.Body, status = jsonx.Indent(resp.Body, resp.Header, "", "  ")
 			if !status.OK() {
 				fmt.Printf("error: json2.Indent(\"%v\") -> %v\n", info.Req, status)
 				continue
 			}
 		}
-		status = httpxtest.WriteResponse(info.ResponsePath(), resp)
+		status = test.WriteResponse(info.ResponsePath(), resp)
 		if !status.OK() {
 			fmt.Printf("error: WriteResponse(\"%v\") -> %v\n", info.Req, status)
 			continue

@@ -22,16 +22,8 @@ func buildRequests(ctx context.Context, h http.Header, resource string, values u
 	reqs = append(reqs, httpx.RequestItem{Id: customerId, Request: req})
 
 	switch resource {
-	case activityIngressPath:
-		u = resolver.Url(EventsHost, EventsAuthority, EventsV1IngressPath, values, h)
-		req, err = http.NewRequestWithContext(core.NewContext(ctx), http.MethodGet, u, nil)
-		if err != nil {
-			return nil, core.NewStatusError(core.StatusInvalidArgument, err)
-		}
-		httpx.Forward(req.Header, h)
-		reqs = append(reqs, httpx.RequestItem{Id: eventId, Request: req})
-	case activityEgressPath:
-		u = resolver.Url(EventsHost, EventsAuthority, EventsV1EgressPath, values, h)
+	case logPath:
+		u = resolver.Url(LogHost, LogAuthority, LogV1EventPath, values, h)
 		req, err = http.NewRequestWithContext(core.NewContext(ctx), http.MethodGet, u, nil)
 		if err != nil {
 			return nil, core.NewStatusError(core.StatusInvalidArgument, err)

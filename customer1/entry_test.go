@@ -5,7 +5,7 @@ import (
 	"github.com/advanced-go/activity/testrsc"
 	"github.com/advanced-go/common/core"
 	"github.com/advanced-go/common/jsonx"
-	"github.com/advanced-go/stdlib/json"
+	//"github.com/advanced-go/common/json"
 	"time"
 )
 
@@ -36,7 +36,7 @@ func ExampleEncode() {
 }
 
 func ExampleDecode() {
-	e, status := json.New[[]Entry](testrsc.CustomerV1Entry, nil)
+	e, status := jsonx.New[[]Entry](testrsc.CustomerV1Entry, nil)
 	fmt.Printf("test: Decode()-> [status:%v] %v\n", status, e)
 
 	//Output:

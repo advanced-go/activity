@@ -2,7 +2,7 @@ package common
 
 import (
 	"fmt"
-	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/common/core"
 	"net/url"
 	"strconv"
 )

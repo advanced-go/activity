@@ -10,19 +10,19 @@ import (
 )
 
 const (
-	PkgPath             = "github/advanced-go/activity/customer1"
-	Route               = "customer-activity"
-	activityIngressPath = "customer/ingress/entry"
-	activityEgressPath  = "customer/egress/entry"
+	PkgPath = "github/advanced-go/activity/customer1"
+	Route   = "customer-activity"
+	logPath = "customer/event/entry"
+	//activityEgressPath  = "customer/egress/entry"
 
 	CustomerHost          = "localhost:8082"
 	CustomerAuthority     = "github/advanced-go/customer"
 	CustomerV1AddressPath = "v1/address/entry"
 
-	EventsHost          = "localhost:8083"
-	EventsAuthority     = "github/advanced-go/events"
-	EventsV1IngressPath = "v1/log/ingress/entry"
-	EventsV1EgressPath  = "v1/log/egress/entry"
+	LogHost        = "localhost:8083"
+	LogAuthority   = "github/advanced-go/log"
+	LogV1EventPath = "v1/event/entry"
+	//EventsV1EgressPath  = "v1/log/egress/entry"
 )
 
 var (
@@ -44,19 +44,8 @@ func httpGet[E core.ErrorHandler](r *http.Request, path string) ([]byte, http.He
 	var e E
 
 	switch path {
-	case activityIngressPath:
-		t, h2, status := get[E](r.Context(), core.AddRequestId(r.Header), activityIngressPath, r.URL.Query())
-		if !status.OK() {
-			return nil, h2, status
-		}
-		buf, status1 := jsonx.Marshal(t)
-		if !status1.OK() {
-			e.Handle(status1)
-			return nil, h2, status1
-		}
-		return buf, h2, status1
-	case activityEgressPath:
-		t, h2, status := get[E](r.Context(), core.AddRequestId(r.Header), activityEgressPath, r.URL.Query())
+	case logPath:
+		t, h2, status := get[E](r.Context(), core.AddRequestId(r.Header), logPath, r.URL.Query())
 		if !status.OK() {
 			return nil, h2, status
 		}

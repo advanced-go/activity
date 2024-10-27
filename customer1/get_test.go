@@ -14,11 +14,11 @@ func ExampleGet_Customer_Failure() {
 	path := uri.BuildPath(CustomerAuthority, CustomerV1AddressPath, values)
 	h := uri.AddResolverEntry(nil, path, testrsc.Http500Resp)
 
-	path = uri.BuildPath(EventsAuthority, EventsV1EgressPath, values)
+	path = uri.BuildPath(LogAuthority, LogV1EventPath, values)
 	uri.AddResolverEntry(h, path, testrsc.EventsGetV1LogEgressD001Resp)
 
 	h.Add(core.XRequestId, "123-456")
-	entries, _, status := get[core.Output](nil, h, activityEgressPath, values)
+	entries, _, status := get[core.Output](nil, h, logPath, values)
 	fmt.Printf("test: get() -> [status:%v] %v\n", status, entries)
 
 	//Output:
@@ -32,11 +32,11 @@ func ExampleGet_Events_Failure() {
 	path := uri.BuildPath(CustomerAuthority, CustomerV1AddressPath, values)
 	h := uri.AddResolverEntry(nil, path, testrsc.AddrGetV1D001Resp)
 
-	path = uri.BuildPath(EventsAuthority, EventsV1EgressPath, values)
+	path = uri.BuildPath(LogAuthority, LogV1EventPath, values)
 	uri.AddResolverEntry(h, path, testrsc.Http504Resp)
 
 	h.Add(core.XRequestId, "123-456")
-	entries, _, status := get[core.Output](nil, h, activityEgressPath, values)
+	entries, _, status := get[core.Output](nil, h, logPath, values)
 	fmt.Printf("test: get() -> [status:%v] %v\n", status, entries)
 
 	//Output:
@@ -50,11 +50,11 @@ func ExampleGet_Customer_Not_Found() {
 	path := uri.BuildPath(CustomerAuthority, CustomerV1AddressPath, values)
 	h := uri.AddResolverEntry(nil, path, testrsc.Http404Resp)
 
-	path = uri.BuildPath(EventsAuthority, EventsV1EgressPath, values)
+	path = uri.BuildPath(LogAuthority, LogV1EventPath, values)
 	uri.AddResolverEntry(h, path, testrsc.EventsGetV1LogEgressD001Resp)
 
 	h.Add(core.XRequestId, "123-456")
-	entries, _, status := get[core.Output](nil, h, activityEgressPath, values)
+	entries, _, status := get[core.Output](nil, h, logPath, values)
 	fmt.Printf("test: get() -> [status:%v] %v\n", status, entries)
 
 	//Output:
@@ -68,11 +68,11 @@ func ExampleGet_Events_Not_Found() {
 	path := uri.BuildPath(CustomerAuthority, CustomerV1AddressPath, values)
 	h := uri.AddResolverEntry(nil, path, testrsc.AddrGetV1D001Resp)
 
-	path = uri.BuildPath(EventsAuthority, EventsV1EgressPath, values)
+	path = uri.BuildPath(LogAuthority, LogV1EventPath, values)
 	uri.AddResolverEntry(h, path, testrsc.Http404Resp)
 
 	h.Add(core.XRequestId, "123-456")
-	entries, _, status := get[core.Output](nil, h, activityEgressPath, values)
+	entries, _, status := get[core.Output](nil, h, logPath, values)
 	fmt.Printf("test: get() -> [status:%v] %v\n", status, entries)
 
 	//Output:
@@ -86,11 +86,11 @@ func ExampleGet_OK() {
 	path := uri.BuildPath(CustomerAuthority, CustomerV1AddressPath, values)
 	h := uri.AddResolverEntry(nil, path, testrsc.AddrGetV1D001Resp)
 
-	path = uri.BuildPath(EventsAuthority, EventsV1EgressPath, values)
+	path = uri.BuildPath(LogAuthority, LogV1EventPath, values)
 	uri.AddResolverEntry(h, path, testrsc.EventsGetV1LogEgressD001Resp)
 
 	h.Add(core.XRequestId, "123-456")
-	entries, _, status := get[core.Output](nil, h, activityEgressPath, values)
+	entries, _, status := get[core.Output](nil, h, logPath, values)
 	fmt.Printf("test: get() -> [status:%v] %v\n", status, entries)
 
 	//Output:

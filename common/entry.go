@@ -1,7 +1,7 @@
 package common
 
 import (
-	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/common/core"
 	"net/url"
 	"time"
 )
